@@ -55,6 +55,10 @@ title: Lacey_CheckWin
 <<endif>>
 ===
 
+title: Gil_Look
+---
+Dex: A guy in a bathrobe, guarding his record collection like a dragon.
+===
 title: Gil_Talk
 ---
 <<if not flagged("met_gil")>>
@@ -74,6 +78,10 @@ Gil: Earplugs! You beautiful man. Take the country one, I never liked it.
 <<give dance_album>>
 ===
 
+title: Vending_Look
+---
+Dex: Snacks, socks, and earplugs. Dorm life essentials.
+===
 title: Vending_Use
 ---
 <<if not has("earplugs") and not flagged("gil_has_earplugs")>>
@@ -109,4 +117,29 @@ Dex: Lemon in the soda. Hallway Hooch, served with confidence.
 <<take soda>>
 <<give hallway_hooch>>
 <<flag made_hooch>>
+===
+
+title: Item_earplugs_Look
+---
+Dex: Foam earplugs. Sweet, sweet silence.
+===
+title: Item_dance_album_Look
+---
+Dex: Hank Hollister, live at the Grand Ole Barn. Pure heartbreak on vinyl.
+===
+title: Item_lemon_Look
+---
+Dex: A lemon. Lightly bruised, like my ego.
+===
+title: Item_soda_Look
+---
+Dex: Lemon-lime soda. Or is it lime-lemon?
+===
+title: Item_hallway_hooch_Look
+---
+Dex: Hallway Hooch. Smells like confidence and regret.
+===
+title: Item_cowboy_hat_Look
+---
+Dex: Lacey Rae's hat. Proof that tonight is going my way.
 ===

@@ -31,36 +31,28 @@ Controls: left click walks or uses, right click looks, click an inventory item t
 6. **Edit > Project Settings > Editor**: Version Control mode = Visible Meta Files, Asset Serialization = Force Text.
 7. In a terminal at the project root: `git init`, `git lfs install`, then commit and push to the private GitHub repository.
 
-## Building the slice scene by scene
+## Building the first room
 
-**Data** (right click in `Assets/_Project/Data` > Create > Big Night Out):
+After setup (and after installing Yarn Spinner and creating a Yarn Project in `Assets/_Project/Dialogue` with **Create > Yarn Spinner > Yarn Project**), run **Big Night Out > Build Dorm Hallway Slice** from the menu bar. It:
 
-- Room `dorm_hallway`, scene `DormHallway`.
-- Items: `earplugs`, `dance_album`, `lemon`, `soda`, `hallway_hooch`, `cowboy_hat` (coloured squares are fine as icons for now).
-- One Item Database with all six items and the combination `lemon` + `soda` > `Combine_Lemon_Soda`.
+- generates flat-colour placeholder sprites in `Art/Placeholder`,
+- creates the six items, the item database (with `lemon` + `soda`) and the `dorm_hallway` room asset,
+- builds `Scenes/Rooms/DormHallway.unity`: background, floor, entry point and four hotspots (Lacey Rae, Gil, the vending machine, the drinks table) wired to their Yarn nodes,
+- builds `Scenes/Boot.unity`: camera, player, room loader, mouse controls, hover label, inventory bar, Yarn's Dialogue System with our bridge,
+- puts Boot and DormHallway in the build list and opens Boot.
 
-**Boot scene** (`Scenes/Boot.unity`, first in Build Profiles):
+Press Play in Boot. The slice is solved when Dex has the cowboy hat: earplugs from the vending machine go to Gil for the album, the drinks table gives a lemon and a soda to combine, and both go to Lacey Rae.
 
-- `Game` object: `GameManager` and `RoomLoader` (list the room, first room `dorm_hallway`, entry `start`).
-- `Player`: sprite, `PlayerMover`, a child `Visual` for flipping.
-- `Input`: `PointerController` with the main camera, the player and the hover label.
-- Canvas with `HoverLabel` (TextMeshPro text) and `InventoryBar` (a horizontal layout plus a slot prefab using `InventorySlot`). EventSystem with the Input System UI module.
-- Yarn's Dialogue System prefab, plus `YarnDialogueStarter` on the same object. Create a Yarn Project that includes `DormHallway.yarn` and assign it.
+Running the tool again overwrites the generated scenes and placeholders, so stop using it once real art goes into those scenes. The first time it adds TextMeshPro text, Unity may ask to import TMP Essentials; accept.
 
-**Room scene** (`Scenes/Rooms/DormHallway.unity`):
-
-- Root object with `Room` (definition `dorm_hallway`, on-enter node `DormHallway_Enter`).
-- Background layers as sprites, floor as a `PolygonCollider2D` (Is Trigger) with `WalkableArea`, one `EntryPoint` named `start`.
-- Hotspots, each with a trigger collider and a walk-to point:
+## What each hotspot runs
 
 | Hotspot | Look | Use | Item responses |
 | --- | --- | --- | --- |
 | Lacey Rae | `Lacey_Look` | `Lacey_Talk` | `dance_album` > `Lacey_GiveAlbum`, `hallway_hooch` > `Lacey_GiveDrink` |
-| Gil | | `Gil_Talk` | `earplugs` > `Gil_GiveEarplugs` |
-| Vending machine | | `Vending_Use` | |
+| Gil | `Gil_Look` | `Gil_Talk` | `earplugs` > `Gil_GiveEarplugs` |
+| Vending machine | `Vending_Look` | `Vending_Use` | |
 | Drinks table | `DrinksTable_Look` | `DrinksTable_Use` | |
-
-The slice is solved when the player has the `cowboy_hat`.
 
 ## Yarn commands and functions
 

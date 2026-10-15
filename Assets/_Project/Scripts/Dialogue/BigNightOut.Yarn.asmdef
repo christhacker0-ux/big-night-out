@@ -10,13 +10,19 @@
     "allowUnsafeCode": false,
     "autoReferenced": true,
     "defineConstraints": [
-        "YARN_SPINNER"
+        "YARN_SPINNER",
+        "BNO_INPUT_SYSTEM"
     ],
     "versionDefines": [
         {
             "name": "dev.yarnspinner.unity",
-            "expression": "2.0.0",
+            "expression": "3.0.0",
             "define": "YARN_SPINNER"
+        },
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.0.0",
+            "define": "BNO_INPUT_SYSTEM"
         }
     ],
     "noEngineReferences": false

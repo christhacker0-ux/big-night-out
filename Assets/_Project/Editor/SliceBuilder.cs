@@ -357,7 +357,7 @@ namespace BigNightOut.EditorTools
             var projectGuid = AssetDatabase.FindAssets("t:YarnProject").FirstOrDefault();
             if (projectGuid == null)
             {
-                Debug.LogWarning("No Yarn Project found. Create one in Assets/_Project/Dialogue (Create > Yarn Spinner > Yarn Project) and assign it to the Dialogue Runner.");
+                Debug.LogWarning("No Yarn Project found. Assets/_Project/Dialogue/BigNightOut.yarnproject should be there; if Unity did not import it, right-click it and choose Reimport.");
                 return;
             }
             var runnerSo = new SerializedObject(runner);

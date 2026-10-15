@@ -15,7 +15,7 @@ Plan: https://claude.ai/code/artifact/310973cf-fb08-4b26-95a7-0b2d8a5cc66a
 | `Assets/_Project/Scripts/Inventory` | Items, the item database with combinations, the inventory bar |
 | `Assets/_Project/Scripts/Save` | JSON save slots, autosave on every room change |
 | `Assets/_Project/Scripts/Dialogue` | Yarn Spinner bridge: commands and functions for Yarn scripts |
-| `Assets/_Project/Dialogue` | `DormHallway.yarn`, the vertical-slice puzzle |
+| `Assets/_Project/Dialogue` | `BigNightOut.yarnproject` (picks up every `.yarn` file in this folder) and `DormHallway.yarn`, the vertical-slice puzzle |
 
 Controls: left click walks or uses, right click looks, click an inventory item to hold it, then click a hotspot to use it there or another item to combine.
 
@@ -33,7 +33,7 @@ Controls: left click walks or uses, right click looks, click an inventory item t
 
 ## Building the first room
 
-After setup (and after installing Yarn Spinner and creating a Yarn Project in `Assets/_Project/Dialogue` with **Create > Yarn Spinner > Yarn Project**), run **Big Night Out > Build Dorm Hallway Slice** from the menu bar. It:
+After setup (including installing Yarn Spinner), run **Big Night Out > Build Dorm Hallway Slice** from the menu bar. It:
 
 - generates flat-colour placeholder sprites in `Art/Placeholder`,
 - creates the six items, the item database (with `lemon` + `soda`) and the `dorm_hallway` room asset,

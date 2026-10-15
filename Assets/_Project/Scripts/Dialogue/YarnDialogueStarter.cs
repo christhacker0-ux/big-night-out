@@ -29,7 +29,7 @@ namespace BigNightOut.YarnBridge
         public void Run(string nodeName)
         {
             if (IsRunning) return;
-            runner.StartDialogue(nodeName);
+            _ = runner.StartDialogue(nodeName);
         }
     }
 }

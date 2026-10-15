@@ -1,0 +1,12 @@
+{
+    "name": "BigNightOut.Setup",
+    "rootNamespace": "BigNightOut.EditorTools",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": false,
+    "noEngineReferences": false
+}

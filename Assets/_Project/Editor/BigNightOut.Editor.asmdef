@@ -1,0 +1,27 @@
+{
+    "name": "BigNightOut.Editor",
+    "rootNamespace": "BigNightOut.EditorTools",
+    "references": [
+        "BigNightOut.Runtime",
+        "Unity.InputSystem",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "noEngineReferences": false,
+    "defineConstraints": [
+        "BNO_INPUT_SYSTEM"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.0.0",
+            "define": "BNO_INPUT_SYSTEM"
+        }
+    ]
+}

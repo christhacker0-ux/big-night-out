@@ -10,5 +10,15 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "autoReferenced": true,
-    "noEngineReferences": false
+    "noEngineReferences": false,
+    "defineConstraints": [
+        "BNO_INPUT_SYSTEM"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.0.0",
+            "define": "BNO_INPUT_SYSTEM"
+        }
+    ]
 }

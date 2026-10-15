@@ -45,10 +45,15 @@ namespace BigNightOut.Interaction
             else if (mouse.rightButton.wasPressedThisFrame) RightClick(hotspot);
         }
 
+        // The floor is a collider too, so look through everything under the cursor.
         static Hotspot HotspotAt(Vector2 world)
         {
-            var hit = Physics2D.OverlapPoint(world);
-            return hit != null ? hit.GetComponentInParent<Hotspot>() : null;
+            foreach (var hit in Physics2D.OverlapPointAll(world))
+            {
+                var hotspot = hit.GetComponentInParent<Hotspot>();
+                if (hotspot != null) return hotspot;
+            }
+            return null;
         }
 
         void UpdateHover(Hotspot hotspot, Vector2 screen)

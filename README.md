@@ -15,52 +15,54 @@ Plan: https://claude.ai/code/artifact/310973cf-fb08-4b26-95a7-0b2d8a5cc66a
 | `Assets/_Project/Scripts/Inventory` | Items, the item database with combinations, the inventory bar |
 | `Assets/_Project/Scripts/Save` | JSON save slots, autosave on every room change |
 | `Assets/_Project/Scripts/Dialogue` | Yarn Spinner bridge: commands and functions for Yarn scripts |
-| `Assets/_Project/Dialogue` | `DormHallway.yarn`, the vertical-slice puzzle |
+| `Assets/_Project/Dialogue` | `BigNightOut.yarnproject` (picks up every `.yarn` file in this folder) and `DormHallway.yarn`, the vertical-slice puzzle |
 
 Controls: left click walks or uses, right click looks, click an inventory item to hold it, then click a hotspot to use it there or another item to combine.
 
-## One-time setup
+## Quick start (no Unity experience needed)
 
-1. Install Unity Hub and **Unity 6.3 LTS** (6000.3.x).
-2. In Unity Hub, create a new project from the **Universal 2D** template, named `BigNightOut`. Close Unity.
-3. Copy everything in this folder into the new project's root, merging `Assets/`. Keep `.gitignore` and `.gitattributes`.
-4. Open the project. In **Window > Package Manager**, make sure these are installed: 2D Animation, 2D PSD Importer, 2D Sprite Shape, Input System, Cinemachine. Most come with the template.
-5. Install Yarn Spinner for free: **Package Manager > + > Add package from git URL**, then paste
-   `https://github.com/YarnSpinnerTool/YarnSpinner-Unity.git#current` (needs Git installed).
-   Until Yarn is installed, the Yarn bridge folder is simply skipped and everything else compiles.
-6. **Edit > Project Settings > Editor**: Version Control mode = Visible Meta Files, Asset Serialization = Force Text.
-7. In a terminal at the project root: `git init`, `git lfs install`, then commit and push to the private GitHub repository.
+1. Install **Git** from https://git-scm.com/downloads (Unity needs it to download Yarn Spinner). Default options are fine.
+2. Install **Unity Hub** from https://unity.com/download and sign in with a free Unity account.
+3. In Unity Hub, open **Installs > Install Editor** and install the latest **Unity 6.3 LTS**.
+4. Get the project: on the GitHub page, click the green **Code** button, then **Download ZIP**, and unzip it somewhere easy, like your Documents folder.
+5. In Unity Hub, click **Add > Add project from disk** and pick the unzipped folder (it is called `big-night-out-main`). If Hub asks which editor version to use, pick the 6.3 version you installed.
+6. Open the project. The first open takes a few minutes. The project then installs its own packages (Input System, Yarn Spinner) and builds the first room by itself. If Unity asks to restart to enable the new Input System, click **Yes**.
+7. When the **Boot** scene opens, press the **Play** button at the top of the window.
 
-## Building the slice scene by scene
+Left click to walk and use things, right click to look. Click an item in the bar at the top to hold it, then click a person or another item to use it.
 
-**Data** (right click in `Assets/_Project/Data` > Create > Big Night Out):
+If anything shows red errors in the **Console** window, copy them and send them to Claude. To run the automatic setup again, use **Big Night Out > Run First-Time Setup Again** in the menu bar.
 
-- Room `dorm_hallway`, scene `DormHallway`.
-- Items: `earplugs`, `dance_album`, `lemon`, `soda`, `hallway_hooch`, `cowboy_hat` (coloured squares are fine as icons for now).
-- One Item Database with all six items and the combination `lemon` + `soda` > `Combine_Lemon_Soda`.
+## Manual setup (for developers)
 
-**Boot scene** (`Scenes/Boot.unity`, first in Build Profiles):
+The auto-setup lives in `Assets/_Project/Editor/Setup/AutoSetup.cs`. Doing it by hand instead:
 
-- `Game` object: `GameManager` and `RoomLoader` (list the room, first room `dorm_hallway`, entry `start`).
-- `Player`: sprite, `PlayerMover`, a child `Visual` for flipping.
-- `Input`: `PointerController` with the main camera, the player and the hover label.
-- Canvas with `HoverLabel` (TextMeshPro text) and `InventoryBar` (a horizontal layout plus a slot prefab using `InventorySlot`). EventSystem with the Input System UI module.
-- Yarn's Dialogue System prefab, plus `YarnDialogueStarter` on the same object. Create a Yarn Project that includes `DormHallway.yarn` and assign it.
+1. Open the project in Unity 6.3 LTS.
+2. Install Input System from the Package Manager, and Yarn Spinner from git URL `https://github.com/YarnSpinnerTool/YarnSpinner-Unity.git#current`. Until both are installed, the game assemblies are skipped instead of failing to compile.
+3. **Edit > Project Settings > Editor**: Version Control mode = Visible Meta Files, Asset Serialization = Force Text.
 
-**Room scene** (`Scenes/Rooms/DormHallway.unity`):
+## Building the first room
 
-- Root object with `Room` (definition `dorm_hallway`, on-enter node `DormHallway_Enter`).
-- Background layers as sprites, floor as a `PolygonCollider2D` (Is Trigger) with `WalkableArea`, one `EntryPoint` named `start`.
-- Hotspots, each with a trigger collider and a walk-to point:
+The auto-setup runs **Big Night Out > Build Dorm Hallway Slice** for you the first time. You can run it again from the menu bar at any time. It:
+
+- generates flat-colour placeholder sprites in `Art/Placeholder`,
+- creates the six items, the item database (with `lemon` + `soda`) and the `dorm_hallway` room asset,
+- builds `Scenes/Rooms/DormHallway.unity`: background, floor, entry point and four hotspots (Lacey Rae, Gil, the vending machine, the drinks table) wired to their Yarn nodes,
+- builds `Scenes/Boot.unity`: camera, player, room loader, mouse controls, hover label, inventory bar, Yarn's Dialogue System with our bridge,
+- puts Boot and DormHallway in the build list and opens Boot.
+
+Press Play in Boot. The slice is solved when Dex has the cowboy hat: earplugs from the vending machine go to Gil for the album, the drinks table gives a lemon and a soda to combine, and both go to Lacey Rae.
+
+Running the tool again overwrites the generated scenes and placeholders, so stop using it once real art goes into those scenes. The first time it adds TextMeshPro text, Unity may ask to import TMP Essentials; accept.
+
+## What each hotspot runs
 
 | Hotspot | Look | Use | Item responses |
 | --- | --- | --- | --- |
 | Lacey Rae | `Lacey_Look` | `Lacey_Talk` | `dance_album` > `Lacey_GiveAlbum`, `hallway_hooch` > `Lacey_GiveDrink` |
-| Gil | | `Gil_Talk` | `earplugs` > `Gil_GiveEarplugs` |
-| Vending machine | | `Vending_Use` | |
+| Gil | `Gil_Look` | `Gil_Talk` | `earplugs` > `Gil_GiveEarplugs` |
+| Vending machine | `Vending_Look` | `Vending_Use` | |
 | Drinks table | `DrinksTable_Look` | `DrinksTable_Use` | |
-
-The slice is solved when the player has the `cowboy_hat`.
 
 ## Yarn commands and functions
 

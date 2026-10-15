@@ -1,0 +1,23 @@
+{
+    "name": "BigNightOut.Yarn",
+    "rootNamespace": "BigNightOut.YarnBridge",
+    "references": [
+        "BigNightOut.Runtime",
+        "YarnSpinner.Unity"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "defineConstraints": [
+        "YARN_SPINNER"
+    ],
+    "versionDefines": [
+        {
+            "name": "dev.yarnspinner.unity",
+            "expression": "2.0.0",
+            "define": "YARN_SPINNER"
+        }
+    ],
+    "noEngineReferences": false
+}

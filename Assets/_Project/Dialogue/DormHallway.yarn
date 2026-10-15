@@ -1,0 +1,112 @@
+title: Generic_WrongItem
+---
+Dex: That doesn't work.
+===
+title: Generic_CantCombine
+---
+Dex: Those two don't go together. Trust me, I tried.
+===
+
+title: DormHallway_Enter
+---
+<<if not flagged("hallway_intro")>>
+    Dex: First night in the dorms. Big night out. Let's not blow it.
+    <<flag hallway_intro>>
+<<endif>>
+===
+
+title: Lacey_Look
+---
+Dex: Cowboy boots, a sundress, and zero interest in me. Yet.
+===
+title: Lacey_Talk
+---
+<<if not flagged("met_lacey")>>
+    Lacey Rae: You lost, freshman?
+    Dex: Only in your eyes.
+    Lacey Rae: Cute. I only dance to real country, and this party is playing robot music.
+    <<flag met_lacey>>
+<<else>>
+    Lacey Rae: Find me a decent song and a decent drink, then we'll talk.
+<<endif>>
+===
+title: Lacey_GiveAlbum
+---
+Lacey Rae: Is that... the Hank Hollister live album? Now we're talking.
+<<take dance_album>>
+<<flag lacey_has_album>>
+<<jump Lacey_CheckWin>>
+===
+title: Lacey_GiveDrink
+---
+Lacey Rae: Lemon, soda, and a splash of something questionable. You're learning.
+<<take hallway_hooch>>
+<<flag lacey_has_drink>>
+<<jump Lacey_CheckWin>>
+===
+title: Lacey_CheckWin
+---
+<<if flagged("lacey_has_album") and flagged("lacey_has_drink")>>
+    Lacey Rae: Alright, freshman. One dance.
+    // TODO: dance cutscene
+    Lacey Rae: Here. Something to remember me by.
+    <<give cowboy_hat>>
+    <<flag won_lacey>>
+<<endif>>
+===
+
+title: Gil_Talk
+---
+<<if not flagged("met_gil")>>
+    Gil: Shh. Do you hear that? That's my roommate. Snoring. At nine p.m.
+    Dex: Nice album collection.
+    Gil: Get me through one night of sleep and you can borrow anything.
+    <<flag met_gil>>
+<<else>>
+    Gil: Still snoring. Still awake.
+<<endif>>
+===
+title: Gil_GiveEarplugs
+---
+Gil: Earplugs! You beautiful man. Take the country one, I never liked it.
+<<take earplugs>>
+<<flag gil_has_earplugs>>
+<<give dance_album>>
+===
+
+title: Vending_Use
+---
+<<if not has("earplugs") and not flagged("gil_has_earplugs")>>
+    Dex: Earplugs, two for a dollar. The future is now.
+    <<give earplugs>>
+<<else>>
+    Dex: I don't need anything else from the machine of dreams.
+<<endif>>
+===
+
+title: DrinksTable_Look
+---
+Dex: A recipe card: "Hallway Hooch. Lemon plus soda, served with confidence."
+===
+title: DrinksTable_Use
+---
+<<if flagged("made_hooch")>>
+    Dex: The table's picked clean.
+<<elseif not has("lemon")>>
+    Dex: One lemon, slightly used.
+    <<give lemon>>
+<<elseif not has("soda")>>
+    Dex: And a can of soda.
+    <<give soda>>
+<<else>>
+    Dex: I have what I need.
+<<endif>>
+===
+title: Combine_Lemon_Soda
+---
+Dex: Lemon in the soda. Hallway Hooch, served with confidence.
+<<take lemon>>
+<<take soda>>
+<<give hallway_hooch>>
+<<flag made_hooch>>
+===

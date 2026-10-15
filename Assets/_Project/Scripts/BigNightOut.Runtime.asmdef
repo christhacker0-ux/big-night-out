@@ -1,0 +1,14 @@
+{
+    "name": "BigNightOut.Runtime",
+    "rootNamespace": "BigNightOut",
+    "references": [
+        "Unity.InputSystem",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "noEngineReferences": false
+}

@@ -36,9 +36,20 @@ namespace BigNightOut.Inventory
             InventorySelection.HeldChanged -= Rebuild;
         }
 
+        bool rebuilding;
+
         void Rebuild()
         {
-            foreach (var slot in slots) Destroy(slot.gameObject);
+            if (rebuilding) return;
+            rebuilding = true;
+            try { RebuildSlots(); }
+            finally { rebuilding = false; }
+        }
+
+        void RebuildSlots()
+        {
+            Debug.Log($"[BNO] inventory rebuild: {string.Join(", ", GameState.Current.Inventory)}");
+            foreach (var slot in slots) if (slot != null) Destroy(slot.gameObject);
             slots.Clear();
 
             foreach (var id in GameState.Current.Inventory)
@@ -49,10 +60,16 @@ namespace BigNightOut.Inventory
                     Debug.LogWarning($"Item '{id}' is in the inventory but not in the ItemDatabase.");
                     continue;
                 }
+                if (slotPrefab == null || slotParent == null)
+                {
+                    Debug.LogError("The InventoryBar is missing its slot prefab or slot parent. Run Big Night Out > Build Dorm Hallway Slice.");
+                    return;
+                }
                 var slot = Instantiate(slotPrefab, slotParent);
                 slot.Bind(item, this, InventorySelection.Held == item);
                 slots.Add(slot);
             }
+            Debug.Log("[BNO] inventory rebuilt");
         }
 
         public void LeftClicked(ItemDefinition item)

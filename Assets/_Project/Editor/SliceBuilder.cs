@@ -309,10 +309,6 @@ namespace BigNightOut.EditorTools
             Set(inventory, "slotPrefab", slotPrefab);
             Set(inventory, "slotParent", bar.transform);
 
-            var eventSystem = new GameObject("EventSystem");
-            eventSystem.AddComponent<EventSystem>();
-            eventSystem.AddComponent<InputSystemUIInputModule>();
-
             // Input
             var input = new GameObject("Input");
             var pointer = input.AddComponent<PointerController>();
@@ -321,8 +317,30 @@ namespace BigNightOut.EditorTools
             Set(pointer, "hoverLabel", hover);
 
             AddYarn();
+            EnsureOneEventSystem();
 
             EditorSceneManager.SaveScene(scene, BootPath);
+        }
+
+        /// <summary>Yarn's prefab brings its own EventSystem; add one only if it didn't, and make it use the Input System.</summary>
+        static void EnsureOneEventSystem()
+        {
+            var eventSystem = Object.FindFirstObjectByType<EventSystem>(FindObjectsInactive.Include);
+            if (eventSystem == null)
+            {
+                eventSystem = new GameObject("EventSystem").AddComponent<EventSystem>();
+            }
+            foreach (var module in eventSystem.GetComponents<BaseInputModule>())
+            {
+                if (!(module is InputSystemUIInputModule))
+                {
+                    Object.DestroyImmediate(module);
+                }
+            }
+            if (eventSystem.GetComponent<InputSystemUIInputModule>() == null)
+            {
+                eventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
+            }
         }
 
         /// <summary>Adds Yarn Spinner's dialogue prefab and our starter, if Yarn is installed.</summary>

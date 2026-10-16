@@ -19,8 +19,8 @@ namespace BigNightOut.EditorTools
 {
     /// <summary>
     /// Big Night Out > Build Dorm Hallway Slice.
-    /// Creates placeholder art, item and room assets, the DormHallway room scene and the Boot scene,
-    /// wires every reference, and adds both scenes to the build. Safe to run again: it overwrites
+    /// Creates placeholder art, item and room assets, the DexRoom and DormHallway room scenes and the Boot scene,
+    /// wires every reference, and adds the scenes to the build. Safe to run again: it overwrites
     /// the generated files, so do not hand-edit them until the real art arrives.
     /// </summary>
     public static class SliceBuilder
@@ -32,6 +32,7 @@ namespace BigNightOut.EditorTools
         const string PrefabFolder = Root + "/Prefabs";
         const string BootPath = Root + "/Scenes/Boot.unity";
         const string HallwayPath = Root + "/Scenes/Rooms/DormHallway.unity";
+        const string DexRoomPath = Root + "/Scenes/Rooms/DexRoom.unity";
 
         static readonly (string id, string name, Color color)[] Items =
         {
@@ -41,6 +42,7 @@ namespace BigNightOut.EditorTools
             ("soda", "Soda", new Color(0.3f, 0.7f, 1f)),
             ("hallway_hooch", "Hallway Hooch", new Color(0.9f, 0.5f, 0.2f)),
             ("cowboy_hat", "Cowboy Hat", new Color(0.55f, 0.35f, 0.2f)),
+            ("dollar", "Crumpled Dollar", new Color(0.45f, 0.75f, 0.4f)),
         };
 
         [MenuItem("Big Night Out/Build Dorm Hallway Slice")]
@@ -52,14 +54,17 @@ namespace BigNightOut.EditorTools
                 EnsureFolder(folder);
 
             var database = BuildItems();
-            var room = BuildRoomDefinition();
-            BuildHallwayScene(room);
+            var dexRoom = BuildRoomDefinition("dex_room", "DexRoom");
+            var hallway = BuildRoomDefinition("dorm_hallway", "DormHallway");
+            BuildDexRoomScene(dexRoom);
+            BuildHallwayScene(hallway);
             var slotPrefab = BuildSlotPrefab();
-            BuildBootScene(room, database, slotPrefab);
+            BuildBootScene(new[] { dexRoom, hallway }, dexRoom, database, slotPrefab);
 
             EditorBuildSettings.scenes = new[]
             {
                 new EditorBuildSettingsScene(BootPath, true),
+                new EditorBuildSettingsScene(DexRoomPath, true),
                 new EditorBuildSettingsScene(HallwayPath, true),
             };
 
@@ -104,12 +109,12 @@ namespace BigNightOut.EditorTools
             return database;
         }
 
-        static RoomDefinition BuildRoomDefinition()
+        static RoomDefinition BuildRoomDefinition(string id, string sceneName)
         {
-            var room = LoadOrCreate<RoomDefinition>($"{RoomFolder}/Room_dorm_hallway.asset");
+            var room = LoadOrCreate<RoomDefinition>($"{RoomFolder}/Room_{id}.asset");
             var so = new SerializedObject(room);
-            so.FindProperty("id").stringValue = "dorm_hallway";
-            so.FindProperty("sceneName").stringValue = "DormHallway";
+            so.FindProperty("id").stringValue = id;
+            so.FindProperty("sceneName").stringValue = sceneName;
             so.ApplyModifiedPropertiesWithoutUndo();
             AssetDatabase.SaveAssets();
             return room;
@@ -117,19 +122,61 @@ namespace BigNightOut.EditorTools
 
         // ---------- Room scene ----------
 
+        static void BuildDexRoomScene(RoomDefinition definition)
+        {
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var root = AddRoomShell("DexRoom", definition, "DexRoom_Enter", new Color(0.3f, 0.4f, 0.45f), new Color(0.4f, 0.32f, 0.25f));
+            AddEntry(root, "start", new Vector2(-2f, -4f), false);
+            AddEntry(root, "from_hallway", new Vector2(6.4f, -4f), true);
+
+            AddHotspot(root, "Bed", new Vector2(-5.5f, -3.4f), new Vector2(3f, 1.2f), new Color(0.7f, 0.25f, 0.3f),
+                new Vector2(-3.6f, -4.2f), true, "Bed_Look", "Bed_Use");
+            AddHotspot(root, "Mirror", new Vector2(-1.2f, -1.2f), new Vector2(1f, 1.6f), new Color(0.75f, 0.85f, 0.9f),
+                new Vector2(-1.2f, -3.4f), false, "Mirror_Look", "Mirror_Use");
+            AddHotspot(root, "Desk", new Vector2(2.2f, -2.8f), new Vector2(2f, 1.4f), new Color(0.55f, 0.4f, 0.25f),
+                new Vector2(2.2f, -3.8f), false, "Desk_Look", "Desk_Use");
+            AddHotspot(root, "Door to hallway", new Vector2(7.6f, -2.6f), new Vector2(1.4f, 3f), new Color(0.45f, 0.3f, 0.2f),
+                new Vector2(6.6f, -3.6f), false, "DexDoor_Look", "DexDoor_Use");
+
+            EditorSceneManager.SaveScene(scene, DexRoomPath);
+        }
+
         static void BuildHallwayScene(RoomDefinition definition)
         {
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var root = AddRoomShell("DormHallway", definition, "DormHallway_Enter", new Color(0.35f, 0.3f, 0.45f), new Color(0.45f, 0.35f, 0.3f));
+            AddEntry(root, "start", new Vector2(-7f, -4f), false);
+            AddEntry(root, "from_room", new Vector2(-7f, -4f), false);
 
-            var root = new GameObject("DormHallway");
+            AddHotspot(root, "Your door", new Vector2(-8.2f, -2.6f), new Vector2(1.2f, 3f), new Color(0.45f, 0.3f, 0.2f),
+                new Vector2(-7.4f, -3.6f), true, "HallDoor_Look", "HallDoor_Use");
+            AddHotspot(root, "Lacey Rae", new Vector2(-2f, -2.8f), new Vector2(1f, 2.6f), new Color(0.95f, 0.5f, 0.65f),
+                new Vector2(-3.2f, -3.4f), false, "Lacey_Look", "Lacey_Talk",
+                ("dance_album", "Lacey_GiveAlbum"), ("hallway_hooch", "Lacey_GiveDrink"));
+            AddHotspot(root, "Gil", new Vector2(5f, -2.7f), new Vector2(1f, 2.4f), new Color(0.4f, 0.55f, 0.95f),
+                new Vector2(3.8f, -3.4f), false, "Gil_Look", "Gil_Talk",
+                ("earplugs", "Gil_GiveEarplugs"));
+            AddHotspot(root, "Vending machine", new Vector2(7.6f, -2.6f), new Vector2(1.4f, 3f), new Color(0.6f, 0.6f, 0.65f),
+                new Vector2(6.6f, -3.6f), false, "Vending_Look", "Vending_Use",
+                ("dollar", "Vending_Use"));
+            AddHotspot(root, "Drinks table", new Vector2(1.5f, -3.3f), new Vector2(2.2f, 1f), new Color(0.5f, 0.3f, 0.2f),
+                new Vector2(1.5f, -4.2f), false, "DrinksTable_Look", "DrinksTable_Use");
+
+            EditorSceneManager.SaveScene(scene, HallwayPath);
+        }
+
+        /// <summary>The parts every room has: Room component, background, floor and walkable area.</summary>
+        static Transform AddRoomShell(string name, RoomDefinition definition, string onEnterNode, Color wall, Color floorColor)
+        {
+            var root = new GameObject(name);
             var room = root.AddComponent<Room>();
             Set(room, "definition", definition);
-            SetString(room, "onEnterNode", "DormHallway_Enter");
+            SetString(room, "onEnterNode", onEnterNode);
 
             // Background: 19.2 x 10.8 units fills a 1080p screen at camera size 5.4.
-            var background = AddSprite(root.transform, "Background", PlaceholderSprite("bg_dorm_hallway", 192, 108, new Color(0.35f, 0.3f, 0.45f), 10, false), Vector2.zero);
+            var background = AddSprite(root.transform, "Background", PlaceholderSprite($"bg_{definition.Id}", 192, 108, wall, 10, false), Vector2.zero);
             background.sortingOrder = -10000;
-            var floor = AddSprite(root.transform, "FloorPaint", PlaceholderSprite("bg_dorm_hallway_floor", 192, 30, new Color(0.45f, 0.35f, 0.3f), 10, false), new Vector2(0f, -3.9f));
+            var floor = AddSprite(root.transform, "FloorPaint", PlaceholderSprite($"bg_{definition.Id}_floor", 192, 30, floorColor, 10, false), new Vector2(0f, -3.9f));
             floor.sortingOrder = -9999;
 
             var walkable = new GameObject("WalkableArea");
@@ -139,23 +186,17 @@ namespace BigNightOut.EditorTools
             polygon.points = new[] { new Vector2(-9f, -5f), new Vector2(9f, -5f), new Vector2(8.5f, -2.6f), new Vector2(-8.5f, -2.6f) };
             walkable.AddComponent<WalkableArea>();
 
-            var entry = new GameObject("Entry_start");
-            entry.transform.SetParent(root.transform, false);
-            entry.transform.position = new Vector2(-7f, -4f);
-            SetString(entry.AddComponent<EntryPoint>(), "entryName", "start");
+            return root.transform;
+        }
 
-            AddHotspot(root.transform, "Lacey Rae", new Vector2(-2f, -2.8f), new Vector2(1f, 2.6f), new Color(0.95f, 0.5f, 0.65f),
-                new Vector2(-3.2f, -3.4f), false, "Lacey_Look", "Lacey_Talk",
-                ("dance_album", "Lacey_GiveAlbum"), ("hallway_hooch", "Lacey_GiveDrink"));
-            AddHotspot(root.transform, "Gil", new Vector2(5f, -2.7f), new Vector2(1f, 2.4f), new Color(0.4f, 0.55f, 0.95f),
-                new Vector2(3.8f, -3.4f), false, "Gil_Look", "Gil_Talk",
-                ("earplugs", "Gil_GiveEarplugs"));
-            AddHotspot(root.transform, "Vending machine", new Vector2(7.6f, -2.6f), new Vector2(1.4f, 3f), new Color(0.6f, 0.6f, 0.65f),
-                new Vector2(6.6f, -3.6f), false, "Vending_Look", "Vending_Use");
-            AddHotspot(root.transform, "Drinks table", new Vector2(1.5f, -3.3f), new Vector2(2.2f, 1f), new Color(0.5f, 0.3f, 0.2f),
-                new Vector2(1.5f, -4.2f), false, "DrinksTable_Look", "DrinksTable_Use");
-
-            EditorSceneManager.SaveScene(scene, HallwayPath);
+        static void AddEntry(Transform parent, string entryName, Vector2 position, bool faceLeft)
+        {
+            var entry = new GameObject($"Entry_{entryName}");
+            entry.transform.SetParent(parent, false);
+            entry.transform.position = position;
+            var point = entry.AddComponent<EntryPoint>();
+            SetString(point, "entryName", entryName);
+            SetBool(point, "faceLeft", faceLeft);
         }
 
         static void AddHotspot(Transform parent, string displayName, Vector2 feet, Vector2 size, Color color,
@@ -228,7 +269,7 @@ namespace BigNightOut.EditorTools
             return prefab.GetComponent<InventorySlot>();
         }
 
-        static void BuildBootScene(RoomDefinition room, ItemDatabase database, InventorySlot slotPrefab)
+        static void BuildBootScene(RoomDefinition[] allRooms, RoomDefinition firstRoom, ItemDatabase database, InventorySlot slotPrefab)
         {
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
@@ -257,14 +298,17 @@ namespace BigNightOut.EditorTools
             var loaderSo = new SerializedObject(loader);
             var rooms = loaderSo.FindProperty("rooms");
             rooms.ClearArray();
-            rooms.InsertArrayElementAtIndex(0);
-            rooms.GetArrayElementAtIndex(0).objectReferenceValue = room;
+            foreach (var room in allRooms)
+            {
+                rooms.InsertArrayElementAtIndex(rooms.arraySize);
+                rooms.GetArrayElementAtIndex(rooms.arraySize - 1).objectReferenceValue = room;
+            }
             loaderSo.FindProperty("player").objectReferenceValue = mover;
             loaderSo.ApplyModifiedPropertiesWithoutUndo();
 
             var manager = game.AddComponent<GameManager>();
             Set(manager, "roomLoader", loader);
-            Set(manager, "firstRoom", room);
+            Set(manager, "firstRoom", firstRoom);
             SetString(manager, "firstEntry", "start");
 
             // UI
@@ -309,6 +353,8 @@ namespace BigNightOut.EditorTools
             Set(inventory, "slotPrefab", slotPrefab);
             Set(inventory, "slotParent", bar.transform);
 
+            AddPauseMenu(canvasGo.transform);
+
             // Input
             var input = new GameObject("Input");
             var pointer = input.AddComponent<PointerController>();
@@ -320,6 +366,71 @@ namespace BigNightOut.EditorTools
             EnsureOneEventSystem();
 
             EditorSceneManager.SaveScene(scene, BootPath);
+        }
+
+        /// <summary>A full-screen dimmer with Resume, Save, Load and Quit, hidden until Esc.</summary>
+        static void AddPauseMenu(Transform canvas)
+        {
+            var menuGo = new GameObject("PauseMenu", typeof(RectTransform));
+            menuGo.transform.SetParent(canvas, false);
+            Stretch((RectTransform)menuGo.transform, 0f);
+
+            var panel = new GameObject("Panel", typeof(RectTransform));
+            panel.transform.SetParent(menuGo.transform, false);
+            Stretch((RectTransform)panel.transform, 0f);
+            panel.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.75f);
+
+            var column = new GameObject("Buttons", typeof(RectTransform));
+            column.transform.SetParent(panel.transform, false);
+            ((RectTransform)column.transform).sizeDelta = new Vector2(400f, 420f);
+            var layout = column.AddComponent<VerticalLayoutGroup>();
+            layout.spacing = 16f;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = true;
+            layout.childControlHeight = false;
+            layout.childForceExpandWidth = true;
+            layout.childForceExpandHeight = false;
+
+            var title = AddText(column.transform, "Title", "Paused", 56f);
+            ((RectTransform)title.transform).sizeDelta = new Vector2(400f, 80f);
+            var resume = AddButton(column.transform, "Resume");
+            var save = AddButton(column.transform, "Save");
+            var load = AddButton(column.transform, "Load");
+            var quit = AddButton(column.transform, "Quit");
+            var status = AddText(column.transform, "Status", "", 28f);
+            ((RectTransform)status.transform).sizeDelta = new Vector2(400f, 40f);
+
+            var menu = menuGo.AddComponent<PauseMenu>();
+            Set(menu, "panel", panel);
+            Set(menu, "resumeButton", resume);
+            Set(menu, "saveButton", save);
+            Set(menu, "loadButton", load);
+            Set(menu, "quitButton", quit);
+            Set(menu, "status", status);
+        }
+
+        static Button AddButton(Transform parent, string label)
+        {
+            var go = new GameObject($"Button_{label}", typeof(RectTransform));
+            go.transform.SetParent(parent, false);
+            ((RectTransform)go.transform).sizeDelta = new Vector2(400f, 64f);
+            go.AddComponent<Image>().color = new Color(0.25f, 0.2f, 0.35f);
+            var button = go.AddComponent<Button>();
+            var text = AddText(go.transform, "Label", label, 32f);
+            Stretch((RectTransform)text.transform, 0f);
+            text.raycastTarget = false;
+            return button;
+        }
+
+        static TextMeshProUGUI AddText(Transform parent, string name, string value, float size)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            go.transform.SetParent(parent, false);
+            var text = go.AddComponent<TextMeshProUGUI>();
+            text.text = value;
+            text.fontSize = size;
+            text.alignment = TextAlignmentOptions.Center;
+            return text;
         }
 
         /// <summary>Yarn's prefab brings its own EventSystem; add one only if it didn't, and make it use the Input System.</summary>

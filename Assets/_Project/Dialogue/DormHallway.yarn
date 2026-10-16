@@ -84,11 +84,14 @@ Dex: Snacks, socks, and earplugs. Dorm life essentials.
 ===
 title: Vending_Use
 ---
-<<if not has("earplugs") and not flagged("gil_has_earplugs")>>
-    Dex: Earplugs, two for a dollar. The future is now.
-    <<give earplugs>>
-<<else>>
+<<if has("earplugs") or flagged("gil_has_earplugs")>>
     Dex: I don't need anything else from the machine of dreams.
+<<elseif not has("dollar")>>
+    Dex: Earplugs, two for a dollar. I'm a dollar short. Story of my life.
+<<else>>
+    Dex: One crumpled dollar in, two earplugs out. The future is now.
+    <<take dollar>>
+    <<give earplugs>>
 <<endif>>
 ===
 

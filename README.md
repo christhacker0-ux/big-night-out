@@ -46,12 +46,17 @@ The auto-setup lives in `Assets/_Project/Editor/Setup/AutoSetup.cs`. Doing it by
 The auto-setup runs **Big Night Out > Build Dorm Hallway Slice** for you the first time. You can run it again from the menu bar at any time. It:
 
 - generates flat-colour placeholder sprites in `Art/Placeholder`,
-- creates the six items, the item database (with `lemon` + `soda`) and the `dorm_hallway` room asset,
-- builds `Scenes/Rooms/DormHallway.unity`: background, floor, entry point and four hotspots (Lacey Rae, Gil, the vending machine, the drinks table) wired to their Yarn nodes,
-- builds `Scenes/Boot.unity`: camera, player, room loader, mouse controls, hover label, inventory bar, Yarn's Dialogue System with our bridge,
-- puts Boot and DormHallway in the build list and opens Boot.
+- creates the seven items, the item database (with `lemon` + `soda`) and the `dex_room` and `dorm_hallway` room assets,
+- builds `Scenes/Rooms/DexRoom.unity`: Dex's dorm room, where the game starts, with the bed, mirror, desk and the door to the hallway,
+- builds `Scenes/Rooms/DormHallway.unity`: the door back to Dex's room, Lacey Rae, Gil, the vending machine and the drinks table, all wired to their Yarn nodes,
+- builds `Scenes/Boot.unity`: camera, player, room loader, mouse controls, hover label, inventory bar, pause menu, Yarn's Dialogue System with our bridge,
+- puts Boot and both rooms in the build list and opens Boot.
 
-Press Play in Boot. The slice is solved when Dex has the cowboy hat: earplugs from the vending machine go to Gil for the album, the drinks table gives a lemon and a soda to combine, and both go to Lacey Rae.
+Press Play in Boot. The slice is solved when Dex has the cowboy hat: the dollar under Dex's pillow buys earplugs from the vending machine, the earplugs go to Gil for the album, the drinks table gives a lemon and a soda to combine, and both go to Lacey Rae.
+
+Press **Esc** for the pause menu: Resume, Save, Load and Quit. Save and Load use one manual slot; the game also autosaves to its own slot on every room change.
+
+If you already built the rooms before Dex's room existed, run **Big Night Out > Build Dorm Hallway Slice** once to rebuild them.
 
 Running the tool again overwrites the generated scenes and placeholders, so stop using it once real art goes into those scenes. The first time it adds TextMeshPro text, Unity may ask to import TMP Essentials; accept.
 
@@ -59,9 +64,14 @@ Running the tool again overwrites the generated scenes and placeholders, so stop
 
 | Hotspot | Look | Use | Item responses |
 | --- | --- | --- | --- |
+| Bed (Dex's room) | `Bed_Look` | `Bed_Use` | |
+| Mirror (Dex's room) | `Mirror_Look` | `Mirror_Use` | |
+| Desk (Dex's room) | `Desk_Look` | `Desk_Use` | |
+| Door to hallway (Dex's room) | `DexDoor_Look` | `DexDoor_Use` | |
+| Your door (hallway) | `HallDoor_Look` | `HallDoor_Use` | |
 | Lacey Rae | `Lacey_Look` | `Lacey_Talk` | `dance_album` > `Lacey_GiveAlbum`, `hallway_hooch` > `Lacey_GiveDrink` |
 | Gil | `Gil_Look` | `Gil_Talk` | `earplugs` > `Gil_GiveEarplugs` |
-| Vending machine | `Vending_Look` | `Vending_Use` | |
+| Vending machine | `Vending_Look` | `Vending_Use` | `dollar` > `Vending_Use` |
 | Drinks table | `DrinksTable_Look` | `DrinksTable_Use` | |
 
 ## Yarn commands and functions
@@ -74,7 +84,7 @@ has("item")  flagged("name")  counter("name")  current_act()
 ## Not done yet
 
 - Pathfinding: the player walks in a straight line, clamped to the floor.
-- Save and load menu (the code exists; there is no UI for it yet).
+- More than one manual save slot.
 - Localisation tables for names.
 - The scripts were written without a Unity editor at hand, so expect a few compile fixes on first open.
 - If Yarn is installed but `YarnCommands` does not compile in, check that the package name in `BigNightOut.Yarn.asmdef` (`versionDefines`) matches the name Package Manager shows for Yarn Spinner.

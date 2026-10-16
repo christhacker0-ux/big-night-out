@@ -17,7 +17,12 @@ namespace BigNightOut.Inventory
         {
             item = definition;
             bar = owner;
-            icon.sprite = definition.Icon;
+            if (icon == null)
+            {
+                var child = transform.Find("Icon");
+                if (child != null) icon = child.GetComponent<Image>();
+            }
+            if (icon != null) icon.sprite = definition.Icon;
             if (heldHighlight != null) heldHighlight.SetActive(isHeld);
         }
 

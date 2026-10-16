@@ -12,7 +12,12 @@ namespace BigNightOut.Inventory
         public static void Hold(ItemDefinition item)
         {
             Held = item;
-            HeldChanged?.Invoke();
+            if (HeldChanged == null) return;
+            foreach (var listener in HeldChanged.GetInvocationList())
+            {
+                try { ((Action)listener)(); }
+                catch (Exception e) { UnityEngine.Debug.LogException(e); }
+            }
         }
 
         public static void Clear() => Hold(null);

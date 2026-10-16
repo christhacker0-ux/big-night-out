@@ -54,7 +54,7 @@ namespace BigNightOut.Inventory
 
             foreach (var id in GameState.Current.Inventory)
             {
-                var item = database.Find(id);
+                var item = database != null ? database.Find(id) : null;
                 if (item == null)
                 {
                     Debug.LogWarning($"Item '{id}' is in the inventory but not in the ItemDatabase.");

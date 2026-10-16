@@ -14,6 +14,19 @@ namespace BigNightOut.Core
         /// <summary>Raised after any change, including loading a save.</summary>
         public static event Action Changed;
 
+        // Listeners run inside Yarn commands. If one throws, the exception would stop the
+        // conversation half way and leave it "running" forever, which locks all input.
+        // So each listener is called on its own and errors are only logged.
+        static void RaiseChanged()
+        {
+            if (Changed == null) return;
+            foreach (var listener in Changed.GetInvocationList())
+            {
+                try { ((Action)listener)(); }
+                catch (Exception e) { UnityEngine.Debug.LogException(e); }
+            }
+        }
+
         readonly Dictionary<string, bool> flags = new Dictionary<string, bool>();
         readonly Dictionary<string, int> counters = new Dictionary<string, int>();
         readonly List<string> inventory = new List<string>();
@@ -29,7 +42,7 @@ namespace BigNightOut.Core
         public void SetFlag(string key, bool value = true)
         {
             flags[key] = value;
-            Changed?.Invoke();
+            RaiseChanged();
         }
 
         public int GetCounter(string key) => counters.TryGetValue(key, out var value) ? value : 0;
@@ -37,7 +50,7 @@ namespace BigNightOut.Core
         public void AddToCounter(string key, int amount)
         {
             counters[key] = GetCounter(key) + amount;
-            Changed?.Invoke();
+            RaiseChanged();
         }
 
         public bool HasItem(string itemId) => inventory.Contains(itemId);
@@ -46,18 +59,18 @@ namespace BigNightOut.Core
         {
             if (inventory.Contains(itemId)) return;
             inventory.Add(itemId);
-            Changed?.Invoke();
+            RaiseChanged();
         }
 
         public void TakeItem(string itemId)
         {
-            if (inventory.Remove(itemId)) Changed?.Invoke();
+            if (inventory.Remove(itemId)) RaiseChanged();
         }
 
         public static void Reset()
         {
             Current = new GameState();
-            Changed?.Invoke();
+            RaiseChanged();
         }
 
         public SaveData ToSaveData()
@@ -87,7 +100,7 @@ namespace BigNightOut.Core
             foreach (var entry in data.flags) state.flags[entry.key] = entry.value;
             foreach (var entry in data.counters) state.counters[entry.key] = entry.value;
             Current = state;
-            Changed?.Invoke();
+            RaiseChanged();
         }
     }
 

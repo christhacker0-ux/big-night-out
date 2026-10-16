@@ -576,6 +576,13 @@ namespace BigNightOut.EditorTools
         {
             var asset = AssetDatabase.LoadAssetAtPath<T>(path);
             if (asset != null) return asset;
+            // A file that no longer loads as T (for example after its script went missing) would
+            // leave every reference to it empty, so replace it.
+            if (File.Exists(path))
+            {
+                Debug.LogWarning($"Replacing {path}, which no longer loads as a {typeof(T).Name}.");
+                AssetDatabase.DeleteAsset(path);
+            }
             asset = ScriptableObject.CreateInstance<T>();
             AssetDatabase.CreateAsset(asset, path);
             return asset;

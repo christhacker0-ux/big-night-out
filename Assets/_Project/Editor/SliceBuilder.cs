@@ -19,7 +19,7 @@ namespace BigNightOut.EditorTools
 {
     /// <summary>
     /// Big Night Out > Build Dorm Hallway Slice.
-    /// Creates placeholder art, item and room assets, the DexRoom and DormHallway room scenes and the Boot scene,
+    /// Creates placeholder art, item and room assets, the DexRoom, DormHallway and Lounge room scenes and the Boot scene,
     /// wires every reference, and adds the scenes to the build. Safe to run again: it overwrites
     /// the generated files, so do not hand-edit them until the real art arrives.
     /// </summary>
@@ -33,6 +33,7 @@ namespace BigNightOut.EditorTools
         const string BootPath = Root + "/Scenes/Boot.unity";
         const string HallwayPath = Root + "/Scenes/Rooms/DormHallway.unity";
         const string DexRoomPath = Root + "/Scenes/Rooms/DexRoom.unity";
+        const string LoungePath = Root + "/Scenes/Rooms/Lounge.unity";
 
         static readonly (string id, string name, Color color)[] Items =
         {
@@ -56,16 +57,19 @@ namespace BigNightOut.EditorTools
             var database = BuildItems();
             var dexRoom = BuildRoomDefinition("dex_room", "DexRoom");
             var hallway = BuildRoomDefinition("dorm_hallway", "DormHallway");
+            var lounge = BuildRoomDefinition("lounge", "Lounge");
             BuildDexRoomScene(dexRoom);
             BuildHallwayScene(hallway);
+            BuildLoungeScene(lounge);
             var slotPrefab = BuildSlotPrefab();
-            BuildBootScene(new[] { dexRoom, hallway }, dexRoom, database, slotPrefab);
+            BuildBootScene(new[] { dexRoom, hallway, lounge }, dexRoom, database, slotPrefab);
 
             EditorBuildSettings.scenes = new[]
             {
                 new EditorBuildSettingsScene(BootPath, true),
                 new EditorBuildSettingsScene(DexRoomPath, true),
                 new EditorBuildSettingsScene(HallwayPath, true),
+                new EditorBuildSettingsScene(LoungePath, true),
             };
 
             EditorSceneManager.OpenScene(BootPath);
@@ -147,9 +151,12 @@ namespace BigNightOut.EditorTools
             var root = AddRoomShell("DormHallway", definition, "DormHallway_Enter", new Color(0.35f, 0.3f, 0.45f), new Color(0.45f, 0.35f, 0.3f));
             AddEntry(root, "start", new Vector2(-7f, -4f), false);
             AddEntry(root, "from_room", new Vector2(-7f, -4f), false);
+            AddEntry(root, "from_lounge", new Vector2(-5f, -3.8f), false);
 
             AddHotspot(root, "Your door", new Vector2(-8.2f, -2.6f), new Vector2(1.2f, 3f), new Color(0.45f, 0.3f, 0.2f),
                 new Vector2(-7.4f, -3.6f), true, "HallDoor_Look", "HallDoor_Use");
+            AddHotspot(root, "Lounge", new Vector2(-5f, -2.6f), new Vector2(1.6f, 3f), new Color(0.25f, 0.2f, 0.3f),
+                new Vector2(-5f, -3.6f), false, "LoungeDoor_Look", "LoungeDoor_Use");
             AddHotspot(root, "Lacey Rae", new Vector2(-2f, -2.8f), new Vector2(1f, 2.6f), new Color(0.95f, 0.5f, 0.65f),
                 new Vector2(-3.2f, -3.4f), false, "Lacey_Look", "Lacey_Talk",
                 ("dance_album", "Lacey_GiveAlbum"), ("hallway_hooch", "Lacey_GiveDrink"));
@@ -163,6 +170,25 @@ namespace BigNightOut.EditorTools
                 new Vector2(1.5f, -4.2f), false, "DrinksTable_Look", "DrinksTable_Use");
 
             EditorSceneManager.SaveScene(scene, HallwayPath);
+        }
+
+        static void BuildLoungeScene(RoomDefinition definition)
+        {
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var root = AddRoomShell("Lounge", definition, "Lounge_Enter", new Color(0.4f, 0.28f, 0.3f), new Color(0.3f, 0.3f, 0.35f));
+            AddEntry(root, "from_hallway", new Vector2(-7f, -4f), false);
+
+            AddHotspot(root, "Hallway", new Vector2(-8.2f, -2.6f), new Vector2(1.2f, 3f), new Color(0.25f, 0.2f, 0.3f),
+                new Vector2(-7.4f, -3.6f), true, "LoungeExit_Look", "LoungeExit_Use");
+            AddHotspot(root, "Couch", new Vector2(-2f, -3.4f), new Vector2(3f, 1.2f), new Color(0.35f, 0.5f, 0.35f),
+                new Vector2(-2f, -4.2f), false, "Couch_Look", "Couch_Use");
+            AddHotspot(root, "TV", new Vector2(2f, -1.6f), new Vector2(2.4f, 1.6f), new Color(0.15f, 0.15f, 0.2f),
+                new Vector2(2f, -3.6f), false, "TV_Look", "TV_Use");
+            AddHotspot(root, "Sign-up sheet", new Vector2(6f, -1.4f), new Vector2(0.8f, 1f), new Color(0.95f, 0.95f, 0.85f),
+                new Vector2(6f, -3.6f), false, "SignUp_Look", "SignUp_Use",
+                ("cowboy_hat", "SignUp_GiveHat"));
+
+            EditorSceneManager.SaveScene(scene, LoungePath);
         }
 
         /// <summary>The parts every room has: Room component, background, floor and walkable area.</summary>

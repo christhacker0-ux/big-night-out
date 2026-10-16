@@ -1,0 +1,77 @@
+title: LoungeDoor_Look
+---
+Dex: The lounge. I can hear a TV and smell burnt popcorn.
+===
+title: LoungeDoor_Use
+---
+<<go lounge from_hallway>>
+===
+
+title: Lounge_Enter
+---
+<<if not flagged("lounge_intro")>>
+    Dex: The dorm lounge. One couch, one TV, a thousand questionable stains.
+    <<flag lounge_intro>>
+<<endif>>
+===
+
+title: LoungeExit_Look
+---
+Dex: Back to the hallway.
+===
+title: LoungeExit_Use
+---
+<<go dorm_hallway from_lounge>>
+===
+
+title: Couch_Look
+---
+Dex: A couch older than me, with a permanent butt-shaped dent.
+===
+title: Couch_Use
+---
+Dex: If I sit down now, I'll never get up. The night is calling.
+===
+
+title: TV_Look
+---
+Dex: It's tuned to the dating channel. Of course it is.
+===
+title: TV_Use
+---
+Roxy Vale: Hi, lovers! It's Roxy Vale, and Speed Daters Live is coming to campus!
+Roxy Vale: Think you're a catch? Sign the sheet in your dorm lounge, and bring proof that someone, somewhere, likes you.
+Dex: Proof. Right. My mom's fridge drawings probably don't count.
+<<flag saw_casting_call>>
+===
+
+title: SignUp_Look
+---
+Dex: "Speed Daters Live, campus auditions. Bring proof you're a catch."
+===
+title: SignUp_Use
+---
+<<if flagged("signed_up")>>
+    Dex: My name's on the list. In my best handwriting.
+<<elseif not flagged("saw_casting_call")>>
+    Dex: A sign-up sheet for something called Speed Daters Live. Maybe the TV knows more.
+<<elseif not has("cowboy_hat")>>
+    Dex: Roxy wants proof I'm a catch. I need someone to vouch for me first.
+<<else>>
+    Dex: I've got Lacey Rae's hat. That's proof if I ever saw it.
+    <<jump SignUp_GiveHat>>
+<<endif>>
+===
+title: SignUp_GiveHat
+---
+<<if flagged("signed_up")>>
+    Dex: Already signed. Lacey's hat stays with me.
+<<else>>
+    Dex: Dex Dooley, room 214. Proof of catchiness: one cowboy hat, freely given.
+    <<flag signed_up>>
+    <<act 2>>
+    Roxy Vale: See you on the show, lover boy!
+    Dex: Big night out? More like big life out. That didn't make sense. Whatever. I'm in!
+    Dex: Thanks for playing the Big Night Out demo. More rooms are on the way.
+<<endif>>
+===

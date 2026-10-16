@@ -46,13 +46,14 @@ The auto-setup lives in `Assets/_Project/Editor/Setup/AutoSetup.cs`. Doing it by
 The auto-setup runs **Big Night Out > Build Dorm Hallway Slice** for you the first time. You can run it again from the menu bar at any time. It:
 
 - generates flat-colour placeholder sprites in `Art/Placeholder`,
-- creates the seven items, the item database (with `lemon` + `soda`) and the `dex_room` and `dorm_hallway` room assets,
+- creates the seven items, the item database (with `lemon` + `soda`) and the `dex_room`, `dorm_hallway` and `lounge` room assets,
 - builds `Scenes/Rooms/DexRoom.unity`: Dex's dorm room, where the game starts, with the bed, mirror, desk and the door to the hallway,
-- builds `Scenes/Rooms/DormHallway.unity`: the door back to Dex's room, Lacey Rae, Gil, the vending machine and the drinks table, all wired to their Yarn nodes,
+- builds `Scenes/Rooms/DormHallway.unity`: the doors to Dex's room and the lounge, Lacey Rae, Gil, the vending machine and the drinks table, all wired to their Yarn nodes,
+- builds `Scenes/Rooms/Lounge.unity`: the couch, the TV showing Roxy Vale's casting call for *Speed Daters Live*, and the sign-up sheet,
 - builds `Scenes/Boot.unity`: camera, player, room loader, mouse controls, hover label, inventory bar, pause menu, Yarn's Dialogue System with our bridge,
-- puts Boot and both rooms in the build list and opens Boot.
+- puts Boot and all three rooms in the build list and opens Boot.
 
-Press Play in Boot. The slice is solved when Dex has the cowboy hat: the dollar under Dex's pillow buys earplugs from the vending machine, the earplugs go to Gil for the album, the drinks table gives a lemon and a soda to combine, and both go to Lacey Rae.
+Press Play in Boot. The slice is solved when Dex has the cowboy hat: the dollar under Dex's pillow buys earplugs from the vending machine, the earplugs go to Gil for the album, the drinks table gives a lemon and a soda to combine, and both go to Lacey Rae. Her cowboy hat is the proof Roxy Vale's sign-up sheet in the lounge asks for (watch the TV first); signing up ends the demo and sets act 2.
 
 Press **Esc** for the pause menu: Resume, Save, Load and Quit. Save and Load use one manual slot; the game also autosaves to its own slot on every room change.
 
@@ -69,6 +70,11 @@ Running the tool again overwrites the generated scenes and placeholders, so stop
 | Desk (Dex's room) | `Desk_Look` | `Desk_Use` | |
 | Door to hallway (Dex's room) | `DexDoor_Look` | `DexDoor_Use` | |
 | Your door (hallway) | `HallDoor_Look` | `HallDoor_Use` | |
+| Lounge (hallway) | `LoungeDoor_Look` | `LoungeDoor_Use` | |
+| Hallway (lounge) | `LoungeExit_Look` | `LoungeExit_Use` | |
+| Couch (lounge) | `Couch_Look` | `Couch_Use` | |
+| TV (lounge) | `TV_Look` | `TV_Use` | |
+| Sign-up sheet (lounge) | `SignUp_Look` | `SignUp_Use` | `cowboy_hat` > `SignUp_GiveHat` |
 | Lacey Rae | `Lacey_Look` | `Lacey_Talk` | `dance_album` > `Lacey_GiveAlbum`, `hallway_hooch` > `Lacey_GiveDrink` |
 | Gil | `Gil_Look` | `Gil_Talk` | `earplugs` > `Gil_GiveEarplugs` |
 | Vending machine | `Vending_Look` | `Vending_Use` | `dollar` > `Vending_Use` |

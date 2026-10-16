@@ -27,8 +27,9 @@ namespace BigNightOut.EditorTools
     {
         const string Root = "Assets/_Project";
         const string PlaceholderFolder = Root + "/Art/Placeholder";
-        const string ItemFolder = Root + "/Data/Items";
-        const string RoomFolder = Root + "/Data/Rooms";
+        // Under Resources so a built game can still find rooms and items if a scene reference is lost.
+        const string ItemFolder = Root + "/Resources/Items";
+        const string RoomFolder = Root + "/Resources/Rooms";
         const string PrefabFolder = Root + "/Prefabs";
         const string BootPath = Root + "/Scenes/Boot.unity";
         const string HallwayPath = Root + "/Scenes/Rooms/DormHallway.unity";
@@ -54,15 +55,23 @@ namespace BigNightOut.EditorTools
             foreach (var folder in new[] { PlaceholderFolder, ItemFolder, RoomFolder, PrefabFolder, Root + "/Scenes/Rooms" })
                 EnsureFolder(folder);
 
-            var database = BuildItems();
-            var dexRoom = BuildRoomDefinition("dex_room", "DexRoom");
-            var hallway = BuildRoomDefinition("dorm_hallway", "DormHallway");
-            var lounge = BuildRoomDefinition("lounge", "Lounge");
-            BuildDexRoomScene(dexRoom);
-            BuildHallwayScene(hallway);
-            BuildLoungeScene(lounge);
-            var slotPrefab = BuildSlotPrefab();
-            BuildBootScene(new[] { dexRoom, hallway, lounge }, dexRoom, database, slotPrefab);
+            BuildItems();
+            BuildRoomDefinition("dex_room", "DexRoom");
+            BuildRoomDefinition("dorm_hallway", "DormHallway");
+            BuildRoomDefinition("lounge", "Lounge");
+            BuildDexRoomScene(RoomAsset("dex_room"));
+            BuildHallwayScene(RoomAsset("dorm_hallway"));
+            BuildLoungeScene(RoomAsset("lounge"));
+            BuildSlotPrefab();
+            PlaceholderSprite("player_dex", 32, 80, new Color(0.3f, 0.85f, 0.4f), 32, true);
+
+            // Reload every asset by path right before wiring it: importing the placeholder sprites can
+            // leave earlier in-memory copies stale, and a stale copy is saved as an empty reference.
+            AssetDatabase.SaveAssets();
+            var rooms = new[] { RoomAsset("dex_room"), RoomAsset("dorm_hallway"), RoomAsset("lounge") };
+            var database = AssetDatabase.LoadAssetAtPath<ItemDatabase>(DatabasePath);
+            var slotPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(SlotPrefabPath).GetComponent<InventorySlot>();
+            BuildBootScene(rooms, rooms[0], database, slotPrefab);
 
             EditorBuildSettings.scenes = new[]
             {
@@ -76,27 +85,40 @@ namespace BigNightOut.EditorTools
             Debug.Log("Dorm Hallway slice built. Press Play in the Boot scene.");
         }
 
+        const string DatabasePath = ItemFolder + "/ItemDatabase.asset";
+        const string SlotPrefabPath = PrefabFolder + "/InventorySlot.prefab";
+
+        static RoomDefinition RoomAsset(string id) => AssetDatabase.LoadAssetAtPath<RoomDefinition>($"{RoomFolder}/Room_{id}.asset");
+
         // ---------- Data ----------
 
-        static ItemDatabase BuildItems()
+        static void BuildItems()
         {
-            var database = LoadOrCreate<ItemDatabase>($"{ItemFolder}/ItemDatabase.asset");
-            var so = new SerializedObject(database);
-            var list = so.FindProperty("items");
-            list.ClearArray();
+            // Make every icon first, so no import happens while item references are being wired.
+            foreach (var (id, _, color) in Items)
+                PlaceholderSprite($"icon_{id}", 64, 64, color, 64, false);
 
-            foreach (var (id, displayName, color) in Items)
+            foreach (var (id, displayName, _) in Items)
             {
                 var item = LoadOrCreate<ItemDefinition>($"{ItemFolder}/Item_{id}.asset");
                 var itemSo = new SerializedObject(item);
                 itemSo.FindProperty("id").stringValue = id;
                 itemSo.FindProperty("displayName").stringValue = displayName;
-                itemSo.FindProperty("icon").objectReferenceValue = PlaceholderSprite($"icon_{id}", 64, 64, color, 64, false);
+                itemSo.FindProperty("icon").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>($"{PlaceholderFolder}/icon_{id}.png");
                 itemSo.FindProperty("lookNode").stringValue = $"Item_{id}_Look";
                 itemSo.ApplyModifiedPropertiesWithoutUndo();
+            }
+            AssetDatabase.SaveAssets();
 
+            var database = LoadOrCreate<ItemDatabase>(DatabasePath);
+            var so = new SerializedObject(database);
+            var list = so.FindProperty("items");
+            list.ClearArray();
+            foreach (var (id, _, _) in Items)
+            {
                 list.InsertArrayElementAtIndex(list.arraySize);
-                list.GetArrayElementAtIndex(list.arraySize - 1).objectReferenceValue = item;
+                list.GetArrayElementAtIndex(list.arraySize - 1).objectReferenceValue =
+                    AssetDatabase.LoadAssetAtPath<ItemDefinition>($"{ItemFolder}/Item_{id}.asset");
             }
 
             var combos = so.FindProperty("combinations");
@@ -110,18 +132,17 @@ namespace BigNightOut.EditorTools
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(database);
             AssetDatabase.SaveAssets();
-            return database;
         }
 
-        static RoomDefinition BuildRoomDefinition(string id, string sceneName)
+        static void BuildRoomDefinition(string id, string sceneName)
         {
             var room = LoadOrCreate<RoomDefinition>($"{RoomFolder}/Room_{id}.asset");
             var so = new SerializedObject(room);
             so.FindProperty("id").stringValue = id;
             so.FindProperty("sceneName").stringValue = sceneName;
             so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(room);
             AssetDatabase.SaveAssets();
-            return room;
         }
 
         // ---------- Room scene ----------
@@ -194,16 +215,18 @@ namespace BigNightOut.EditorTools
         /// <summary>The parts every room has: Room component, background, floor and walkable area.</summary>
         static Transform AddRoomShell(string name, RoomDefinition definition, string onEnterNode, Color wall, Color floorColor)
         {
+            var id = definition.Id;
             var root = new GameObject(name);
-            var room = root.AddComponent<Room>();
-            Set(room, "definition", definition);
-            SetString(room, "onEnterNode", onEnterNode);
 
             // Background: 19.2 x 10.8 units fills a 1080p screen at camera size 5.4.
-            var background = AddSprite(root.transform, "Background", PlaceholderSprite($"bg_{definition.Id}", 192, 108, wall, 10, false), Vector2.zero);
+            var background = AddSprite(root.transform, "Background", PlaceholderSprite($"bg_{id}", 192, 108, wall, 10, false), Vector2.zero);
             background.sortingOrder = -10000;
-            var floor = AddSprite(root.transform, "FloorPaint", PlaceholderSprite($"bg_{definition.Id}_floor", 192, 30, floorColor, 10, false), new Vector2(0f, -3.9f));
+            var floor = AddSprite(root.transform, "FloorPaint", PlaceholderSprite($"bg_{id}_floor", 192, 30, floorColor, 10, false), new Vector2(0f, -3.9f));
             floor.sortingOrder = -9999;
+
+            var room = root.AddComponent<Room>();
+            Set(room, "definition", RoomAsset(id));
+            SetString(room, "onEnterNode", onEnterNode);
 
             var walkable = new GameObject("WalkableArea");
             walkable.transform.SetParent(root.transform, false);
@@ -268,7 +291,7 @@ namespace BigNightOut.EditorTools
 
         // ---------- Boot scene ----------
 
-        static InventorySlot BuildSlotPrefab()
+        static void BuildSlotPrefab()
         {
             var go = new GameObject("InventorySlot", typeof(RectTransform));
             ((RectTransform)go.transform).sizeDelta = new Vector2(72f, 72f);
@@ -290,9 +313,8 @@ namespace BigNightOut.EditorTools
             Set(slot, "icon", iconImage);
             Set(slot, "heldHighlight", highlight);
 
-            var prefab = PrefabUtility.SaveAsPrefabAsset(go, $"{PrefabFolder}/InventorySlot.prefab");
+            PrefabUtility.SaveAsPrefabAsset(go, SlotPrefabPath);
             Object.DestroyImmediate(go);
-            return prefab.GetComponent<InventorySlot>();
         }
 
         static void BuildBootScene(RoomDefinition[] allRooms, RoomDefinition firstRoom, ItemDatabase database, InventorySlot slotPrefab)
@@ -314,7 +336,7 @@ namespace BigNightOut.EditorTools
             var visual = new GameObject("Visual");
             visual.transform.SetParent(player.transform, false);
             var body = visual.AddComponent<SpriteRenderer>();
-            body.sprite = PlaceholderSprite("player_dex", 32, 80, new Color(0.3f, 0.85f, 0.4f), 32, true);
+            body.sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{PlaceholderFolder}/player_dex.png");
             visual.AddComponent<SortByY>();
             Set(mover, "visual", visual.transform);
 

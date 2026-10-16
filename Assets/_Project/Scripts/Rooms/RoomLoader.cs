@@ -27,18 +27,12 @@ namespace BigNightOut.Rooms
         void Awake()
         {
             rooms.RemoveAll(r => r == null);
-#if UNITY_EDITOR
-            // A Boot scene whose room list was lost still plays in the editor: pick up every room asset.
+            // A Boot scene whose room list was lost still plays: pick up every room in Resources/Rooms.
             if (rooms.Count == 0)
             {
-                foreach (var guid in UnityEditor.AssetDatabase.FindAssets("t:RoomDefinition"))
-                {
-                    var room = UnityEditor.AssetDatabase.LoadAssetAtPath<RoomDefinition>(UnityEditor.AssetDatabase.GUIDToAssetPath(guid));
-                    if (room != null) rooms.Add(room);
-                }
-                Debug.LogWarning($"The Room Loader's room list was empty, so it found {rooms.Count} room asset(s) in the project. Run Big Night Out > Build Dorm Hallway Slice to fix the Boot scene for builds.");
+                rooms.AddRange(Resources.LoadAll<RoomDefinition>("Rooms"));
+                Debug.LogWarning($"The Room Loader's room list was empty, so it loaded {rooms.Count} room(s) from Resources/Rooms. Run Big Night Out > Build Dorm Hallway Slice to fix the Boot scene.");
             }
-#endif
         }
 
         public void GoTo(string roomId, string entryName)

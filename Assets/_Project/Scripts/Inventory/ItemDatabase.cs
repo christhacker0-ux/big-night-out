@@ -25,7 +25,15 @@ namespace BigNightOut.Inventory
 
         public static ItemDatabase Active { get; set; }
 
-        public ItemDefinition Find(string id) => items.Find(i => i.Id == id);
+        public ItemDefinition Find(string id)
+        {
+            var item = items.Find(i => i != null && i.Id == id);
+            if (item != null) return item;
+            // Fall back to Resources/Items in case the list lost its references.
+            foreach (var candidate in Resources.LoadAll<ItemDefinition>("Items"))
+                if (candidate.Id == id) return candidate;
+            return null;
+        }
 
         /// <summary>The Yarn node for combining two items, in either order.</summary>
         public string CombineNode(string a, string b)

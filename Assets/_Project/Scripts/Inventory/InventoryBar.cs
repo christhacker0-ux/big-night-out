@@ -16,7 +16,12 @@ namespace BigNightOut.Inventory
 
         readonly List<InventorySlot> slots = new List<InventorySlot>();
 
-        void Awake() => ItemDatabase.Active = database;
+        void Awake()
+        {
+            if (database == null) database = Resources.Load<ItemDatabase>("Items/ItemDatabase");
+            if (database == null) Debug.LogError("No item database. Run Big Night Out > Build Dorm Hallway Slice.");
+            ItemDatabase.Active = database;
+        }
 
         void OnEnable()
         {

@@ -24,11 +24,24 @@ namespace BigNightOut.YarnBridge
             if (ReferenceEquals(DialogueService.Starter, this)) DialogueService.Starter = null;
         }
 
-        public bool IsRunning => runner != null && runner.IsDialogueRunning;
+        bool starting;
 
+        public bool IsRunning => starting || (runner != null && runner.IsDialogueRunning);
+
+        // Start on the next frame, so a dialogue never starts inside the same input event
+        // or the same frame in which the previous one is still shutting down.
         public void Run(string nodeName)
         {
             if (IsRunning) return;
+            StartCoroutine(StartNextFrame(nodeName));
+        }
+
+        System.Collections.IEnumerator StartNextFrame(string nodeName)
+        {
+            starting = true;
+            yield return null;
+            starting = false;
+            if (runner.IsDialogueRunning) yield break;
             _ = runner.StartDialogue(nodeName);
         }
     }

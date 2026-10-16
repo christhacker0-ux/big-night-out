@@ -18,12 +18,19 @@ namespace BigNightOut.Interaction
         [SerializeField] PlayerMover player;
         [SerializeField] HoverLabel hoverLabel;
 
+        bool wasTalking;
+
         void Update()
         {
             var mouse = Mouse.current;
             if (mouse == null) return;
 
-            if (DialogueService.IsRunning)
+            // Skip the frame a conversation ends too: the click that closed the last line
+            // must not also start a new one while the dialogue system is still finishing.
+            var talking = DialogueService.IsRunning;
+            var justFinished = wasTalking && !talking;
+            wasTalking = talking;
+            if (talking || justFinished)
             {
                 hoverLabel?.Hide();
                 return;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -15,6 +16,8 @@ namespace BigNightOut.Inventory
 
         ItemDefinition item;
         InventoryBar bar;
+        RectTransform ghost;
+        static readonly List<RaycastResult> hits = new List<RaycastResult>();
 
         public ItemDefinition Item => item;
 
@@ -45,25 +48,77 @@ namespace BigNightOut.Inventory
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left) return;
+            InventorySelection.Dragging = true;
             InventorySelection.Hold(item);
+            MakeGhost(eventData.position);
+            if (icon != null) icon.color = new Color(1f, 1f, 1f, 0.35f);
         }
 
-        // Needed so Unity sends begin and end drag; the held-item cursor does the drawing.
-        public void OnDrag(PointerEventData eventData) { }
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (ghost != null) ghost.position = eventData.position;
+        }
 
         public void OnEndDrag(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left) return;
-            var target = eventData.pointerCurrentRaycast.gameObject;
-            if (target != null)
+            EndDragVisuals();
+
+            // Let go over another pocket item: combine. Over the pockets bar: put it back.
+            // Anywhere else counts as the room, even if some other UI happens to be on top.
+            var over = UiUnder(eventData);
+            if (over != null)
             {
-                // Dropped on the UI: another item combines, anything else puts it back.
-                var other = target.GetComponentInParent<InventorySlot>();
                 InventorySelection.Clear();
+                var other = over.GetComponentInParent<InventorySlot>();
                 if (other != null && other != this) bar.Combine(item, other.item);
                 return;
             }
             InventorySelection.DropInWorld(item, eventData.position);
+        }
+
+        void OnDisable()
+        {
+            // The bar can rebuild mid-drag (a pickup, a dialogue give); never leave a ghost behind.
+            if (ghost != null) EndDragVisuals();
+        }
+
+        GameObject UiUnder(PointerEventData eventData)
+        {
+            if (EventSystem.current == null) return null;
+            hits.Clear();
+            EventSystem.current.RaycastAll(eventData, hits);
+            foreach (var hit in hits)
+            {
+                if (hit.gameObject == null) continue;
+                if (hit.gameObject.GetComponentInParent<InventorySlot>() != null) return hit.gameObject;
+                if (hit.gameObject.GetComponentInParent<InventoryBar>() != null) return hit.gameObject;
+            }
+            return null;
+        }
+
+        void MakeGhost(Vector2 screen)
+        {
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas == null || item == null || item.Icon == null) return;
+            var go = new GameObject("DraggedItem", typeof(RectTransform));
+            ghost = (RectTransform)go.transform;
+            ghost.SetParent(canvas.rootCanvas.transform, false);
+            ghost.SetAsLastSibling();
+            ghost.sizeDelta = new Vector2(96f, 96f);
+            var image = go.AddComponent<Image>();
+            image.sprite = item.Icon;
+            image.preserveAspect = true;
+            image.raycastTarget = false;
+            ghost.position = screen;
+        }
+
+        void EndDragVisuals()
+        {
+            InventorySelection.Dragging = false;
+            if (ghost != null) Destroy(ghost.gameObject);
+            ghost = null;
+            if (icon != null) icon.color = Color.white;
         }
     }
 }

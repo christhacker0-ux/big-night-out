@@ -7,6 +7,9 @@ namespace BigNightOut.Inventory
     {
         public static ItemDefinition Held { get; private set; }
 
+        /// <summary>True while an item is being dragged out of the bar; the slot draws its own icon then.</summary>
+        public static bool Dragging { get; set; }
+
         public static event Action HeldChanged;
 
         public static void Hold(ItemDefinition item)

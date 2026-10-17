@@ -28,7 +28,10 @@ namespace BigNightOut.UI
 
         void LateUpdate()
         {
-            if (!image.enabled || Mouse.current == null) return;
+            if (Mouse.current == null) return;
+            var held = InventorySelection.Held;
+            image.enabled = held != null && held.Icon != null && !InventorySelection.Dragging;
+            if (!image.enabled) return;
             image.rectTransform.position = Mouse.current.position.ReadValue() + offset;
         }
     }

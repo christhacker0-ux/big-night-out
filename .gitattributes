@@ -29,3 +29,6 @@
 *.ttf  filter=lfs diff=lfs merge=lfs -text
 *.otf  filter=lfs diff=lfs merge=lfs -text
 *.skel filter=lfs diff=lfs merge=lfs -text
+
+# Generated art is small and rebuilt by tools/art/paint.py; keep it in plain git.
+Assets/_Project/Art/Painted/*.png -filter -diff -merge binary

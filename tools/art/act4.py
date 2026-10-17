@@ -1698,6 +1698,10 @@ ASSETS = {"bg_downtown": paint_downtown, "bg_quickmart": paint_quickmart, "bg_ru
 def main(argv):
     want = [a.lower() for a in argv[1:]]
     for name, fn in ASSETS.items():
+        # Rooms and characters are now painted by the *_style2.py scripts; a plain run
+        # only repaints item icons. Name a file explicitly to paint the old version.
+        if not want and name.startswith(("bg_", "hs_", "player_")):
+            continue
         if not want or any(w in name for w in want):
             fn()
 

@@ -27,6 +27,12 @@ namespace BigNightOut.EditorTools
     {
         const string Root = "Assets/_Project";
         const string PlaceholderFolder = Root + "/Art/Placeholder";
+        // Finished art. A PNG here named like a placeholder (bg_dex_room, hs_gil, icon_lemon,
+        // player_dex) replaces it on the next build. 100 pixels = 1 unit; a room is 1920x1080.
+        const string PaintedFolder = Root + "/Art/Painted";
+        // True while building a room whose background is painted: its props are in the
+        // painting, so hotspots without their own painted sprite stay invisible.
+        static bool roomIsPainted;
         // Under Resources so a built game can still find rooms and items if a scene reference is lost.
         const string ItemFolder = Root + "/Resources/Items";
         const string RoomFolder = Root + "/Resources/Rooms";
@@ -63,7 +69,8 @@ namespace BigNightOut.EditorTools
             BuildHallwayScene(RoomAsset("dorm_hallway"));
             BuildLoungeScene(RoomAsset("lounge"));
             BuildSlotPrefab();
-            PlaceholderSprite("player_dex", 32, 80, new Color(0.3f, 0.85f, 0.4f), 32, true);
+            if (Painted("player_dex", true) == null)
+                PlaceholderSprite("player_dex", 32, 80, new Color(0.3f, 0.85f, 0.4f), 32, true);
 
             // Reload every asset by path right before wiring it: importing the placeholder sprites can
             // leave earlier in-memory copies stale, and a stale copy is saved as an empty reference.
@@ -96,7 +103,8 @@ namespace BigNightOut.EditorTools
         {
             // Make every icon first, so no import happens while item references are being wired.
             foreach (var (id, _, color) in Items)
-                PlaceholderSprite($"icon_{id}", 64, 64, color, 64, false);
+                if (Painted($"icon_{id}", false) == null)
+                    PlaceholderSprite($"icon_{id}", 64, 64, color, 64, false);
 
             foreach (var (id, displayName, _) in Items)
             {
@@ -104,7 +112,9 @@ namespace BigNightOut.EditorTools
                 var itemSo = new SerializedObject(item);
                 itemSo.FindProperty("id").stringValue = id;
                 itemSo.FindProperty("displayName").stringValue = displayName;
-                itemSo.FindProperty("icon").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>($"{PlaceholderFolder}/icon_{id}.png");
+                itemSo.FindProperty("icon").objectReferenceValue =
+                    AssetDatabase.LoadAssetAtPath<Sprite>($"{PaintedFolder}/icon_{id}.png") ??
+                    AssetDatabase.LoadAssetAtPath<Sprite>($"{PlaceholderFolder}/icon_{id}.png");
                 itemSo.FindProperty("lookNode").stringValue = $"Item_{id}_Look";
                 itemSo.ApplyModifiedPropertiesWithoutUndo();
             }
@@ -219,10 +229,15 @@ namespace BigNightOut.EditorTools
             var root = new GameObject(name);
 
             // Background: 19.2 x 10.8 units fills a 1080p screen at camera size 5.4.
-            var background = AddSprite(root.transform, "Background", PlaceholderSprite($"bg_{id}", 192, 108, wall, 10, false), Vector2.zero);
+            var painted = Painted($"bg_{id}", false);
+            roomIsPainted = painted != null;
+            var background = AddSprite(root.transform, "Background", painted ?? PlaceholderSprite($"bg_{id}", 192, 108, wall, 10, false), Vector2.zero);
             background.sortingOrder = -10000;
-            var floor = AddSprite(root.transform, "FloorPaint", PlaceholderSprite($"bg_{id}_floor", 192, 30, floorColor, 10, false), new Vector2(0f, -3.9f));
-            floor.sortingOrder = -9999;
+            if (!roomIsPainted)
+            {
+                var floor = AddSprite(root.transform, "FloorPaint", PlaceholderSprite($"bg_{id}_floor", 192, 30, floorColor, 10, false), new Vector2(0f, -3.9f));
+                floor.sortingOrder = -9999;
+            }
 
             var room = root.AddComponent<Room>();
             Set(room, "definition", RoomAsset(id));
@@ -257,7 +272,8 @@ namespace BigNightOut.EditorTools
             go.transform.position = feet;
 
             var sprite = go.AddComponent<SpriteRenderer>();
-            sprite.sprite = PlaceholderSprite($"hs_{slug}", Mathf.RoundToInt(size.x * 32), Mathf.RoundToInt(size.y * 32), color, 32, true);
+            sprite.sprite = Painted($"hs_{slug}", true) ??
+                (roomIsPainted ? null : PlaceholderSprite($"hs_{slug}", Mathf.RoundToInt(size.x * 32), Mathf.RoundToInt(size.y * 32), color, 32, true));
             var sorter = go.AddComponent<SortByY>();
             SetBool(sorter, "everyFrame", false);
 
@@ -336,7 +352,8 @@ namespace BigNightOut.EditorTools
             var visual = new GameObject("Visual");
             visual.transform.SetParent(player.transform, false);
             var body = visual.AddComponent<SpriteRenderer>();
-            body.sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{PlaceholderFolder}/player_dex.png");
+            body.sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{PaintedFolder}/player_dex.png") ??
+                AssetDatabase.LoadAssetAtPath<Sprite>($"{PlaceholderFolder}/player_dex.png");
             visual.AddComponent<SortByY>();
             Set(mover, "visual", visual.transform);
 
@@ -363,6 +380,8 @@ namespace BigNightOut.EditorTools
             var canvasGo = new GameObject("Canvas", typeof(RectTransform));
             var canvas = canvasGo.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            // Draw above Yarn's dialogue canvas so nothing covers the inventory.
+            canvas.sortingOrder = 100;
             var scaler = canvasGo.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920f, 1080f);
@@ -386,20 +405,44 @@ namespace BigNightOut.EditorTools
             barRect.anchorMin = new Vector2(0f, 1f);
             barRect.anchorMax = new Vector2(1f, 1f);
             barRect.pivot = new Vector2(0.5f, 1f);
-            barRect.sizeDelta = new Vector2(0f, 88f);
+            barRect.sizeDelta = new Vector2(0f, 96f);
             barRect.anchoredPosition = Vector2.zero;
+            bar.AddComponent<Image>().color = new Color(0.08f, 0.05f, 0.1f, 0.7f);
             var layout = bar.AddComponent<HorizontalLayoutGroup>();
-            layout.spacing = 8f;
-            layout.padding = new RectOffset(8, 8, 8, 8);
-            layout.childAlignment = TextAnchor.UpperLeft;
+            layout.spacing = 10f;
+            layout.padding = new RectOffset(16, 16, 12, 12);
+            layout.childAlignment = TextAnchor.MiddleLeft;
             layout.childControlWidth = false;
             layout.childControlHeight = false;
             layout.childForceExpandWidth = false;
             layout.childForceExpandHeight = false;
+            var barLabel = AddText(bar.transform, "Label", "POCKETS", 30f);
+            ((RectTransform)barLabel.transform).sizeDelta = new Vector2(170f, 72f);
+            barLabel.color = new Color(1f, 0.82f, 0.35f);
+            barLabel.fontStyle = FontStyles.Bold;
+            barLabel.raycastTarget = false;
+            var emptyHint = AddText(bar.transform, "EmptyHint", "(empty: look around for stuff)", 26f);
+            ((RectTransform)emptyHint.transform).sizeDelta = new Vector2(520f, 72f);
+            emptyHint.alignment = TextAlignmentOptions.Left;
+            emptyHint.color = new Color(1f, 1f, 1f, 0.6f);
+            emptyHint.raycastTarget = false;
+
+            var pickup = AddText(canvasGo.transform, "PickupText", "", 40f);
+            var pickupRect = (RectTransform)pickup.transform;
+            pickupRect.anchorMin = pickupRect.anchorMax = new Vector2(0.5f, 1f);
+            pickupRect.pivot = new Vector2(0.5f, 1f);
+            pickupRect.anchoredPosition = new Vector2(0f, -110f);
+            pickupRect.sizeDelta = new Vector2(1000f, 60f);
+            pickup.color = new Color(1f, 0.9f, 0.4f);
+            pickup.fontStyle = FontStyles.Bold;
+            pickup.raycastTarget = false;
+
             var inventory = bar.AddComponent<InventoryBar>();
             Set(inventory, "database", database);
             Set(inventory, "slotPrefab", slotPrefab);
             Set(inventory, "slotParent", bar.transform);
+            Set(inventory, "emptyHint", emptyHint.gameObject);
+            Set(inventory, "pickupText", pickup);
 
             AddPauseMenu(canvasGo.transform);
 
@@ -558,6 +601,29 @@ namespace BigNightOut.EditorTools
             var renderer = go.AddComponent<SpriteRenderer>();
             renderer.sprite = sprite;
             return renderer;
+        }
+
+        /// <summary>The finished-art sprite with this name, set up for import, or null if there isn't one yet.</summary>
+        static Sprite Painted(string name, bool pivotAtFeet)
+        {
+            var path = $"{PaintedFolder}/{name}.png";
+            if (!File.Exists(path)) return null;
+            AssetDatabase.ImportAsset(path);
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spriteImportMode = SpriteImportMode.Single;
+            importer.spritePixelsPerUnit = 100f;
+            importer.filterMode = FilterMode.Bilinear;
+            importer.mipmapEnabled = false;
+            importer.alphaIsTransparency = true;
+            importer.maxTextureSize = 2048;
+            importer.textureCompression = TextureImporterCompression.Uncompressed;
+            var settings = new TextureImporterSettings();
+            importer.ReadTextureSettings(settings);
+            settings.spriteAlignment = (int)(pivotAtFeet ? SpriteAlignment.BottomCenter : SpriteAlignment.Center);
+            importer.SetTextureSettings(settings);
+            importer.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
         }
 
         /// <summary>A flat-colour PNG with a darker border, imported as a sprite.</summary>

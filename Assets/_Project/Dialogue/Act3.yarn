@@ -1,0 +1,725 @@
+title: A3_Hall_Enter
+---
+<<if not flagged("a3_hall_intro")>>
+    Dex: Science Hall. It smells like burnt toast and ambition.
+    Dex: Somewhere in here is the Dare Round. And somewhere in the walls... is that squeaking?
+    <<flag a3_hall_intro>>
+<<elseif flagged("act3_done") and not flagged("a3_hall_outro")>>
+    Dex: Science Hall, conquered. I'll miss you, Mr. Bones.
+    <<flag a3_hall_outro>>
+<<endif>>
+===
+
+title: A3_HallExit_Look
+---
+Dex: The front doors, back out to the quad.
+===
+title: A3_HallExit_Use
+---
+<<go campus from_map>>
+===
+
+title: A3_Board_Look
+---
+<<if flagged("a3_read_poster")>>
+    Dex: The MISSING poster for Professor Nibbles. Somebody drew him with a tiny graduation cap.
+<<else>>
+    Dex: A notice board. Lab safety rules, a tutoring ad, and a big MISSING poster.
+<<endif>>
+===
+title: A3_Board_Use
+---
+Dex: "MISSING: PROFESSOR NIBBLES. Golden hamster. Thesis subject. Very good boy."
+Dex: "Loves: sunflower seeds, dark tunnels, smooth jazz. Last seen: climbing into the big vent in Lab 3B."
+Dex: And under it: "LAB SAFETY RULE 1: Goggles on. RULE 2: NEVER drink anything in a lab. Yes, even the pretty blue one."
+<<flag a3_read_poster>>
+===
+
+title: A3_HallVent_Look
+---
+<<if flagged("a3_caught_nibbles")>>
+    Dex: A quiet air vent. No more squeaking. I almost miss it.
+<<else>>
+    Dex: An air vent near the floor. Something tiny is scratching around in there.
+<<endif>>
+===
+title: A3_HallVent_Use
+---
+<<if flagged("a3_caught_nibbles")>>
+    Dex: Nothing in there now but dust bunnies. Regular bunnies would be cuter.
+<<else>>
+    Dex: (into the vent) Professor Nibbles? Hello?
+    Dex: Scritch-scritch. Squeak. He's in there, but these vents run through the whole building.
+    Dex: The poster said he went in through the big vent in the lab. That's where I should try.
+<<endif>>
+===
+title: A3_HallVent_Trap
+---
+Dex: This little vent's no good. The air blows toward Lab 3B, so he'll smell anything I put in the lab's big vent.
+===
+
+title: A3_Skeleton_Look
+---
+Dex: A model skeleton in a lab coat. His name tag says "Mr. Bones, Teaching Assistant." He looks like a good listener.
+===
+title: A3_Skeleton_Use
+---
+Dex: Mr. Bones, you've seen everything. What would you do?
+<<jump A3_Hint>>
+===
+title: A3_Hint
+---
+<<if flagged("act3_done")>>
+    Dex: He says nothing, but I can tell he's proud. Downtown is on the campus map now.
+<<elseif not flagged("a3_met_mina")>>
+    Dex: His jaw creaks toward the lab door. The Dare Round is in there. So was the hamster.
+<<elseif not flagged("a3_met_sky")>>
+    Dex: His finger bone points at the roof stairs. Someone's up there, yelling very, very quietly.
+<<elseif not flagged("a3_got_batteries") and not flagged("a3_megaphone_fixed")>>
+    Dex: Sky's megaphone needs two batteries. Mina's lab has a drawer for everything. I should ask her.
+<<elseif not flagged("a3_megaphone_fixed")>>
+    Dex: I've got batteries. Sky's got a dead megaphone. It's basically a love story.
+<<elseif not flagged("a3_got_tube") and not flagged("a3_made_trap")>>
+    Dex: Hamsters love tunnels. The lab recycling bin is full of cardboard tubes.
+<<elseif not flagged("a3_got_seed") and not flagged("a3_made_trap")>>
+    Dex: Sunflower seeds. The bird feeder on the roof is full of them, now the pigeon's gone.
+<<elseif not flagged("a3_made_trap")>>
+    Dex: A tube and some seeds. Put them together and it's a hamster hotel. All-you-can-eat buffet included.
+<<elseif not flagged("a3_caught_nibbles")>>
+    Dex: Set the trap in the big vent in the lab. That's where he went in.
+<<elseif not flagged("a3_nibbles_home")>>
+    Dex: There's a hamster in my pocket. Mina should probably know about that.
+<<elseif not flagged("a3_got_plan")>>
+    Dex: Sky wants Nibbles to have a happy life. Only Mina can promise that. I should ask her about his future.
+<<elseif not flagged("a3_won_sky")>>
+    Dex: Mina's retirement plan. Sky needs to read this.
+<<else>>
+    Dex: Goggles and a button. Roxy's waiting in the lab. Time for the Dare Round.
+<<endif>>
+===
+
+title: A3_LabDoor_Look
+---
+Dex: "LAB 3B. Authorised personnel only." I'm authorised by a TV show. That counts.
+===
+title: A3_LabDoor_Use
+---
+<<go lab from_hall>>
+===
+
+title: A3_Periodic_Look
+---
+Dex: The periodic table. Someone has added element 119 in marker: "Ch. Chocolate."
+===
+title: A3_Periodic_Use
+---
+Dex: Hydrogen, helium, lithium... beryllium? Then I panic. That's as far as I got in high school too.
+===
+
+title: A3_RoofStairs_Look
+---
+Dex: Stairs to the roof. A sign says "ROOF ACCESS: NO PARTIES." Somebody has crossed out "NO".
+===
+title: A3_RoofStairs_Use
+---
+<<go rooftop from_stairs>>
+===
+
+title: A3_Lab_Enter
+---
+<<if not flagged("a3_lab_intro")>>
+    Dex: Lab 3B. Bubbling beakers, a chalkboard full of maths, and one very empty hamster cage.
+    Roxy Vale: Lover boy! Welcome to the Dare Round! Get comfortable. Or don't. It's funnier.
+    <<flag a3_lab_intro>>
+<<endif>>
+===
+
+title: A3_LabExit_Look
+---
+Dex: Back out to the hallway.
+===
+title: A3_LabExit_Use
+---
+<<go science_hall from_lab>>
+===
+
+title: A3_Recycling_Look
+---
+<<if flagged("a3_got_tube")>>
+    Dex: Lab recycling. Still plenty of tubes. Scientists spill a LOT.
+<<else>>
+    Dex: Lab recycling. Paper, plastic, and about forty paper-towel tubes. Scientists spill a lot.
+<<endif>>
+===
+title: A3_Recycling_Use
+---
+<<if flagged("a3_got_tube")>>
+    Dex: I already took the best tube. The others aren't worthy.
+<<else>>
+    Dex: One cardboard tube. Dark, cosy, tunnel-shaped. If I were a hamster, I'd live in here.
+    <<give cardboard_tube>>
+    <<flag a3_got_tube>>
+<<endif>>
+===
+
+title: A3_LabVent_Look
+---
+<<if flagged("a3_caught_nibbles")>>
+    Dex: The big vent. The scene of the Great Escape, and the Great Capture.
+<<else>>
+    Dex: The big vent. The grate's hanging open, and there are tiny seed husks on the floor in front of it.
+<<endif>>
+===
+title: A3_LabVent_Use
+---
+<<if flagged("a3_caught_nibbles")>>
+    Dex: Empty. Nibbles has moved on to bigger things.
+<<else>>
+    Dex: (into the vent) Professor Nibbles? Here, boy!
+    Dex: Squeak. He's close, but he isn't coming out for me. I need bait. And somewhere cosy for him to climb into.
+<<endif>>
+===
+title: A3_LabVent_Trap
+---
+<<if flagged("a3_caught_nibbles")>>
+    Dex: He's already caught.
+<<else>>
+    Dex: I slide the Nibbles Trap into the vent, seeds first.
+    <<if flagged("a3_read_chalkboard")>>
+        Dex: And for atmosphere, a little smooth jazz. Doo-dah-dooo...
+    <<endif>>
+    Dex: Scritch. Scritch. Crunch, crunch, crunch. The tube gets heavier. Something in there is purring. Do hamsters purr?
+    Dex: I pull it out. A fat golden hamster blinks at me, cheeks stuffed with seeds. Professor Nibbles, I presume.
+    <<take hamster_trap>>
+    <<give nibbles_in_tube>>
+    <<flag a3_caught_nibbles>>
+<<endif>>
+===
+title: A3_LabVent_Tube
+---
+Dex: An empty tube? He might nap in it, but he won't come out of the vent for it. He needs a reason. A tasty reason.
+===
+title: A3_LabVent_Seed
+---
+Dex: If I throw seeds in there, he'll eat them in the walls and stay there. I need something he'll climb into with his dinner.
+===
+
+title: A3_Beakers_Look
+---
+Dex: Beakers of glowing goo. The blue one has a label: "NOT A DRINK. HAMSTER SHAMPOO. - M."
+<<flag a3_know_shampoo>>
+===
+title: A3_Beakers_Use
+---
+Dex: Safety rule two: never drink anything in a lab. Especially something labelled "not a drink".
+<<flag a3_know_shampoo>>
+===
+
+title: A3_Chalkboard_Look
+---
+Dex: Mina's thesis, in big chalk letters: "DO HAMSTERS PREFER JAZZ?" There's a graph. It goes up.
+===
+title: A3_Chalkboard_Use
+---
+Dex: "Smooth jazz: wheel speed up 40 percent. Heavy metal: subject hid under bedding. Polka: subject filed a complaint."
+Dex: So if you want a hamster to hustle, you play him smooth jazz. Science!
+<<flag a3_read_chalkboard>>
+===
+
+title: A3_Cage_Look
+---
+<<if flagged("a3_nibbles_home")>>
+    Dex: The cage has a new sign in Mina's handwriting: "OFFICE OF THE LAB MASCOT."
+<<else>>
+    Dex: An empty cage with a wheel, a water bottle and a tiny bed. The latch has been lifted from the outside. Interesting.
+<<endif>>
+===
+title: A3_Cage_Use
+---
+<<if flagged("a3_nibbles_home")>>
+    Dex: The cage is open now. Nibbles comes and goes as he likes. Retirement suits him.
+<<else>>
+    Dex: That latch only opens from outside. Hamsters can't do that. Somebody let him out on purpose.
+    <<flag a3_cage_clue>>
+<<endif>>
+===
+
+title: A3_Nibbles_Look
+---
+Dex: Professor Nibbles, lab mascot, on his very own cushion. He's chewing a seed with the dignity of a retired judge.
+===
+title: A3_Nibbles_Use
+---
+<<if flagged("act3_done")>>
+    Dex: I give him a little scratch behind the ears. Squeak. Thanks for the dance, Professor.
+<<else>>
+    Dex: I give him a little scratch behind the ears. Squeak. He's back where he belongs.
+<<endif>>
+===
+
+title: A3_Banner_Look
+---
+Dex: A glittery banner: "SPEED DATERS LIVE: THE DARE ROUND." Someone has drawn a little skull next to it.
+===
+title: A3_Banner_Use
+---
+Dex: I'm not touching the banner. Roxy will know.
+===
+
+title: A3_Shower_Look
+---
+Dex: An emergency safety shower. Pull the chain, get soaked, live to tell the tale.
+===
+title: A3_Shower_Use
+---
+Dex: I'm not getting soaked right before TV. Unless that's one of the dares. Please don't let that be one of the dares.
+===
+
+title: A3_Mina_Look
+---
+<<if flagged("a3_nibbles_home")>>
+    Dex: Dr. Mina Volt, humming smooth jazz and typing her results at top speed. Her hair is somehow even bigger.
+<<else>>
+    Dex: A grad student in a lab coat, hair standing up like she's been struck by lightning. She's staring at an empty cage.
+<<endif>>
+===
+title: A3_Mina_Talk
+---
+<<if not flagged("a3_met_mina")>>
+    Mina: (without looking up) Don't touch anything blue. Or green. Or anything.
+    Dex: Hi! I'm Dex. I'm here for the Dare Round?
+    Mina: Mina Volt. Almost-Doctor Mina Volt. My thesis defence is tomorrow, and my thesis just ran away.
+    Mina: Professor Nibbles. Golden hamster. Fourteen months of data. He went into that big vent, and I'm too big to follow him.
+    Mina: He loves sunflower seeds and anything shaped like a tunnel. Find him and I'll owe you, big time.
+    <<flag a3_met_mina>>
+<<elseif flagged("a3_nibbles_home")>>
+    Mina: My favourite hero! What can I do for you?
+    -> Ask about Nibbles' future <<if flagged("a3_met_sky") and not flagged("a3_got_plan")>>
+        <<jump A3_Mina_Plan>>
+    -> Ask for spare batteries <<if flagged("a3_met_sky") and not flagged("a3_got_batteries")>>
+        <<jump A3_Mina_Batteries>>
+    -> How's the Professor?
+        Mina: Fat, happy and smug. He ran a personal best while you were gone. I may need a bigger wheel.
+    -> Ask about the Dare Round
+        Mina: Roxy keeps eyeing my beakers. Whatever she dares you to do, wear the goggles. And don't drink the blue one.
+    -> Say goodbye
+        Mina: Bye, Dex! Don't touch anything on your way out.
+<<else>>
+    Mina: Any sign of him?
+    -> Ask about Nibbles
+        Mina: He's in the vents somewhere. Sunflower seeds and tunnels, that's all he cares about. Same, honestly.
+        <<if has("hamster_trap")>>
+            Dex: Then I've got the perfect hotel for him.
+            Mina: The big vent, Dex! Put it in the big vent!
+        <<elseif has("cardboard_tube") and has("bird_seed")>>
+            Dex: A tunnel, and some seeds... I can work with that.
+        <<elseif not flagged("a3_got_tube")>>
+            Dex: A tunnel... like the paper-towel tubes in her recycling bin?
+        <<elseif not flagged("a3_got_seed")>>
+            Dex: I've got the tunnel. Now where on a college campus do I find sunflower seeds?
+        <<endif>>
+    -> Ask for spare batteries <<if flagged("a3_met_sky") and not flagged("a3_got_batteries")>>
+        <<jump A3_Mina_Batteries>>
+    -> Tell her about the open cage latch <<if flagged("a3_cage_clue") and not flagged("a3_told_latch")>>
+        Mina: Lifted from the outside? I always lock it! Who would let a hamster out on purpose?
+        <<if flagged("a3_met_sky")>>
+            Dex: I have a guess. She's on the roof. She has a megaphone.
+            Mina: The protester? Unbelievable. Well, she can't be mad at me for long if I get him back safe.
+        <<else>>
+            Dex: No idea. But I'll find out.
+        <<endif>>
+        <<flag a3_told_latch>>
+    -> Ask about the chalkboard
+        Mina: My data! Smooth jazz makes him run like a tiny athlete. Remember that if you ever need a hamster to hustle.
+        <<flag a3_read_chalkboard>>
+    -> Leave her to it
+        Mina: If you see a golden blur, grab it.
+<<endif>>
+===
+title: A3_Mina_Batteries
+---
+Mina: Batteries? For the megaphone girl on the roof? She's been yelling "Free Nibbles" at my window all week.
+Mina: Well, mouthing it. Her megaphone died on Tuesday. Honestly, it's been peaceful.
+Mina: ...Fine. Fair's fair. Two double-As from the wheel counter. It's not like it has anything to count right now.
+<<give spare_batteries>>
+<<flag a3_got_batteries>>
+===
+title: A3_Mina_Plan
+---
+Dex: Sky, the girl on the roof. She thinks Nibbles is a prisoner. What happens to him after your thesis?
+Mina: After? I... never thought about it. He's done his part. Fourteen months of smooth jazz.
+Mina: You know what? He retires. Lab mascot. Biggest cage in the building, all the seeds he wants, no more experiments. Ever.
+Mina: I'll put it in writing. Signed, dated, and...
+Dex: Nibbles walks across the ink pad and stamps the bottom of the page.
+Mina: ...paw-printed. It's legally binding in hamster court.
+<<give retirement_plan>>
+<<flag a3_got_plan>>
+===
+title: A3_Mina_GiveNibbles
+---
+Mina: NIBBLES! You absolute menace! Come here!
+Dex: She hugs the hamster. Then she hugs me. Then she hugs the hamster again, harder.
+Mina: My thesis lives! Dex, you're a genius. A weird, seed-covered genius.
+Mina: Here. My lucky safety goggles. I've worn them to every experiment since freshman year, and nothing ever exploded.
+Mina: Well, nothing important. Take them. You've got a Dare Round to survive.
+<<take nibbles_in_tube>>
+<<give safety_goggles>>
+<<flag a3_nibbles_home>>
+<<flag a3_won_mina>>
+<<if flagged("a3_met_sky") and not flagged("a3_got_plan")>>
+    Dex: Sky's going to want to know what happens to him now. I should ask Mina about his future.
+<<endif>>
+===
+title: A3_Mina_GiveTrap
+---
+Mina: A tube full of sunflower seeds? That's not a present, that's a hamster trap. ...It's brilliant.
+Mina: The big vent's right there, Dex. Go, go, go!
+===
+title: A3_Mina_GiveTube
+---
+<<if flagged("a3_caught_nibbles")>>
+    Mina: Thanks, but I've got everything I need now.
+<<else>>
+    Mina: That's half a hamster trap. Tunnel plus sunflower seeds equals one very full hamster.
+<<endif>>
+===
+title: A3_Mina_GiveBatteries
+---
+Mina: Those are my batteries. You asked for them. Remember? Go give them to your loud friend.
+===
+title: A3_Mina_GivePlan
+---
+Mina: I already signed it. So did Nibbles. Show it to the protester.
+===
+
+title: A3_Roof_Enter
+---
+<<if not flagged("a3_roof_intro")>>
+    Dex: The roof. Cold wind, a great view, and a girl yelling silently into a megaphone.
+    <<flag a3_roof_intro>>
+<<endif>>
+===
+
+title: A3_RoofExit_Look
+---
+Dex: The stairwell door, back down to Science Hall.
+===
+title: A3_RoofExit_Use
+---
+<<go science_hall from_roof>>
+===
+
+title: A3_Signs_Look
+---
+Dex: Hand-painted signs: "FREE NIBBLES." "JAZZ IS NOT CONSENT." "HAMSTERS ARE PEOPLE TOO (SMALL ONES)."
+===
+title: A3_Signs_Use
+---
+Dex: I'm not taking her signs. She'd just make a sign about me.
+===
+
+title: A3_Feeder_Look
+---
+<<if flagged("a3_pigeon_gone")>>
+    Dex: A bird feeder full of sunflower seeds. Hamster caviar.
+<<else>>
+    Dex: A bird feeder full of sunflower seeds, guarded by the biggest pigeon I've ever seen.
+<<endif>>
+===
+title: A3_Feeder_Use
+---
+<<if flagged("a3_got_seed")>>
+    Dex: I've got enough seeds. The birds need dinner too.
+<<elseif not flagged("a3_pigeon_gone")>>
+    Pigeon: COO.
+    Dex: He puffs up to twice his size. I back away slowly. Something really loud might scare him off.
+<<else>>
+    Dex: A big handful of sunflower seeds, straight into my pocket. I'll be finding husks in here for a week.
+    <<give bird_seed>>
+    <<flag a3_got_seed>>
+<<endif>>
+===
+
+title: A3_Pigeon_Look
+---
+Dex: The biggest pigeon on campus. Possibly part turkey. He guards that feeder like a nightclub bouncer.
+===
+title: A3_Pigeon_Use
+---
+Dex: Shoo! Shoo!
+Pigeon: COO.
+Dex: He doesn't shoo. I'd need something much louder than me. Which is most things.
+===
+
+title: A3_View_Look
+---
+Dex: The whole campus at night. The quad, the dorms, and beyond them, the lights of Downtown.
+===
+title: A3_View_Use
+---
+Dex: (cupping my hands) HELLO, CAMPUS!
+Dex: Nobody heard that. Now I get Sky's problem.
+===
+
+title: A3_Tower_Look
+---
+Dex: The old water tower. Someone painted "DEX WAS HERE" on it. Not me. A different Dex. There are dozens of us.
+===
+title: A3_Tower_Use
+---
+Dex: I'm not climbing that. I promised my mom. And my legs.
+===
+
+title: A3_Sky_Look
+---
+<<if flagged("a3_won_sky")>>
+    Dex: Sky Rivera, reading the retirement plan for the tenth time. She's smiling at a piece of paper with a paw print on it.
+<<elseif flagged("a3_megaphone_fixed")>>
+    Dex: Sky Rivera, megaphone back to full power. Birds three blocks away are nervous.
+<<else>>
+    Dex: Beanie, denim jacket covered in buttons, and a megaphone she's shouting into with no sound coming out.
+<<endif>>
+===
+title: A3_Sky_Talk
+---
+<<if not flagged("a3_met_sky")>>
+    Sky: (into a silent megaphone) FREE... PROFESSOR... NIBBLES!
+    Dex: Hi. I think your megaphone is off.
+    Sky: It's dead. The batteries died on Tuesday. I've been protesting at a normal speaking volume for four days.
+    Sky: Sky Rivera. Animal rights. There's a hamster down in Lab 3B being forced to listen to JAZZ. For SCIENCE.
+    Dex: Professor Nibbles? He's missing. He got into the vents.
+    Sky: ...Yeah. About that. I may have opened his cage. To liberate him. He went straight into a vent. That wasn't the plan.
+    Sky: Look, just get me two double-A batteries. With a working megaphone, the whole campus will hear me.
+    <<flag a3_met_sky>>
+<<elseif not flagged("a3_megaphone_fixed")>>
+    Sky: Two double-A batteries. The revolution runs on them.
+    <<if has("spare_batteries")>>
+        Dex: Funny you should say that.
+    <<elseif not flagged("a3_met_mina")>>
+        Dex: Where do I find batteries in a science building? The lab, probably.
+    <<else>>
+        Dex: Mina has a drawer for everything. I bet she has batteries. She might even share them.
+    <<endif>>
+<<elseif flagged("a3_won_sky")>>
+    Sky: Dex! The hamster hero.
+    -> Ask her to do the chant
+        Sky: (megaphone) WHAT DO WE WANT? HAMSTER RIGHTS! WHEN DO WE WANT THEM? NOW!
+        Dex: Somewhere, a car alarm goes off in sympathy.
+        <<flag a3_learned_chant>>
+    -> Ask what's next for her
+        Sky: The cafeteria has a goldfish in a bowl that's WAY too small. One cause at a time.
+    -> Say goodbye
+        Sky: Go win that Dare Round. And wear the button where the cameras can see it.
+<<else>>
+    Sky: (megaphone, gently) Hey, Dex.
+    -> Ask about Nibbles
+        <<if flagged("a3_nibbles_home")>>
+            Sky: He's back in that lab? I'm glad he's safe. I just want him to have a good life. Not be a test tube with fur.
+            Dex: What if Mina promised he'd be looked after?
+            Sky: In writing. Signed. Then I'd stop picketing. Probably.
+            <<if has("retirement_plan")>>
+                Dex: Funny you should say that.
+            <<endif>>
+        <<else>>
+            Sky: He's somewhere in those vents because of me. Please find him. Then we'll talk about his rights.
+        <<endif>>
+    -> Ask about the chant
+        Sky: (megaphone) WHAT DO WE WANT? HAMSTER RIGHTS! WHEN DO WE WANT THEM? NOW!
+        Sky: You try. Call and response. Works on any crowd.
+        <<flag a3_learned_chant>>
+    -> Say goodbye
+        Sky: Stay loud, Dex.
+<<endif>>
+===
+title: A3_Sky_GiveBatteries
+---
+<<if flagged("a3_megaphone_fixed")>>
+    Sky: I've got batteries now, thanks. The revolution is fully charged.
+<<else>>
+    Sky: Double-As! (click) Testing. TESTING!
+    Dex: It is VERY loud. Car alarms go off three streets away.
+    Sky: WHAT DO WE WANT? HAMSTER RIGHTS! WHEN DO WE WANT THEM? NOW!
+    Dex: The giant pigeon on the bird feeder takes off and flaps away into the night. I think he's leaving the state.
+    Sky: Thanks, Dex. Now everyone can hear me. Now I just need Nibbles safe and happy.
+    <<take spare_batteries>>
+    <<flag a3_megaphone_fixed>>
+    <<flag a3_pigeon_gone>>
+    <<flag a3_learned_chant>>
+<<endif>>
+===
+title: A3_Sky_GivePlan
+---
+Sky: (reading) "Lab mascot. Biggest cage in the building. Unlimited seeds. No more experiments. Ever."
+Sky: And there's a paw print. He signed it. He actually signed it.
+Sky: Okay, I'm crying. This is what activism is for.
+Sky: Here, my best button. "FREE NIBBLES." Well, he's not free, he's retired. Same thing, with better snacks.
+<<take retirement_plan>>
+<<give protest_button>>
+<<flag a3_won_sky>>
+===
+title: A3_Sky_GiveNibbles
+---
+Sky: Oh, he's so TINY. Hi, Professor. Sorry about the vent thing.
+Sky: ...He's shivering. It's freezing up here. He needs his cage, and his wheel. Take him home, Dex.
+Sky: Just make sure somebody treats him right.
+===
+title: A3_Sky_ShowGoggles
+---
+Sky: Mina's lucky goggles? She gave you those? Huh. Maybe she's got a heart under that lab coat.
+===
+
+title: A3_Roxy_Look
+---
+<<if flagged("act3_done")>>
+    Dex: Roxy Vale, wiping foam off her shoes and still smiling.
+<<else>>
+    Dex: Roxy Vale, perched on a lab stool, checking her lipstick in a beaker.
+<<endif>>
+===
+title: A3_Roxy_Talk
+---
+<<if flagged("act3_done")>>
+    Roxy Vale: You survived the Dare Round, lover boy! Downtown's on the campus map. Go!
+<<elseif not flagged("a3_met_roxy")>>
+    Roxy Vale: The Dare Round! Three dares, live on camera. Chicken out and you're out.
+    Roxy Vale: But first, prove the locals like you. Bring me two keepsakes from the ladies of Science Hall.
+    Dex: Keepsakes. Right. Does a hamster count?
+    Roxy Vale: Only if he likes you back.
+    <<flag a3_met_roxy>>
+<<elseif has("safety_goggles") and has("protest_button")>>
+    <<jump A3_DareRound>>
+<<elseif has("safety_goggles") or has("protest_button")>>
+    Roxy Vale: One keepsake! Cute. I said two, lover boy.
+    <<if has("safety_goggles")>>
+        Dex: The girl on the roof still needs convincing.
+    <<else>>
+        Dex: Mina still needs her hamster back.
+    <<endif>>
+<<else>>
+    Roxy Vale: Two keepsakes, lover boy. The scientist and the girl on the roof both look like they need a hero.
+<<endif>>
+===
+title: A3_Roxy_Token
+---
+<<if flagged("act3_done")>>
+    Roxy Vale: Keep your souvenirs, lover boy. You've already proven yourself.
+<<elseif has("safety_goggles") and has("protest_button")>>
+    <<flag a3_met_roxy>>
+    <<jump A3_DareRound>>
+<<else>>
+    Roxy Vale: Cute! Now get me the other one.
+<<endif>>
+===
+title: A3_DareRound
+---
+Roxy Vale: Ladies and gentlemen, welcome to the DARE ROUND, live from Lab 3B!
+Mina: (from the back) Don't touch the blue one!
+Sky: (megaphone) GO, DEX!
+<<jump A3_Dare1>>
+===
+title: A3_Dare1
+---
+Roxy Vale: Dare number one: perform the most dangerous experiment in this lab!
+-> Drink the glowing blue beaker
+    Dex: (sip) ...Minty. Why is it minty?
+    Mina: THAT'S HAMSTER SHAMPOO!
+    Dex: My hair has never felt so soft.
+    Roxy Vale: Points for bravery, zero for brains. Try again, lover boy.
+    <<jump A3_Dare1>>
+-> Put on Mina's lucky goggles and make a foam volcano
+    Dex: Goggles on. Safety first. Soap, yeast, a splash of the good stuff, and...
+    Dex: FOOM! A tower of pink foam shoots up to the ceiling and rains down on the front row.
+    Roxy Vale: Dangerous AND responsible! The audience is foamy, and they love it!
+    <<jump A3_Dare2>>
+-> Lick the Bunsen burner
+    Dex: Absolutely not. I'm brave, not stupid.
+    Roxy Vale: Fair. But a dare's a dare. Pick something else.
+    <<jump A3_Dare1>>
+===
+title: A3_Dare2
+---
+Roxy Vale: Dare number two: get this whole room chanting your name in ten seconds!
+-> Politely ask everyone to chant
+    Dex: Um, everyone? If it's not too much trouble?
+    Dex: Silence. Somebody coughs. A beaker bubbles, sadly.
+    Roxy Vale: Oof. That was painful. Again!
+    <<jump A3_Dare2>>
+-> Pin on Sky's button and start a protest chant
+    Dex: (pinning on the button) WHAT DO WE WANT?
+    Sky: (megaphone) DEX DOOLEY!
+    Dex: WHEN DO WE WANT HIM?
+    Dex: The whole lab, Roxy included: NOW!
+    Roxy Vale: They're chanting your name! I'M chanting your name! Stop it, Roxy, you're a professional!
+    <<jump A3_Dare3>>
+-> Drum on the beakers
+    Dex: Clang. Clang. Crack. Something drips.
+    Mina: Those were CALIBRATED!
+    Roxy Vale: That's a no from the beakers. Next idea!
+    <<jump A3_Dare2>>
+===
+title: A3_Dare3
+---
+Roxy Vale: Final dare! Make Professor Nibbles run on his wheel, live on camera. He has never once performed on cue.
+-> Shout "Run, Nibbles, run!"
+    Dex: RUN, NIBBLES, RUN!
+    Dex: Nibbles looks at me, burrows under his bedding, and stays there.
+    Roxy Vale: The star is shy. Try again!
+    <<jump A3_Dare3>>
+-> Offer him a bit of cheese
+    Mina: Hamsters and cheese? That's a cartoon thing! He's lactose-unimpressed!
+    Dex: Nibbles sniffs the cheese, then turns his back on it. Ouch.
+    Roxy Vale: Rejected by a rodent. Again!
+    <<jump A3_Dare3>>
+-> Hum some smooth jazz
+    Dex: (humming a slow, smooth saxophone line) Doo-dah-dooo... bwaaah...
+    Dex: Professor Nibbles stands up. Stretches. Steps onto the wheel. And RUNS. Like a tiny golden athlete.
+    Mina: Forty percent faster! My data is reproducible! I'm going to be a DOCTOR!
+    Roxy Vale: Lover boy, you're through! Three dares, three wins, and one very fit hamster!
+    Roxy Vale: Next up is the Date Round. Downtown is on the campus map now, so go and find yourself a date.
+    Sky: (megaphone) WE LOVE YOU, DEX!
+    Mina: Keep the goggles. They're luckier on you.
+    <<flag act3_done>>
+    <<act 4>>
+    Dex: Act Three, done. Downtown is on the campus map now.
+===
+
+title: A3_Combine_Seed_Tube
+---
+Dex: Sunflower seeds go in the tube, and I fold one end shut. One hamster hotel, all-you-can-eat buffet included.
+<<take bird_seed>>
+<<take cardboard_tube>>
+<<give hamster_trap>>
+<<flag a3_made_trap>>
+===
+title: Item_cardboard_tube_Look
+---
+Dex: A paper-towel tube. Dark, cosy and tunnel-shaped. Basically a hamster mansion.
+===
+title: Item_bird_seed_Look
+---
+Dex: A pocketful of sunflower seeds from the bird feeder. Hamster caviar.
+===
+title: Item_hamster_trap_Look
+---
+Dex: A cardboard tube stuffed with sunflower seeds. The Nibbles Trap. No hamster can resist it. Honestly, I'm tempted.
+===
+title: Item_nibbles_in_tube_Look
+---
+Dex: Professor Nibbles, snoozing in his tube with his cheeks full of seeds. He's very warm.
+===
+title: Item_spare_batteries_Look
+---
+Dex: Two double-A batteries from Mina's lab. Fully charged, unlike me.
+===
+title: Item_retirement_plan_Look
+---
+Dex: "Professor Nibbles will retire as Lab Mascot. Biggest cage. Unlimited seeds. No more experiments." Signed by Mina, and by a paw.
+===
+title: Item_safety_goggles_Look
+---
+Dex: Mina's lucky safety goggles. Nothing important has ever exploded while she wore them.
+===
+title: Item_protest_button_Look
+---
+Dex: Sky's button. "FREE NIBBLES," with a tiny hamster raising a tiny fist.
+===

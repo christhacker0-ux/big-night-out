@@ -1,0 +1,715 @@
+{
+ "items": [
+  {
+   "id": "fishing_net",
+   "name": "Little Fishing Net",
+   "color": [
+    0.85,
+    0.75,
+    0.5
+   ]
+  },
+  {
+   "id": "wish_quarter",
+   "name": "Wishing-Fountain Quarter",
+   "color": [
+    0.8,
+    0.8,
+    0.85
+   ]
+  },
+  {
+   "id": "gus_coaster",
+   "name": "Gus's Coaster",
+   "color": [
+    0.9,
+    0.85,
+    0.7
+   ]
+  },
+  {
+   "id": "captains_hat",
+   "name": "Captain's Hat",
+   "color": [
+    0.15,
+    0.2,
+    0.4
+   ]
+  },
+  {
+   "id": "disposable_camera",
+   "name": "Disposable Camera",
+   "color": [
+    1.0,
+    0.8,
+    0.2
+   ]
+  },
+  {
+   "id": "full_camera",
+   "name": "Full Disposable Camera",
+   "color": [
+    0.9,
+    0.5,
+    0.2
+   ]
+  },
+  {
+   "id": "headshots",
+   "name": "Bree's Headshots",
+   "color": [
+    0.95,
+    0.95,
+    0.9
+   ]
+  },
+  {
+   "id": "diner_name_tag",
+   "name": "Bree's Name Tag",
+   "color": [
+    0.95,
+    0.3,
+    0.35
+   ]
+  },
+  {
+   "id": "finished_crossword",
+   "name": "Lou's Finished Crossword",
+   "color": [
+    0.9,
+    0.9,
+    0.85
+   ]
+  }
+ ],
+ "combinations": [],
+ "rooms": [
+  {
+   "id": "downtown",
+   "scene": "Downtown",
+   "onEnter": "A4_Downtown_Enter",
+   "wall": [
+    0.25,
+    0.2,
+    0.4
+   ],
+   "floor": [
+    0.45,
+    0.42,
+    0.45
+   ],
+   "entries": [
+    {
+     "name": "from_campus",
+     "pos": [
+      -7.4,
+      -3.9
+     ]
+    },
+    {
+     "name": "from_quickmart",
+     "pos": [
+      2.8,
+      -3.8
+     ]
+    },
+    {
+     "name": "from_anchor",
+     "pos": [
+      7.6,
+      -3.9
+     ],
+     "faceLeft": true
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Bus stop",
+     "feet": [
+      -8.6,
+      -2.6
+     ],
+     "size": [
+      1.6,
+      3.4
+     ],
+     "color": [
+      0.3,
+      0.5,
+      0.7
+     ],
+     "standAt": [
+      -7.7,
+      -3.8
+     ],
+     "faceLeft": true,
+     "look": "A4_BusStop_Look",
+     "use": "A4_BusStop_Use"
+    },
+    {
+     "name": "Starlite Diner",
+     "feet": [
+      -5.0,
+      -2.5
+     ],
+     "size": [
+      3.2,
+      4.0
+     ],
+     "color": [
+      0.8,
+      0.3,
+      0.35
+     ],
+     "standAt": [
+      -5.0,
+      -3.7
+     ],
+     "look": "A4_Diner_Look",
+     "use": "A4_Diner_Use"
+    },
+    {
+     "name": "Bree Marlowe",
+     "feet": [
+      -2.6,
+      -2.9
+     ],
+     "size": [
+      1.0,
+      2.5
+     ],
+     "color": [
+      0.95,
+      0.45,
+      0.5
+     ],
+     "standAt": [
+      -1.4,
+      -3.7
+     ],
+     "faceLeft": true,
+     "look": "A4_Bree_Look",
+     "use": "A4_Bree_Talk",
+     "items": [
+      {
+       "item": "disposable_camera",
+       "node": "A4_Bree_Camera"
+      },
+      {
+       "item": "captains_hat",
+       "node": "A4_Bree_Hat"
+      },
+      {
+       "item": "full_camera",
+       "node": "A4_Bree_FullCamera"
+      },
+      {
+       "item": "headshots",
+       "node": "A4_Bree_Headshots"
+      },
+      {
+       "item": "finished_crossword",
+       "node": "A4_Bree_ShowCrossword"
+      }
+     ]
+    },
+    {
+     "name": "Fountain",
+     "feet": [
+      0.4,
+      -2.7
+     ],
+     "size": [
+      2.8,
+      2.2
+     ],
+     "color": [
+      0.5,
+      0.7,
+      0.85
+     ],
+     "standAt": [
+      0.4,
+      -3.8
+     ],
+     "look": "A4_Fountain_Look",
+     "use": "A4_Fountain_Use",
+     "items": [
+      {
+       "item": "fishing_net",
+       "node": "A4_Fountain_Net"
+      }
+     ]
+    },
+    {
+     "name": "Quickmart",
+     "feet": [
+      2.8,
+      -2.5
+     ],
+     "size": [
+      1.8,
+      3.2
+     ],
+     "color": [
+      0.3,
+      0.7,
+      0.4
+     ],
+     "standAt": [
+      2.8,
+      -3.6
+     ],
+     "look": "A4_QuickmartDoor_Look",
+     "use": "A4_QuickmartDoor_Use"
+    },
+    {
+     "name": "Bijou Theatre",
+     "feet": [
+      6.2,
+      0.4
+     ],
+     "size": [
+      3.2,
+      1.8
+     ],
+     "color": [
+      0.9,
+      0.7,
+      0.3
+     ],
+     "standAt": [
+      6.0,
+      -3.7
+     ],
+     "look": "A4_Bijou_Look",
+     "use": "A4_Bijou_Use"
+    },
+    {
+     "name": "Roxy Vale",
+     "feet": [
+      5.4,
+      -2.8
+     ],
+     "size": [
+      1.0,
+      2.7
+     ],
+     "color": [
+      0.9,
+      0.3,
+      0.7
+     ],
+     "standAt": [
+      4.2,
+      -3.7
+     ],
+     "look": "A4_Roxy_Look",
+     "use": "A4_Roxy_Talk",
+     "items": [
+      {
+       "item": "diner_name_tag",
+       "node": "A4_Roxy_Token"
+      },
+      {
+       "item": "finished_crossword",
+       "node": "A4_Roxy_Token"
+      }
+     ]
+    },
+    {
+     "name": "Rusty Anchor",
+     "feet": [
+      8.7,
+      -2.6
+     ],
+     "size": [
+      1.4,
+      3.4
+     ],
+     "color": [
+      0.5,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      7.9,
+      -3.8
+     ],
+     "look": "A4_AnchorDoor_Look",
+     "use": "A4_AnchorDoor_Use"
+    }
+   ]
+  },
+  {
+   "id": "quickmart",
+   "scene": "Quickmart",
+   "onEnter": "A4_Quickmart_Enter",
+   "wall": [
+    0.75,
+    0.85,
+    0.8
+   ],
+   "floor": [
+    0.8,
+    0.8,
+    0.75
+   ],
+   "entries": [
+    {
+     "name": "from_downtown",
+     "pos": [
+      -7.4,
+      -3.9
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Exit",
+     "feet": [
+      -8.6,
+      -2.6
+     ],
+     "size": [
+      1.6,
+      3.4
+     ],
+     "color": [
+      0.6,
+      0.8,
+      0.9
+     ],
+     "standAt": [
+      -7.7,
+      -3.8
+     ],
+     "faceLeft": true,
+     "look": "A4_QuickmartExit_Look",
+     "use": "A4_QuickmartExit_Use"
+    },
+    {
+     "name": "Flower bucket",
+     "feet": [
+      -6.0,
+      -2.7
+     ],
+     "size": [
+      1.2,
+      1.3
+     ],
+     "color": [
+      0.9,
+      0.3,
+      0.4
+     ],
+     "standAt": [
+      -6.0,
+      -3.7
+     ],
+     "look": "A4_Flowers_Look",
+     "use": "A4_Flowers_Use"
+    },
+    {
+     "name": "Slushie machine",
+     "feet": [
+      -3.8,
+      -2.5
+     ],
+     "size": [
+      1.6,
+      2.6
+     ],
+     "color": [
+      0.3,
+      0.6,
+      0.9
+     ],
+     "standAt": [
+      -3.8,
+      -3.7
+     ],
+     "look": "A4_Slushie_Look",
+     "use": "A4_Slushie_Use"
+    },
+    {
+     "name": "Counter",
+     "feet": [
+      0.6,
+      -2.6
+     ],
+     "size": [
+      3.6,
+      1.5
+     ],
+     "color": [
+      0.6,
+      0.5,
+      0.4
+     ],
+     "standAt": [
+      0.6,
+      -3.7
+     ],
+     "look": "A4_Counter_Look",
+     "use": "A4_Counter_Use"
+    },
+    {
+     "name": "Lou",
+     "feet": [
+      3.4,
+      -2.7
+     ],
+     "size": [
+      1.0,
+      2.5
+     ],
+     "color": [
+      0.4,
+      0.4,
+      0.5
+     ],
+     "standAt": [
+      2.2,
+      -3.7
+     ],
+     "look": "A4_Lou_Look",
+     "use": "A4_Lou_Talk",
+     "items": [
+      {
+       "item": "gus_coaster",
+       "node": "A4_Lou_Coaster"
+      },
+      {
+       "item": "full_camera",
+       "node": "A4_Lou_Develop"
+      },
+      {
+       "item": "disposable_camera",
+       "node": "A4_Lou_EmptyCamera"
+      },
+      {
+       "item": "wish_quarter",
+       "node": "A4_Lou_Quarter"
+      },
+      {
+       "item": "headshots",
+       "node": "A4_Lou_ShowHeadshots"
+      }
+     ]
+    },
+    {
+     "name": "1-Hour Photo",
+     "feet": [
+      6.4,
+      -2.5
+     ],
+     "size": [
+      1.6,
+      2.8
+     ],
+     "color": [
+      0.9,
+      0.8,
+      0.3
+     ],
+     "standAt": [
+      6.4,
+      -3.7
+     ],
+     "look": "A4_Photo_Look",
+     "use": "A4_Photo_Use",
+     "items": [
+      {
+       "item": "full_camera",
+       "node": "A4_Lou_Develop"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rusty_anchor",
+   "scene": "RustyAnchor",
+   "onEnter": "A4_Anchor_Enter",
+   "wall": [
+    0.35,
+    0.25,
+    0.2
+   ],
+   "floor": [
+    0.4,
+    0.28,
+    0.2
+   ],
+   "entries": [
+    {
+     "name": "from_downtown",
+     "pos": [
+      -7.4,
+      -3.9
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Exit",
+     "feet": [
+      -8.6,
+      -2.6
+     ],
+     "size": [
+      1.6,
+      3.4
+     ],
+     "color": [
+      0.4,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      -7.7,
+      -3.8
+     ],
+     "faceLeft": true,
+     "look": "A4_AnchorExit_Look",
+     "use": "A4_AnchorExit_Use"
+    },
+    {
+     "name": "Junk barrel",
+     "feet": [
+      -6.0,
+      -2.7
+     ],
+     "size": [
+      1.4,
+      1.7
+     ],
+     "color": [
+      0.5,
+      0.35,
+      0.2
+     ],
+     "standAt": [
+      -6.0,
+      -3.7
+     ],
+     "look": "A4_Barrel_Look",
+     "use": "A4_Barrel_Use"
+    },
+    {
+     "name": "Jukebox",
+     "feet": [
+      -3.0,
+      -2.5
+     ],
+     "size": [
+      1.6,
+      2.8
+     ],
+     "color": [
+      0.9,
+      0.5,
+      0.3
+     ],
+     "standAt": [
+      -3.0,
+      -3.7
+     ],
+     "look": "A4_Jukebox_Look",
+     "use": "A4_Jukebox_Use",
+     "items": [
+      {
+       "item": "wish_quarter",
+       "node": "A4_Jukebox_Quarter"
+      }
+     ]
+    },
+    {
+     "name": "Captain Gus",
+     "feet": [
+      1.6,
+      -2.8
+     ],
+     "size": [
+      1.1,
+      2.4
+     ],
+     "color": [
+      0.3,
+      0.35,
+      0.6
+     ],
+     "standAt": [
+      0.3,
+      -3.7
+     ],
+     "look": "A4_Gus_Look",
+     "use": "A4_Gus_Talk",
+     "items": [
+      {
+       "item": "wish_quarter",
+       "node": "A4_Gus_Quarter"
+      },
+      {
+       "item": "gus_coaster",
+       "node": "A4_Gus_Coaster"
+      },
+      {
+       "item": "captains_hat",
+       "node": "A4_Gus_Hat"
+      },
+      {
+       "item": "headshots",
+       "node": "A4_Gus_Headshots"
+      }
+     ]
+    },
+    {
+     "name": "Bar",
+     "feet": [
+      4.8,
+      -2.6
+     ],
+     "size": [
+      4.4,
+      1.6
+     ],
+     "color": [
+      0.45,
+      0.28,
+      0.18
+     ],
+     "standAt": [
+      4.8,
+      -3.7
+     ],
+     "look": "A4_Bar_Look",
+     "use": "A4_Bar_Use"
+    },
+    {
+     "name": "Parrot",
+     "feet": [
+      8.0,
+      -0.6
+     ],
+     "size": [
+      1.0,
+      1.4
+     ],
+     "color": [
+      0.3,
+      0.8,
+      0.3
+     ],
+     "standAt": [
+      7.4,
+      -3.7
+     ],
+     "look": "A4_Parrot_Look",
+     "use": "A4_Parrot_Use"
+    }
+   ]
+  }
+ ]
+}

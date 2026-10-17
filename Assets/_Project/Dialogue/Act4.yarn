@@ -1,0 +1,802 @@
+title: A4_Downtown_Enter
+---
+<<if not flagged("a4_downtown_intro")>>
+    Dex: Downtown. Neon signs, a fountain full of wishes, and a smell of fries that could make a grown man weep.
+    Roxy Vale: Over here, lover boy! The Date Round is tonight, right here, on camera!
+    Dex: A date. On camera. With me planning it. What could possibly go wrong.
+    <<flag a4_downtown_intro>>
+<<endif>>
+===
+
+title: A4_BusStop_Look
+---
+Dex: The campus shuttle stop. The bench has a lawyer ad on it. The lawyer has a mustache drawn on him. It suits him.
+===
+title: A4_BusStop_Use
+---
+Dex: Back to campus.
+<<go campus from_map>>
+===
+
+title: A4_Diner_Look
+---
+Dex: The Starlite Diner. "OPEN 24 HOURS. PIE 23 OF THEM." The neon star blinks like it's winking at me.
+===
+title: A4_Diner_Use
+---
+<<if flagged("a4_won_bree")>>
+    Dex: Through the window the cook waves a spatula at me. Word travels fast in a diner.
+<<else>>
+    Dex: It's packed in there. The only waitress I want to talk to is out here on her break anyway.
+<<endif>>
+===
+
+title: A4_Fountain_Look
+---
+<<if flagged("a4_got_quarter")>>
+    Dex: The wishing fountain. One wish lighter, thanks to me. I'll pay it back in good karma.
+<<else>>
+    Dex: A wishing fountain. The bottom glitters with coins. A shiny quarter is sitting right in the middle, practically waving at me.
+<<endif>>
+===
+title: A4_Fountain_Use
+---
+<<if flagged("a4_got_quarter")>>
+    Dex: I took one wish. Taking two would make me a villain.
+<<elseif has("fishing_net")>>
+    <<jump A4_Fountain_Net>>
+<<else>>
+    Dex: Too deep to reach without wading in, and I'm not starting a date night with wet khakis.
+    Dex: I need something to scoop with. Something with a long handle. And a net. Ideally a net.
+    <<flag a4_saw_fountain>>
+<<endif>>
+===
+title: A4_Fountain_Net
+---
+<<if flagged("a4_got_quarter")>>
+    Dex: The rest of these wishes belong to other people. I'm desperate, not a monster.
+<<else>>
+    Dex: Easy... easy... got it! One quarter, slightly damp, formerly somebody's wish.
+    Dex: The net's handle snaps off in the drain grate. It died doing what it loved.
+    <<take fishing_net>>
+    <<give wish_quarter>>
+    <<flag a4_got_quarter>>
+<<endif>>
+===
+
+title: A4_QuickmartDoor_Look
+---
+Dex: The Quickmart. "WE HAVE EVERYTHING." Underneath, smaller: "EXCEPT CHANGE. DON'T ASK."
+===
+title: A4_QuickmartDoor_Use
+---
+<<go quickmart from_downtown>>
+===
+
+title: A4_AnchorDoor_Look
+---
+Dex: The Rusty Anchor. A sailors' bar with a porthole in the door and a sign that says "NO LANDLUBBERS (WE'RE KIDDING, WE NEED THE MONEY)".
+===
+title: A4_AnchorDoor_Use
+---
+<<go rusty_anchor from_downtown>>
+===
+
+title: A4_Bijou_Look
+---
+Dex: The Bijou Theatre. The marquee says "MIDNIGHT CLASSICS: OLD MOVIES, NEW POPCORN." Half the light bulbs are out, which somehow makes it more romantic.
+<<flag a4_saw_bijou>>
+===
+title: A4_Bijou_Use
+---
+<<if flagged("a4_knows_bijou")>>
+    Dex: Bree sneaks in here on her breaks to watch the old movies. The perfect place for a date. If I ever get one.
+<<else>>
+    Dex: The box office is closed till the midnight show. A sticker on the glass says "COUPLES GET THE FRONT ROW SOFA".
+<<endif>>
+===
+
+title: A4_Bree_Look
+---
+<<if flagged("a4_won_bree")>>
+    Dex: Bree, in a captain's hat and a diner apron, hugging her headshots like they're an Oscar.
+<<elseif flagged("a4_bree_has_hat")>>
+    Dex: Bree in a captain's hat, saluting passing cars. Two of them honked. One saluted back.
+<<else>>
+    Dex: A waitress on her break, reciting dramatic lines at a parking meter. The parking meter seems moved.
+<<endif>>
+===
+title: A4_Bree_Talk
+---
+<<if not flagged("a4_met_bree")>>
+    Bree Marlowe: "Avast, ye scurvy... " Oh! Sorry. I thought you were the bus.
+    Dex: Hi! I'm Dex. Were you just yelling at a parking meter?
+    Bree Marlowe: Rehearsing. Bree Marlowe, waitress by night, actress by... also night, technically.
+    Bree Marlowe: I have an audition tomorrow at nine for "Shipwrecked in Love: The Musical". The lead. Captain Coral.
+    Bree Marlowe: They want a headshot in character. I have no camera, no costume, not even a captain's hat, and my tips tonight were a button and a coupon for this diner.
+    Dex: So you need a camera, a captain's hat, and a miracle.
+    Bree Marlowe: Two out of three and I'll fake the miracle. I'm an actress.
+    <<flag a4_met_bree>>
+<<elseif flagged("a4_won_bree")>>
+    Bree Marlowe: My leading man! Well, my leading photographer.
+    <<jump A4_Bree_Chat>>
+<<elseif flagged("a4_photos_taken") and not has("headshots")>>
+    Bree Marlowe: Did you get them developed? The Quickmart does one-hour photo. Well, Lou does. When she feels like it.
+<<else>>
+    <<jump A4_Bree_Chat>>
+<<endif>>
+===
+title: A4_Bree_Chat
+---
+-> How's the headshot hunt going? <<if not flagged("a4_won_bree")>>
+    <<jump A4_Bree_Status>>
+-> Ask about the diner
+    Bree Marlowe: Sixteen-hour double. My feet have stopped speaking to me. They just send angry letters now.
+    Bree Marlowe: And the manager put roses on every table. I'm allergic. Achoo! See? Just talking about them.
+    Dex: Noted. Feet bad. Roses worse.
+    <<flag a4_knows_feet>>
+    <<flag a4_knows_roses>>
+-> Ask about the theatre across the street
+    Bree Marlowe: The Bijou? I sneak in on my breaks for the midnight classics. Front row, with my shoes off.
+    Bree Marlowe: Someday I'll be up on that screen. Until then I'm happy just looking up at it.
+    <<flag a4_knows_bijou>>
+-> Wish her good luck for tomorrow
+    Bree Marlowe: No no no! Never say good luck to an actor. It's bad luck.
+    Bree Marlowe: You say "break a leg". Theatre people are weird. I love it.
+    <<flag a4_knows_leg>>
+-> See you later
+    Bree Marlowe: Exit, stage left!
+===
+title: A4_Bree_Status
+---
+<<if has("headshots")>>
+    Bree Marlowe: Are those my headshots? Hand them over before I faint dramatically!
+<<elseif has("full_camera")>>
+    Bree Marlowe: The camera's full! Get it developed. The Quickmart has a one-hour photo machine.
+<<elseif flagged("a4_bree_has_hat") and has("disposable_camera")>>
+    Bree Marlowe: You've got a camera and I've got a hat. What are we waiting for? Point it at me!
+<<elseif flagged("a4_bree_has_hat")>>
+    Bree Marlowe: I've got the hat. Now I need someone with a camera. Do you know anybody who owns a camera that isn't a phone with a cracked screen?
+    Dex: Somebody downtown must have one lying around.
+<<elseif has("disposable_camera")>>
+    Bree Marlowe: A camera! But I can't do Captain Coral in an apron. I need a captain's hat.
+    Dex: A real captain's hat... where do sailors hang out around here?
+<<else>>
+    Bree Marlowe: Still no camera, still no hat. My audition is in eleven hours. I'm totally fine. I'm SO fine.
+    Dex: Camera and a captain's hat. There's a quickmart and a sailors' bar on this street. That's a start.
+<<endif>>
+===
+title: A4_Bree_Camera
+---
+<<if flagged("a4_photos_taken")>>
+    Bree Marlowe: We already took the shots! Twenty-seven of them. Twenty-six are me blinking.
+<<elseif not flagged("a4_bree_has_hat")>>
+    Bree Marlowe: A camera! Wait, wait. Not like this. I look like a waitress playing a waitress.
+    Bree Marlowe: Captain Coral is a salty sea captain. I need a captain's hat, at least.
+    <<flag a4_bree_needs_hat>>
+<<else>>
+    Bree Marlowe: Okay. Captain Coral. Storm's coming. The crew has mutinied. Somebody stole my pie.
+    Dex: Click. Click. Click. Now look into the distance like you can see land!
+    Bree Marlowe: (squinting heroically at the Bijou sign) LAND HO!
+    Dex: A guy walking his dog stops to clap. Click. That's the one. And... the camera's full.
+    Bree Marlowe: Get these developed and I'm going to marry you. Professionally. Like an agent.
+    <<take disposable_camera>>
+    <<give full_camera>>
+    <<flag a4_photos_taken>>
+<<endif>>
+===
+title: A4_Bree_Hat
+---
+<<if flagged("a4_bree_has_hat")>>
+    Bree Marlowe: I already have the hat! I'm never taking it off. I may sleep in it.
+<<else>>
+    Bree Marlowe: A real captain's hat! It smells like the ocean and pipe smoke and old pickles. It's perfect!
+    Bree Marlowe: (puts it on) "Captain Coral reporting for duty!" How do I look?
+    Dex: Like you could steer a ship through a hurricane. Or at least a parking lot.
+    <<take captains_hat>>
+    <<flag a4_bree_has_hat>>
+    <<if has("disposable_camera")>>
+        Bree Marlowe: And you have a camera! Quick, before I lose my nerve!
+        <<jump A4_Bree_Camera>>
+    <<else>>
+        Bree Marlowe: Now all I need is a camera.
+    <<endif>>
+<<endif>>
+===
+title: A4_Bree_FullCamera
+---
+Bree Marlowe: Don't give it to me, I'll just open the back to look and ruin everything. Get it developed at the Quickmart!
+===
+title: A4_Bree_Headshots
+---
+<<if flagged("a4_won_bree")>>
+    Bree Marlowe: I've already got them memorised. Keep a copy. For when I'm famous.
+<<else>>
+    Bree Marlowe: (flipping through them) Blinking... blinking... sneezing... oh. OH.
+    Bree Marlowe: Look at that one! The one with the dog clapping in the background. That's a star. That's Captain Coral!
+    Bree Marlowe: Dex, you're a lifesaver. Here, take my name tag. I'm going to be too famous to need it.
+    Dex: "Hi, I'm BREE. Ask me about the pie."
+    Bree Marlowe: Wear it with pride. Ask people about the pie.
+    <<take headshots>>
+    <<give diner_name_tag>>
+    <<flag a4_won_bree>>
+<<endif>>
+===
+title: A4_Bree_ShowCrossword
+---
+Bree Marlowe: You got Lou to finish her crossword? She's been stuck for a week! The whole street could hear her sighing.
+===
+
+title: A4_Roxy_Look
+---
+Dex: Roxy Vale, next to a camera crew and a little café table with two chairs and a candle. My palms are already sweating.
+===
+title: A4_Roxy_Talk
+---
+<<if flagged("act4_done")>>
+    Roxy Vale: The Finals are Uptown, lover boy! The campus map will take you there.
+<<elseif not flagged("a4_met_roxy")>>
+    Roxy Vale: Lover boy! Welcome to the Date Round!
+    Roxy Vale: The rules are simple. You plan a date, live on camera. The place, the gift, the opening line. All you.
+    Dex: Plan a date for who?
+    Roxy Vale: For a downtown lady who'd actually say yes. Bring me proof two women out here think you're worth it. Keepsakes, lover boy. Tokens.
+    Dex: So, two keepsakes from two women who don't know me yet. No pressure.
+    <<flag a4_met_roxy>>
+<<elseif has("diner_name_tag") and has("finished_crossword")>>
+    <<jump A4_DateRound>>
+<<else>>
+    Roxy Vale: Two tokens, lover boy. The camera doesn't wait forever, and neither does my hairspray.
+    <<jump A4_Hint>>
+<<endif>>
+===
+title: A4_Roxy_Token
+---
+<<if flagged("act4_done")>>
+    Roxy Vale: Keep those, lover boy. You've earned them. Now get Uptown.
+<<elseif has("diner_name_tag") and has("finished_crossword")>>
+    <<jump A4_DateRound>>
+<<else>>
+    Roxy Vale: Cute! That's one. I need two, lover boy. It's a date, not a solo.
+    <<flag a4_met_roxy>>
+    <<jump A4_Hint>>
+<<endif>>
+===
+title: A4_Hint
+---
+<<if not flagged("a4_met_bree")>>
+    Dex: The waitress outside the diner looks like she has a problem. And a dramatic voice.
+<<elseif not flagged("a4_met_lou")>>
+    Dex: Bree needs a camera. A quickmart sells everything, right? Says so on the door.
+<<elseif not flagged("a4_met_gus")>>
+    Dex: Lou needs a sailor word, and Bree needs a captain's hat. The Rusty Anchor is full of sailors. Well, one sailor.
+<<elseif not flagged("a4_gus_song")>>
+    <<if has("wish_quarter")>>
+        Dex: I've got a quarter. Gus's jukebox at the Rusty Anchor is waiting for it. B-7.
+    <<elseif has("fishing_net")>>
+        Dex: A net and a fountain full of coins. I see where this is going.
+    <<else>>
+        Dex: Gus wants his song, and the jukebox needs a quarter. The fountain out here is full of them, if I had something to scoop with.
+    <<endif>>
+<<elseif not flagged("a4_won_lou") and not has("gus_coaster")>>
+    Dex: Gus is in a good mood now. I should ask him about Lou's crossword clue.
+<<elseif not flagged("a4_won_lou")>>
+    Dex: I've got Gus's coaster with the answer. Lou needs to see it.
+<<elseif not flagged("a4_bree_has_hat") and not has("captains_hat")>>
+    Dex: Bree's still missing a captain's hat. Gus has a captain's hat. Gus also has a captain's head, but I only need the hat.
+<<elseif not flagged("a4_bree_has_hat")>>
+    Dex: Bree needs this hat for her headshots.
+<<elseif not flagged("a4_photos_taken")>>
+    Dex: Bree's got the hat and I've got Lou's camera. Time for a photo shoot.
+<<elseif not flagged("a4_won_bree") and has("full_camera")>>
+    Dex: The camera's full. Lou can develop it at the Quickmart.
+<<elseif not flagged("a4_won_bree")>>
+    Dex: The headshots are ready. Bree is going to flip.
+<<else>>
+    Dex: I've got Bree's name tag and Lou's crossword. I should show Roxy.
+<<endif>>
+===
+title: A4_DateRound
+---
+Roxy Vale: Roll camera! Ladies and gentlemen, it's the DATE ROUND, live from downtown!
+Roxy Vale: Dex Dooley has a name tag and a finished crossword, which means two downtown ladies think he's alright!
+Roxy Vale: Please welcome his date for tonight... Bree Marlowe!
+Bree Marlowe: (still in the captain's hat) Hi, Mom!
+Roxy Vale: And our celebrity judge, from the Quickmart, a woman who has never once smiled on camera... Lou!
+Lou: Or off camera.
+Roxy Vale: The rules, lover boy. You plan Bree's perfect date. If Lou smiles, you're through. If not, we try again until she does or the sun comes up.
+<<flag a4_date_started>>
+<<jump A4_Date_Place>>
+===
+title: A4_Date_Place
+---
+Roxy Vale: First question! Where are you taking her?
+-> Dinner at the Starlite Diner
+    Dex: The Starlite! Great pie. Open twenty-four hours. Cosy booths.
+    Bree Marlowe: I WORK there, Dex. I've been there for sixteen hours. The cook is waving at me right now.
+    Lou: Zero.
+    Roxy Vale: Ouch! Try again, lover boy!
+    <<jump A4_Date_Place>>
+-> Somewhere fancy, like Le Snooty Fork
+    Dex: Somewhere fancy, with tiny food and huge plates and a waiter who judges you.
+    Bree Marlowe: I'd spend the whole night refilling everyone's water. It's a reflex. I can't stop.
+    Lou: Zero.
+    Roxy Vale: Back to the drawing board!
+    <<jump A4_Date_Place>>
+-> The midnight classic at the Bijou
+    Dex: The midnight classic at the Bijou. Front row sofa. You can watch the screen you're going to be on someday.
+    Bree Marlowe: (gasps) You were listening!
+    Lou: Hm.
+    Roxy Vale: Lou said "hm"! That's practically a standing ovation! Next question!
+    <<jump A4_Date_Gift>>
+-> Karaoke with Captain Gus at the Rusty Anchor
+    Dex: The Rusty Anchor! Captain Gus will play the Barnacle Waltz forty times and explain every word of it.
+    Bree Marlowe: I love Gus. But not "four hours of the Barnacle Waltz" love.
+    Lou: Zero. And I like Gus.
+    Roxy Vale: Swing and a miss! Again!
+    <<jump A4_Date_Place>>
+===
+title: A4_Date_Gift
+---
+Roxy Vale: Second question! What gift do you bring?
+-> A dozen red roses
+    Dex: A dozen red roses! Classic!
+    Bree Marlowe: A dozen... ACHOO! A dozen... ACHOO! ...I'm allergic, Dex. I told you that.
+    Lou: (hands Bree a tissue) Zero.
+    Roxy Vale: Bless you, and try again!
+    <<jump A4_Date_Gift>>
+-> A gift card to the Starlite Diner
+    Dex: A gift card to the Starlite Diner! Fifty dollars of pie!
+    Bree Marlowe: I get pie for free. It's the only good part of the job. Apart from the drama.
+    Lou: Zero.
+    Roxy Vale: Ooh, so close and yet so pie. Again!
+    <<jump A4_Date_Gift>>
+-> The fluffiest slippers in town
+    Dex: The fluffiest slippers in town. After a sixteen-hour double, your feet deserve a vacation.
+    Bree Marlowe: (already taking her shoes off) Dex. Dex, I think I love you. Professionally.
+    Lou: Hmm.
+    Roxy Vale: Two "hm"s! The crew is getting nervous! Last question!
+    <<jump A4_Date_Line>>
+-> A signed photo of myself
+    Dex: A signed photo of me, Dex Dooley, future TV star.
+    Bree Marlowe: I... have so many photos of you blinking already. You took them on my camera by accident.
+    Lou: Less than zero.
+    Roxy Vale: Bold! Wrong, but bold! Again!
+    <<jump A4_Date_Gift>>
+===
+title: A4_Date_Line
+---
+Roxy Vale: Final question! The opening line. Look into her eyes, lover boy, and say...
+-> "Is your dad a baker? Because you're a cutie pie."
+    Bree Marlowe: My dad's a dentist. He'd hate that line. I kind of hate that line.
+    Lou: Zero. And I'm telling her dad.
+    Roxy Vale: Yikes! The camera guy just winced! Again!
+    <<jump A4_Date_Line>>
+-> "I'm going to be famous. You could be famous next to me."
+    Bree Marlowe: I'm going to be famous by MYSELF, thanks.
+    Lou: Zero.
+    Roxy Vale: Somebody's ego needs a nap! Again!
+    <<jump A4_Date_Line>>
+-> "Break a leg tomorrow. Just not tonight. We've got a movie to walk to."
+    Bree Marlowe: (hand on heart) You said "break a leg". You remembered the theatre thing.
+    Dex: I remember everything you said tonight. Except the name of the musical. "Shipwrecked in... Love Boat"?
+    Bree Marlowe: Close enough.
+    <<jump A4_Date_Win>>
+-> "Ahoy, matey. Wanna see my anchor?"
+    Bree Marlowe: Is that a line from my musical? Because I'm reporting it to the director.
+    Lou: Gus taught you that, didn't he. Zero.
+    Roxy Vale: Network standards just fainted! Again!
+    <<jump A4_Date_Line>>
+===
+title: A4_Date_Win
+---
+Roxy Vale: Judge Lou! The moment of truth!
+Lou: ...
+Lou: (the corner of her mouth twitches)
+Lou: (it twitches again)
+Dex: She's... she's smiling. On camera. The street lights flicker. Somewhere a car alarm stops by itself.
+Roxy Vale: SHE SMILED! Folks, we have a SMILE! Lover boy, you are through to the Finals!
+Bree Marlowe: Midnight show at the Bijou, Dex. After the cameras go home. Bring the slippers.
+Lou: Don't make it weird.
+Roxy Vale: The Finals are Uptown, at the hottest nightclub in town. Only the best of the best, lover boy!
+<<flag act4_done>>
+<<act 5>>
+Dex: Act Four, done. Uptown is on the campus map now.
+===
+
+title: A4_Quickmart_Enter
+---
+<<if not flagged("a4_quickmart_intro")>>
+    Dex: The Quickmart. Fluorescent lights, a slushie machine humming a sad song, and one clerk who has not looked up from her newspaper.
+    Lou: Buy something or stand there quietly.
+    Dex: Can I do both?
+    Lou: No.
+    <<flag a4_quickmart_intro>>
+<<endif>>
+===
+title: A4_QuickmartExit_Look
+---
+Dex: The door back out to the street. It plays a little electronic tune when it opens. Lou flinches every time.
+===
+title: A4_QuickmartExit_Use
+---
+<<go downtown from_quickmart>>
+===
+
+title: A4_Flowers_Look
+---
+Dex: A bucket of sad roses. "$5. NO REFUNDS. NO EXCEPTIONS. NO FEELINGS."
+===
+title: A4_Flowers_Use
+---
+<<if flagged("a4_knows_roses")>>
+    Dex: Roses? For Bree? She'd sneeze herself into next week. Hard pass.
+<<else>>
+    Dex: Five dollars for roses that look like they've been through a breakup. I don't have five dollars anyway.
+<<endif>>
+===
+
+title: A4_Slushie_Look
+---
+Dex: The slushie machine. Flavours: "Blue", "Red", and "Brown (Don't)".
+===
+title: A4_Slushie_Use
+---
+<<if not flagged("a4_slushie")>>
+    Dex: I pull the lever on "Brown (Don't)". Nothing comes out. Just a low, haunted groan.
+    Lou: I said don't.
+    <<flag a4_slushie>>
+<<else>>
+    Dex: I'm not touching the brown one again. It knows my name now.
+<<endif>>
+===
+
+title: A4_Counter_Look
+---
+<<if flagged("a4_won_lou")>>
+    Dex: The counter. A gum display, a bell, a till, and a finished crossword in a little frame Lou made out of popsicle sticks.
+<<else>>
+    Dex: The counter. A gum display, a bell, and a newspaper crossword with one empty row and a lot of angry eraser marks.
+<<endif>>
+===
+title: A4_Counter_Use
+---
+<<if flagged("a4_won_lou")>>
+    Dex: I ding the bell. Lou dings it back. That's basically a hug.
+<<else>>
+    Dex: I lean over to read the crossword. "17 Across. Sailor's word for the bathroom. Four letters."
+    Dex: She's tried "LOOO" and "POTY". Both crossed out so hard the paper tore.
+    <<flag a4_lou_clue>>
+<<endif>>
+===
+
+title: A4_Photo_Look
+---
+Dex: A 1-Hour Photo machine. A note taped to it: "1 HOUR. OR 1 MINUTE IF LOU LIKES YOU. LOU LIKES NOBODY."
+===
+title: A4_Photo_Use
+---
+<<if has("full_camera")>>
+    <<jump A4_Lou_Develop>>
+<<elseif flagged("a4_photos_developed")>>
+    Dex: It's still warm from Bree's headshots. I feel like a real photographer. A photographer with no idea what the buttons do.
+<<else>>
+    Dex: I'd need a full roll of film to develop. And Lou's permission. Mostly Lou's permission.
+<<endif>>
+===
+
+title: A4_Lou_Look
+---
+<<if flagged("a4_won_lou")>>
+    Dex: Lou. Still not smiling. But she's humming. I think. Or the fridge is.
+<<else>>
+    Dex: The clerk. Tattooed arms, a pencil behind her ear, and a face that says she has seen everything and hated most of it.
+<<endif>>
+===
+title: A4_Lou_Talk
+---
+<<if not flagged("a4_met_lou")>>
+    Dex: Hi! I'm Dex. Do you sell cameras?
+    Lou: Lou. We sell gum, batteries, and slushies nobody should drink. Anything else, no.
+    Lou: (taps the newspaper with her pencil) Seventeen Across. "Sailor's word for the bathroom." Four letters.
+    Lou: I've been stuck on it for a week. I can't think about anything else. I can't sleep. I can't smile.
+    Dex: Do you smile when you're NOT stuck?
+    Lou: Finish it and find out.
+    <<flag a4_met_lou>>
+    <<flag a4_lou_clue>>
+<<elseif flagged("a4_won_lou")>>
+    <<jump A4_Lou_Chat>>
+<<elseif has("gus_coaster")>>
+    Lou: Is that a coaster from the Rusty Anchor? There's writing on it. Give it here.
+<<else>>
+    Lou: Four letters. Sailor word. Bathroom. Still stuck. Still not smiling.
+    Dex: A sailor word... I bet somebody at the Rusty Anchor knows. That place is wall-to-wall sailor.
+<<endif>>
+===
+title: A4_Lou_Chat
+---
+-> Ask about the camera
+    Lou: Lost and found. Some guy left it here after a first date went bad. You'll do better.
+-> Ask about developing photos <<if not flagged("a4_photos_developed")>>
+    Lou: Bring me a full camera and I'll run it through the machine. For you, one minute instead of an hour. Don't tell anyone.
+-> Ask her to smile again
+    Lou: Don't push it.
+-> Ask what's next in the paper
+    Lou: Tomorrow's crossword. I'm saving it. Like a dessert.
+-> Bye, Lou
+    Lou: Mm.
+===
+title: A4_Lou_Coaster
+---
+<<if flagged("a4_won_lou")>>
+    Lou: I know, I know. HEAD. It's in pen now. It's permanent.
+<<else>>
+    Lou: (reads the coaster) "The answer is HEAD. Fair winds. Gus." With a little drawing of an anchor.
+    Lou: H. E. A. D. (writes it in) It fits. It FITS.
+    Dex: Lou smiles. It's small, and a little rusty, like a door that hasn't been opened in years. But it's a smile.
+    Lou: Don't tell anybody about this.
+    Lou: Here. The crossword. First one I've finished all year. Keep it, so I don't get cocky.
+    <<take gus_coaster>>
+    <<give finished_crossword>>
+    <<flag a4_won_lou>>
+    <<if flagged("a4_met_bree")>>
+        Lou: And you were asking about a camera. (rummages under the counter) Lost and found. Disposable, still has film.
+    <<else>>
+        Lou: And here, a disposable camera from the lost and found. You look like a guy who'll need one.
+    <<endif>>
+    Lou: When it's full, bring it back. I'll develop it in a minute instead of an hour. Because I like you. A little.
+    <<give disposable_camera>>
+<<endif>>
+===
+title: A4_Lou_Develop
+---
+<<if not flagged("a4_won_lou")>>
+    Lou: The photo machine's for paying customers. And people who've helped me. You are neither.
+<<elseif flagged("a4_photos_developed")>>
+    Lou: Already developed those. Twenty-six blinks and one masterpiece.
+<<else>>
+    Lou: Give it here. (feeds it into the machine and glares at it until it hurries)
+    Lou: One minute. Told you. The machine's scared of me.
+    Lou: (flipping through them) Blink, blink, sneeze, blink... huh. That one's good. That one's really good.
+    <<take full_camera>>
+    <<give headshots>>
+    <<flag a4_photos_developed>>
+<<endif>>
+===
+title: A4_Lou_EmptyCamera
+---
+Lou: There's film in there. You have to actually press the button. On a person. Preferably one who wants their picture taken.
+===
+title: A4_Lou_Quarter
+---
+<<if flagged("a4_won_lou")>>
+    Lou: Keep it. Nothing in here costs a quarter. Except my advice, and that's free.
+<<else>>
+    Lou: A wet quarter. From the fountain, I bet. I don't want your wishes, kid. I want four letters.
+<<endif>>
+===
+title: A4_Lou_ShowHeadshots
+---
+Lou: The one with the dog clapping. Bree should frame that one. Tell her I said so. Don't tell her I said so.
+===
+
+title: A4_Anchor_Enter
+---
+<<if not flagged("a4_anchor_intro")>>
+    Dex: The Rusty Anchor. Fishing nets on the ceiling, a parrot on a perch, and one old sailor holding up the bar.
+    Captain Gus: Ahoy, landlubber! Wipe your feet! We're not a classy joint, but we've got standards. Low ones.
+    <<flag a4_anchor_intro>>
+<<endif>>
+===
+title: A4_AnchorExit_Look
+---
+Dex: The door back to dry land.
+===
+title: A4_AnchorExit_Use
+---
+<<go downtown from_anchor>>
+===
+
+title: A4_Barrel_Look
+---
+Dex: A barrel of nautical junk. Rope, a rubber boot, a rusty spoon, and a little fishing net on a long pole.
+===
+title: A4_Barrel_Use
+---
+<<if flagged("a4_got_net")>>
+    Dex: Just rope, a rubber boot and a rusty spoon. I'm not taking the spoon. The spoon has seen things.
+<<elseif not flagged("a4_met_gus")>>
+    Dex: I shouldn't rummage through a sailor's barrel without asking. That sounded wrong. I should still ask.
+<<else>>
+    Dex: Gus said help myself. One little fishing net, on a long pole. Good for scooping things out of deep water.
+    <<give fishing_net>>
+    <<flag a4_got_net>>
+<<endif>>
+===
+
+title: A4_Jukebox_Look
+---
+Dex: An old jukebox, all chrome and coloured bubbles. A-1 "Disco Lobster". B-7 "The Barnacle Waltz". C-3 "Saxophone in the Rain". "25 CENTS A SONG."
+===
+title: A4_Jukebox_Use
+---
+<<if flagged("a4_gus_song")>>
+    Dex: The Barnacle Waltz is on repeat. Gus has paid for the next forty plays with his heart.
+<<elseif has("wish_quarter")>>
+    <<jump A4_Jukebox_Quarter>>
+<<else>>
+    Dex: Twenty-five cents a song. I have lint, a receipt, and a dream.
+    <<if flagged("a4_met_gus") and not flagged("a4_got_quarter")>>
+        Dex: Somewhere out on that street there has to be a loose quarter. A street with a wishing fountain, for instance.
+    <<endif>>
+<<endif>>
+===
+title: A4_Jukebox_Quarter
+---
+<<if flagged("a4_gus_song")>>
+    Dex: It's already playing Gus's song. On repeat. Forever, probably.
+<<else>>
+    Dex: Quarter in. Which song?
+    -> A-1 "Disco Lobster"
+        Dex: A bass line kicks in. A lobster on the label lights up and starts to spin.
+        Captain Gus: NOT THE LOBSTER! Anything but the lobster!
+        Dex: The jukebox gets embarrassed and spits my quarter back out.
+    -> B-7 "The Barnacle Waltz"
+        <<take wish_quarter>>
+        <<flag a4_gus_song>>
+        Dex: An accordion wheezes to life. Then a tuba. Then, somehow, a foghorn.
+        Captain Gus: (wiping away a tear) The Barnacle Waltz! My late wife and I danced to this on the deck of the Salty Margaret.
+        Captain Gus: Lad, you've warmed an old sailor's heart. Ask me anything. Anything at all.
+        <<flag a4_gus_happy>>
+    -> C-3 "Saxophone in the Rain"
+        Dex: A lonely saxophone starts up. The parrot puts its head under its wing.
+        Captain Gus: Too sad, lad! I said B-7!
+        Dex: I hit the reject button. The quarter rolls back out. Phew.
+    -> Never mind
+        Dex: I'll hang on to my quarter for now.
+<<endif>>
+===
+
+title: A4_Bar_Look
+---
+Dex: A long wooden bar, dented by a hundred years of elbows. A sign says "SELF-SERVE. PAY THE PARROT."
+===
+title: A4_Bar_Use
+---
+Dex: I'm not ordering anything that the parrot has to ring up.
+===
+
+title: A4_Parrot_Look
+---
+Dex: A green parrot on a perch. Its name tag says "ADMIRAL". It's wearing a tiny eye patch. I don't think it needs it.
+===
+title: A4_Parrot_Use
+---
+<<if not flagged("a4_gus_song")>>
+    Admiral: SQUAWK! B-SEVEN! B-SEVEN! QUARTER! QUARTER!
+    Dex: I think the parrot's been listening to Gus for a long time.
+<<elseif not flagged("a4_won_lou")>>
+    Admiral: SQUAWK! HEAD! HEAD! WHERE'S THE HEAD!
+    Captain Gus: He means the bathroom, lad. Sailor talk.
+<<else>>
+    Admiral: SQUAWK! LOVER BOY! LOVER BOY!
+    Dex: Has EVERYONE been watching the show?
+<<endif>>
+===
+
+title: A4_Gus_Look
+---
+<<if flagged("a4_got_hat")>>
+    Dex: Captain Gus, bare-headed, swaying to the Barnacle Waltz. His bald spot is shaped like a little island.
+<<else>>
+    Dex: An old sailor in a navy coat and a battered captain's hat, glued to his bar stool. A beard you could lose a sandwich in.
+<<endif>>
+===
+title: A4_Gus_Talk
+---
+<<if not flagged("a4_met_gus")>>
+    Captain Gus: Captain Gus, forty years at sea, thirty on this stool. I know every sailor word there is, lad.
+    Captain Gus: Port, starboard, bilge, scuttlebutt. Ask me anything. But not now.
+    Dex: Why not now?
+    Captain Gus: Because that jukebox ate my last quarter and played "Disco Lobster". I'll not speak another word of sailor until I hear the Barnacle Waltz. B-7.
+    Captain Gus: And I'm not leaving this stool. Thirty years. It's got my shape.
+    Dex: I don't suppose you've got another quarter?
+    Captain Gus: If I had a quarter, would I be sitting here in silence? Rummage in the junk barrel if you like. Take what you need. Most of it's useless. Like me without my song.
+    <<flag a4_met_gus>>
+<<elseif not flagged("a4_gus_song")>>
+    Captain Gus: (hums the Barnacle Waltz, badly) No song, no sailor talk, lad. B-7. Twenty-five cents.
+    <<if has("wish_quarter")>>
+        Dex: I've got a quarter now. To the jukebox!
+    <<elseif has("fishing_net")>>
+        Dex: A net on a long pole. If only there were coins at the bottom of some water around here...
+    <<else>>
+        Dex: A quarter. Where do people throw away perfectly good quarters? ...Oh. The wishing fountain.
+    <<endif>>
+<<else>>
+    Captain Gus: Ahh, the Barnacle Waltz. What can old Gus do for you, lad?
+    <<jump A4_Gus_Chat>>
+<<endif>>
+===
+title: A4_Gus_Chat
+---
+-> Ask about Lou's crossword clue <<if flagged("a4_lou_clue") and not flagged("a4_got_coaster")>>
+    Dex: A sailor's word for the bathroom. Four letters.
+    Captain Gus: Ha! That's the HEAD, lad. On a ship the bathroom's the head. Always has been.
+    Dex: Why?
+    Captain Gus: Because it's at the head of the ship. And you go there when you're ahead of schedule. And... look, I don't make the rules.
+    Captain Gus: Here, I'll write it on a coaster so you don't forget. Tell Lou that Gus says ahoy.
+    <<give gus_coaster>>
+    <<flag a4_got_coaster>>
+-> Ask to borrow his captain's hat <<if flagged("a4_met_bree") and not flagged("a4_got_hat")>>
+    Dex: There's an actress outside the diner. Her audition's tomorrow. She's playing a sea captain, and she doesn't have a hat.
+    Captain Gus: An actress playing a captain, with no hat? That's mutiny against good taste!
+    Captain Gus: (takes off his hat and looks at it for a long moment) This hat's been round Cape Horn three times. It's time it saw a stage.
+    Captain Gus: Tell her to wear it proud. And to tilt it a bit to the left. Captains always tilt left.
+    <<give captains_hat>>
+    <<flag a4_got_hat>>
+-> Ask for a sailor word
+    Captain Gus: "Scuttlebutt". It means gossip. Like the gossip that some lad in a flowery shirt is going to be on the telly.
+-> Ask for dating advice
+    Captain Gus: Listen to the lady, lad. Really listen. Every word she says is a map to the treasure.
+    Captain Gus: And never say "ahoy matey, wanna see my anchor". I tried it once. Took forty years to live down.
+-> Ask about the Barnacle Waltz
+    Captain Gus: Me and my Margaret danced to it on the deck in a storm. Both of us seasick. Best night of my life.
+-> Never mind
+    Captain Gus: Fair winds, lad.
+===
+title: A4_Gus_Quarter
+---
+<<if flagged("a4_gus_song")>>
+    Captain Gus: Keep it, lad. The waltz is already playing, and I'm not made of ears.
+<<else>>
+    Captain Gus: Don't give it to ME, lad. Give it to the jukebox! B-7! I'd get up, but... thirty years.
+<<endif>>
+===
+title: A4_Gus_Coaster
+---
+Captain Gus: That's for Lou at the Quickmart, not me. I already know my sailor words.
+===
+title: A4_Gus_Hat
+---
+Captain Gus: No, no, it's not mine anymore. It belongs to the actress now. Go on, lad, she's waiting.
+===
+title: A4_Gus_Headshots
+---
+Captain Gus: (squints) Is that my hat? On a movie star? (sniffs) The old hat's made it, lad. The old hat's made it.
+===
+
+title: Item_fishing_net_Look
+---
+Dex: A little fishing net on a long pole, from Gus's junk barrel. Smells like low tide.
+===
+title: Item_wish_quarter_Look
+---
+Dex: A quarter from the wishing fountain. Someone wished on this. Sorry, someone.
+===
+title: Item_gus_coaster_Look
+---
+Dex: A beer coaster. In shaky pen: "The answer is HEAD. Fair winds. Gus." Plus a little anchor doodle.
+===
+title: Item_captains_hat_Look
+---
+Dex: Captain Gus's captain's hat. Been round Cape Horn three times. Smells like pickles.
+===
+title: Item_disposable_camera_Look
+---
+Dex: A disposable camera from the Quickmart lost and found. Twenty-seven pictures left.
+===
+title: Item_full_camera_Look
+---
+Dex: The disposable camera, all used up. Twenty-six blinks and, I hope, one masterpiece.
+===
+title: Item_headshots_Look
+---
+Dex: Bree's headshots. The best one has her pointing at the horizon while a dog claps in the background. A star is born.
+===
+title: Item_diner_name_tag_Look
+---
+Dex: Bree's diner name tag. "Hi, I'm BREE. Ask me about the pie." Nobody has ever asked me about the pie.
+===
+title: Item_finished_crossword_Look
+---
+Dex: Lou's finished crossword. Seventeen Across, HEAD, in pen. The only crossword that ever made her smile.
+===

@@ -41,25 +41,20 @@ The auto-setup lives in `Assets/_Project/Editor/Setup/AutoSetup.cs`. Doing it by
 2. Install Input System from the Package Manager, and Yarn Spinner from git URL `https://github.com/YarnSpinnerTool/YarnSpinner-Unity.git#current`. Until both are installed, the game assemblies are skipped instead of failing to compile.
 3. **Edit > Project Settings > Editor**: Version Control mode = Visible Meta Files, Asset Serialization = Force Text.
 
-## Building the first room
+## Building the game
 
-The auto-setup runs **Big Night Out > Build Dorm Hallway Slice** for you the first time. You can run it again from the menu bar at any time. It:
+The auto-setup runs **Big Night Out > Build Game** for you the first time (the old name, Build Dorm Hallway Slice, still works). Run it again after any change. It reads `World/*.json` and:
 
-- generates flat-colour placeholder sprites in `Art/Placeholder`,
-- creates the seven items, the item database (with `lemon` + `soda`) and the `dex_room`, `dorm_hallway` and `lounge` room assets,
-- builds `Scenes/Rooms/DexRoom.unity`: Dex's dorm room, where the game starts, with the bed, mirror, desk and the door to the hallway,
-- builds `Scenes/Rooms/DormHallway.unity`: the doors to Dex's room and the lounge, Lacey Rae, Gil, the vending machine and the drinks table, all wired to their Yarn nodes,
-- builds `Scenes/Rooms/Lounge.unity`: the couch, the TV showing Roxy Vale's casting call for *Speed Daters Live*, and the sign-up sheet,
+- creates every item, the item database with its combinations, and one room asset per room,
+- builds one scene per room in `Scenes/Rooms` from the room's painted background (`Art/Painted`) and its hotspots, falling back to flat-colour placeholders where art is missing,
 - builds `Scenes/Boot.unity`: camera, player, room loader, mouse controls, hover label, inventory bar, pause menu, Yarn's Dialogue System with our bridge,
-- puts Boot and all three rooms in the build list and opens Boot.
+- puts Boot and every room in the build list and opens Boot.
 
-Press Play in Boot. The slice is solved when Dex has the cowboy hat: the dollar under Dex's pillow buys earplugs from the vending machine, the earplugs go to Gil for the album, the drinks table gives a lemon and a soda to combine, and both go to Lacey Rae. Her cowboy hat is the proof Roxy Vale's sign-up sheet in the lounge asks for (watch the TV first); signing up ends the demo and sets act 2.
+Press Play in Boot. The whole story runs from Dex's dorm room to the live Speed Daters Live finale: five acts and a finale, 18 rooms. [Docs/WALKTHROUGH.md](Docs/WALKTHROUGH.md) has the full solution, [Docs/STORY.md](Docs/STORY.md) the story bible, and [Docs/WORLD_FORMAT.md](Docs/WORLD_FORMAT.md) how to add rooms and puzzles. `python3 tools/check_world.py` checks the JSON and Yarn files without Unity, and `python3 tools/art/paint.py` (plus `act2.py` to `finale.py`) regenerates the art.
 
 Press **Esc** for the pause menu: Resume, Save, Load and Quit. Save and Load use one manual slot; the game also autosaves to its own slot on every room change.
 
-If you already built the rooms before Dex's room existed, run **Big Night Out > Build Dorm Hallway Slice** once to rebuild them.
-
-Running the tool again overwrites the generated scenes and placeholders, so stop using it once real art goes into those scenes. The first time it adds TextMeshPro text, Unity may ask to import TMP Essentials; accept.
+Running the tool again overwrites the generated scenes, so make changes in the JSON, Yarn and art files rather than in the scenes. The first time it adds TextMeshPro text, Unity may ask to import TMP Essentials; accept.
 
 ## What each hotspot runs
 

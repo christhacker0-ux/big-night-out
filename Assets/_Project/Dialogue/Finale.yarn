@@ -1,0 +1,753 @@
+title: F_Enter
+---
+<<if flagged("finale_won")>>
+    Dex: The studio after the show. Confetti everywhere. Some of it is in my shoes. I'm keeping it.
+<<elseif not flagged("f_intro")>>
+    Dex: The Speed Daters Live studio. Real cameras. Real lights. Real chance of throwing up on live TV.
+    Dex: And the audience... wait. That's everybody. Everybody I met tonight came to watch!
+    Chet Studwell: Well, well. You must be the other guy. Chet Studwell. Perfect teeth, perfect hair, perfect record.
+    Chet Studwell: Put 'er there, pal!
+    Dex: He shakes my hand with the hand that's holding a giant grape soda. Splash. All down my shirt.
+    Chet Studwell: Whoopsie! Purple's a great colour on you. For a loser.
+    Dex: A purple blob, right in the middle of my hibiscus. On live TV. Great.
+    <<flag f_intro>>
+    <<flag f_shirt_stained>>
+<<endif>>
+===
+
+title: F_Exit_Look
+---
+Dex: The stage door, back out to the campus. The red EXIT sign is judging me.
+===
+title: F_Exit_Use
+---
+<<if flagged("finale_won") or not flagged("f_intro")>>
+    <<go campus from_map>>
+<<else>>
+    Dex: Run away now? With everybody watching? Uncle Vic didn't raise a quitter. He mostly sent letters, but still.
+    -> Leave anyway, just for a minute
+        <<go campus from_map>>
+    -> Stay
+        Dex: Right. Showtime. Probably.
+<<endif>>
+===
+
+title: F_Roxy_Look
+---
+<<if flagged("finale_won")>>
+    Dex: Roxy Vale, finally off the clock, eating a cold slice of studio pizza. Still has perfect lighting.
+<<else>>
+    Dex: Roxy Vale at the hosting podium, flipping through cue cards. She looks like she was born under a spotlight.
+<<endif>>
+===
+title: F_Roxy_Talk
+---
+<<if flagged("finale_won")>>
+    <<jump F_Roxy_PostCredits>>
+<<elseif not flagged("f_met_roxy")>>
+    Roxy Vale: Lover boy! You made it to the grand finale! I knew it the second I saw that shirt.
+    Roxy Vale: Here's the deal. We go live when you're ready. And right now you are not ready.
+    Roxy Vale: One: you need a working mic. Two: that purple splotch can't be on my show. Three: bring your own track for the dance-off.
+    Roxy Vale: And four... Chet tells me you've been sneaking in help. A hidden earpiece, he says.
+    Dex: What? I don't even own an earpiece! I barely own pants!
+    Roxy Vale: Then clear your name, lover boy. This is a clean show. Mostly.
+    <<flag f_met_roxy>>
+<<elseif flagged("f_miked") and flagged("f_shirt_clean") and flagged("f_track_ready") and flagged("f_chet_busted")>>
+    <<jump F_Show>>
+<<else>>
+    Roxy Vale: Tick tock, lover boy. Here's what's still missing:
+    <<jump F_Hints>>
+<<endif>>
+===
+title: F_Hints
+---
+<<if not flagged("f_chet_busted")>>
+    <<if flagged("f_roxy_saw_walkie")>>
+        Roxy Vale: Your name's still muddy. That walkie says CHET on it, but Chet says it's a common name.
+        Dex: I need proof the walkie is his. Someone around here must keep track of the equipment. Someone with a clipboard.
+    <<elseif has("studio_walkie")>>
+        Dex: Wait. I've got Chet's walkie-talkie right here. I should show Roxy.
+    <<else>>
+        Roxy Vale: Chet still says you've got secret help.
+        Dex: Funny, Chet keeps touching his ear and saying "copy that". Somebody is feeding HIM lines. From where, though?
+    <<endif>>
+<<endif>>
+<<if not flagged("f_miked")>>
+    <<if has("lapel_mic") and has("nine_volt")>>
+        Dex: I've got the mic pack and a battery. I should snap them together.
+    <<elseif has("lapel_mic")>>
+        Roxy Vale: That mic pack's as dead as my last relationship. It needs a battery.
+        Dex: Mina's a scientist. Scientists always have batteries. Or know who does.
+    <<else>>
+        Roxy Vale: No mic, no show. Wardrobe keeps the spare mics on the rack.
+    <<endif>>
+<<endif>>
+<<if not flagged("f_shirt_clean")>>
+    <<if has("soda_water") and has("cocktail_napkin")>>
+        Dex: Club soda and a napkin. Blot, don't rub. I just have to put them together.
+    <<elseif flagged("f_bree_tip")>>
+        Dex: Bree said club soda and a napkin. Blot, don't rub. I need both.
+    <<else>>
+        Roxy Vale: That purple stain is still screaming at my cameras.
+        Dex: Who'd know how to fix a spill? Somebody who deals with spills all day. Like a waitress.
+    <<endif>>
+<<endif>>
+<<if not flagged("f_track_ready")>>
+    <<if has("floor_fillers_tape")>>
+        Dex: Dolly's mix is ready. It goes in the sound board.
+    <<elseif has("chet_mixtape")>>
+        Dex: I've got Chet's tape. A DJ could record over it. I know a DJ.
+    <<elseif flagged("f_saw_decks")>>
+        Dex: Both dance-off decks are loaded with Chet's tape. I should eject it.
+    <<else>>
+        Roxy Vale: And your dance-off track goes in the sound board. Go check it, sweetie.
+    <<endif>>
+<<endif>>
+===
+title: F_Roxy_Walkie
+---
+<<if flagged("f_roxy_saw_walkie")>>
+    Roxy Vale: I've seen it, lover boy. I need proof it's his.
+<<else>>
+    Roxy Vale: A walkie-talkie. Taped behind camera one. Labelled CHET. Set to channel CHET.
+    Roxy Vale: (into it) Testing.
+    Chet Studwell: (clutching his ear) OW! Who said that?
+    Roxy Vale: Interesting. But my lawyers say "Chet" is a common name. Bring me proof it's his and he's toast.
+    Dex: Proof. Who keeps track of every walkie in a building? Someone organised. Someone who runs everything...
+    <<take studio_walkie>>
+    <<flag f_roxy_saw_walkie>>
+<<endif>>
+===
+title: F_Roxy_Sheet
+---
+<<if not flagged("f_roxy_saw_walkie")>>
+    Roxy Vale: An equipment sign-out sheet. "Walkie number two: C. Studwell." So? Where's walkie number two?
+    Dex: Right. I need to find the actual walkie first.
+<<else>>
+    Roxy Vale: "Walkie number two. Signed out by C. Studwell. Reason: winning." In his own handwriting.
+    Roxy Vale: Chet Studwell! Hand over that earpiece. Now.
+    Chet Studwell: This is an outrage! My dad owns the network!
+    Roxy Vale: And I own this microphone. Earpiece. Hand. Now.
+    Dex: He drops a tiny earpiece into her palm. The audience boos him. Tess salutes me with her clipboard.
+    Roxy Vale: Your name is clear, lover boy. Sorry I doubted you. A little.
+    <<take sign_out_sheet>>
+    <<flag f_chet_busted>>
+<<endif>>
+===
+title: F_Roxy_Token
+---
+<<if flagged("finale_won")>>
+    Roxy Vale: Your souvenirs are the reason you won, lover boy. Hang on to every one of them.
+<<else>>
+    Roxy Vale: Ooh, a keepsake! Save it for the show, lover boy. Every one of those is going to come up.
+<<endif>>
+===
+title: F_Roxy_PostCredits
+---
+<<if not flagged("f_post1")>>
+    Roxy Vale: Lover boy! The credits rolled, the lights are off, and you're still here. That's commitment.
+    Roxy Vale: Network says the ratings were huge. Mostly from your dance moves. Mostly from people screaming.
+    <<flag f_post1>>
+<<elseif not flagged("f_post2")>>
+    Roxy Vale: Next season I'm doing a spin-off. "Speed Daters Live: The Group Date." You're in every episode.
+    Dex: All ten of them? At once?
+    Roxy Vale: You'll need a bigger shirt.
+    <<flag f_post2>>
+<<elseif not flagged("f_post3")>>
+    Roxy Vale: You know what I'll remember? Not the dance. You, running around all night bringing everybody exactly what they needed.
+    Roxy Vale: ...Also the dance. Mostly the dance.
+    <<flag f_post3>>
+<<else>>
+    Roxy Vale: Go home, lover boy. Get some sleep. Your fan club's waiting outside, and they've made signs.
+<<endif>>
+===
+
+title: F_Chet_Look
+---
+<<if flagged("finale_won")>>
+    Dex: Chet Studwell, sitting on the floor, still slightly sticky with his own grape soda. His teeth have lost their sparkle.
+<<elseif flagged("f_chet_busted")>>
+    Dex: Chet, earpiece-free and sulking. Without someone feeding him lines, he keeps opening his mouth and nothing comes out.
+<<else>>
+    Dex: Chet Studwell. Teeth like a toothpaste ad. He keeps touching his ear and muttering "copy that". To who?
+    <<flag f_saw_earpiece>>
+<<endif>>
+===
+title: F_Chet_Talk
+---
+<<if flagged("finale_won")>>
+    Chet Studwell: This isn't over, Dooley. My dad's buying the network a second time. Just to cancel you.
+    Dex: Chet, you can buy a network. You can't buy a hug. Want one?
+    Chet Studwell: ...Maybe later. Don't tell anyone.
+<<elseif flagged("f_chet_busted")>>
+    Chet Studwell: Fine, you caught me. Big deal. I don't need help. I'm a natural.
+    Chet Studwell: Ask me anything. Go on. Anything.
+    Dex: What's my name?
+    Chet Studwell: ...Rex? Dax? Dorkus?
+<<elseif not flagged("f_talked_chet")>>
+    Chet Studwell: Listen, kid. I've won every round of this show without breaking a sweat. Or learning a single name.
+    Chet Studwell: (touches his ear) What? Yes. Copy that. (to Dex) Your shirt looks like a fruit salad that lost a fight.
+    Dex: Who are you talking to?
+    Chet Studwell: Nobody! My... ear. I talk to my ear. Champions do that.
+    <<flag f_talked_chet>>
+    <<flag f_saw_earpiece>>
+<<else>>
+    Chet Studwell: (touches his ear) Copy that. (to Dex) Run along, loser. Grown-ups are winning.
+    Dex: Somebody's feeding him lines through that earpiece. There must be a radio around here somewhere.
+<<endif>>
+===
+title: F_Chet_Walkie
+---
+Chet Studwell: Never seen that walkie-talkie in my life. And I definitely didn't write CHET on it in glitter pen.
+Dex: He wrote CHET on it in glitter pen.
+===
+title: F_Chet_Item
+---
+Chet Studwell: I don't take handouts, loser. Unless they're trophies.
+===
+
+title: F_Audience_Look
+---
+<<if flagged("finale_won")>>
+    Dex: The whole audience is still here, chanting my name. Well, chanting "DEX-ish". Close enough.
+<<else>>
+    Dex: The studio audience. Lacey Rae, Ivy, Tess, Dolly, Mina, Sky, Bree, Lou, Mimi and Jett. They all came. For me.
+    Dex: Somebody has a sign that says "GO DEX". Somebody else has a sign that says "WHO IS DEX". Fair.
+<<endif>>
+===
+title: F_Audience_Talk
+---
+<<if flagged("finale_won")>>
+    Lacey Rae: Way to go, freshman!
+    Ivy: (louder than ever) You were listening so hard. We all saw it.
+    Tess Calloway: I've already scheduled the victory party. You're on the clipboard.
+    Dex: Best. Night. Ever.
+<<else>>
+    Dex: Who should I talk to?
+    -> Lacey Rae
+        <<jump F_Lacey>>
+    -> Ivy
+        <<jump F_Ivy>>
+    -> Tess Calloway
+        <<jump F_Tess>>
+    -> Dolly Spark
+        <<jump F_Dolly>>
+    -> Dr. Mina Volt
+        <<jump F_Mina>>
+    -> Sky Rivera
+        <<jump F_Sky>>
+    -> Bree Marlowe
+        <<jump F_Bree>>
+    -> Lou
+        <<jump F_Lou>>
+    -> Mimi
+        <<jump F_Mimi>>
+    -> Jett Vex
+        <<jump F_Jett>>
+    -> Never mind
+        Dex: I'll just wave. They all wave back. I might cry.
+<<endif>>
+===
+title: F_Lacey
+---
+Lacey Rae: Freshman! You wore the hat all the way to TV. I'm so proud I could yodel.
+<<if not flagged("f_shirt_clean")>>
+    Lacey Rae: But honey, that purple splotch. Ask a waitress. They've seen every stain known to man.
+<<else>>
+    Lacey Rae: When you dance tonight, remember: boots heavy, heart light. Scoot like you mean it.
+<<endif>>
+===
+title: F_Ivy
+---
+Ivy: (whispering) Hi. It's loud in here. I'm wearing the sunglasses again.
+<<if not flagged("f_chet_busted") and flagged("f_saw_earpiece")>>
+    Ivy: (whispering) I've been watching Chet. Quiet people notice things. He's getting lines from somewhere. Wireless ones.
+    Ivy: (whispering) Before you came in, he stood behind that camera for a long time. Way too long for a guy who isn't a camera.
+<<else>>
+    Ivy: (whispering) Whatever happens, you got me to read a poem in public. That's already a miracle.
+<<endif>>
+===
+title: F_Tess
+---
+<<if flagged("f_tess_helped")>>
+    Tess Calloway: I've drawn up a cheering schedule. Row two goes "Dex!", row three goes "Dooley!". Efficiency.
+<<elseif flagged("f_roxy_saw_walkie") or has("studio_walkie")>>
+    Tess Calloway: A walkie-talkie and no proof? Amateur hour. Luckily, I don't do amateur hour.
+    Tess Calloway: When I got here I found the studio's equipment sign-out sheet lying around. So naturally I took charge of it.
+    Tess Calloway: (flips pages) Walkie number two. Signed out by C. Studwell. Reason: "winning." Here. Take it to the host.
+    <<give sign_out_sheet>>
+    <<flag f_tess_helped>>
+<<else>>
+    Tess Calloway: Dex! I organised the whole audience. Seating chart, banners, a backup banner.
+    Tess Calloway: I also confiscated this studio's equipment log. Someone has to keep order around here. If you need anything checked, I'm your girl.
+<<endif>>
+===
+title: F_Dolly
+---
+<<if flagged("f_track_ready")>>
+    Dolly Spark: That mix is gonna blow the roof off. Not the fuse, though. I've learned my lesson.
+<<elseif flagged("f_dolly_helped")>>
+    Dolly Spark: Your tape's ready, babe. Pop it in the sound board.
+<<elseif has("chet_mixtape")>>
+    Dolly Spark: Is that a tape? Hand it here and I'll mix you something on it.
+<<elseif flagged("f_saw_decks")>>
+    Dolly Spark: Chet loaded his own tape in BOTH dance-off decks? That's not DJing, that's a crime.
+    Dolly Spark: Bring me any tape. Even a terrible one. I'll record right over it with a mix that'll make you dance like nobody's grading.
+<<else>>
+    Dolly Spark: Dex! Glow sticks for everybody! Hey, have you checked the sound board? I don't trust a dance-off I didn't DJ.
+<<endif>>
+===
+title: F_Mina
+---
+<<if flagged("f_miked")>>
+    Dr. Mina Volt: Your mic is reading strong. I can hear your heart rate from here. It's... elevated.
+<<elseif flagged("f_mina_tip")>>
+    Dr. Mina Volt: Nine-volt, remember? Sky has my spare. Go ask the girl with the megaphone.
+<<elseif has("lapel_mic")>>
+    Dr. Mina Volt: Let me see that mic pack. Hmm. Standard nine-volt clip, empty. Classic.
+    Dr. Mina Volt: I always carry spares, but I gave my last one to Sky for her megaphone. She owes me. Ask her.
+    <<flag f_mina_tip>>
+<<else>>
+    Dr. Mina Volt: Professor Nibbles says hello. He's in my coat pocket. He's not technically allowed in here.
+    Dr. Mina Volt: Fun fact: TV studios eat batteries. If anything electronic dies on you, come find me.
+<<endif>>
+===
+title: F_Sky
+---
+<<if flagged("f_sky_helped")>>
+    Sky Rivera: (megaphone) WHAT DO WE WANT? DEX TO WIN! WHEN DO WE WANT IT? AFTER THE COMMERCIAL BREAK!
+<<elseif flagged("f_mina_tip")>>
+    Sky Rivera: Mina's battery? For your mic? Say no more.
+    Sky Rivera: Power to the people. And to the people's microphones.
+    Dex: She pops it out of her megaphone and hands it over.
+    <<give nine_volt>>
+    <<flag f_sky_helped>>
+<<else>>
+    Sky Rivera: I'm here to support you. And to protest Chet. Mostly to protest Chet.
+    Sky Rivera: My megaphone's fully charged tonight, thanks to Mina's spare battery. I could scream for hours.
+<<endif>>
+===
+title: F_Bree
+---
+<<if flagged("f_shirt_clean")>>
+    Bree Marlowe: Look at you, camera-ready! Now hit your mark and find your light. Actor stuff.
+<<elseif flagged("f_bree_tip")>>
+    Bree Marlowe: Club soda on a napkin. Blot, don't rub. Lou's got a whole bag of drinks from the store.
+<<else>>
+    Bree Marlowe: Oh, honey, that's grape soda. I've had worse dumped on me by the lunch rush.
+    Bree Marlowe: Club soda on a napkin. Blot, don't rub. Here, I never go anywhere without napkins in my apron.
+    Bree Marlowe: As for club soda, Lou brought a whole bag of drinks from the store. Studio prices offend her.
+    <<give cocktail_napkin>>
+    <<flag f_bree_tip>>
+<<endif>>
+===
+title: F_Lou
+---
+<<if flagged("f_lou_helped")>>
+    Lou: I'm not smiling. My face is just tired from not smiling.
+<<elseif flagged("f_bree_tip")>>
+    Lou: Club soda. For the stain. Fine.
+    Lou: You finished my crossword. I owe you one. This is the one. Don't make it weird.
+    Dex: She hands me a bottle of club soda. Her mouth twitches. Was that... no. Couldn't be.
+    <<give soda_water>>
+    <<flag f_lou_helped>>
+<<else>>
+    Lou: I brought my own drinks. The studio charges six bucks a water. Criminals.
+    Lou: If you need something, ask. Don't ask twice.
+<<endif>>
+===
+title: F_Mimi
+---
+<<if not flagged("f_chet_busted")>>
+    Dex: Mimi points at Chet. Then at her ear. Then she mimes cranking an old-timey radio and pretends to tape it to something big with a lens.
+    Dex: She's saying... Chet has a radio taped to... a camera? Or an elephant. I really hope it's a camera.
+<<else>>
+    Dex: Mimi mimes a giant trophy. Then mimes handing it to me. Then mimes crying with joy. She's a lot.
+<<endif>>
+===
+title: F_Jett
+---
+<<if has("chet_mixtape")>>
+    Jett Vex: Is that Chet's mixtape? "Pump-Up Jams Volume 9: Songs About Chet." Wow. That's so bad it's almost punk.
+    Jett Vex: Almost. Give it to Dolly. Let her record over it before it hurts somebody.
+<<else>>
+    Jett Vex: Bored. ...Okay, a little less bored than usual. Don't let it go to your head.
+    Jett Vex: If that dance-off gets lame, I'm leaving. So don't let it get lame.
+<<endif>>
+===
+title: F_Audience_Mixtape
+---
+<<if flagged("f_dolly_helped")>>
+    Dolly Spark: I already made you a tape, babe.
+<<else>>
+    Dolly Spark: Chet's tape? Perfect. Recording over it is the nicest thing anyone could do for it.
+    Dolly Spark: (slams it into a tiny boombox) One... two... and DROP!
+    Jett Vex: Ugh. That's actually good. I hate it. Turn it up.
+    Dolly Spark: Done. "Dolly's Floor-Fillers, Dex Edition." Track one: Disco Volcano. Obviously. Put it in the sound board and dance like the fuse can't blow.
+    <<take chet_mixtape>>
+    <<give floor_fillers_tape>>
+    <<flag f_dolly_helped>>
+<<endif>>
+===
+title: F_Audience_Walkie
+---
+Tess Calloway: Dex! A walkie-talkie? Before you go waving that around, talk to me. I have paperwork.
+===
+title: F_Audience_Mic
+---
+Dr. Mina Volt: Is that a dead mic pack? Bring it over, let me take a look. Talk to me!
+===
+title: F_Audience_Item
+---
+Dex: They cheer at it politely. They'd cheer at anything I held up right now. It's nice.
+===
+
+title: F_Rack_Look
+---
+Dex: The wardrobe rack. Sequin jackets, feather boas, and a T-shirt with a tuxedo printed on it. There's a box of mic packs on the bottom.
+===
+title: F_Rack_Use
+---
+<<if flagged("f_took_mic") or flagged("f_miked")>>
+    Dex: I tried on a feather boa. It tried on me back. I'm leaving it.
+<<else>>
+    Dex: A box marked "MIC PACKS". All of them are dead. Of course they are. I'll take one anyway.
+    <<give lapel_mic>>
+    <<flag f_took_mic>>
+<<endif>>
+===
+
+title: F_Camera_Look
+---
+Dex: Camera One. It's pointed at the stage, and it's bigger than my whole dorm room.
+===
+title: F_Camera_Use
+---
+<<if flagged("f_took_walkie")>>
+    Dex: I look through the viewfinder. Everyone looks better on camera. Except Chet. Chet looks the same.
+<<else>>
+    Dex: On the back of the camera, hidden under a pile of cables: a walkie-talkie, taped down. CHET is written on it in glitter pen.
+    Walkie-talkie: (crackle) ...Chet, it's you. From earlier. Remember: smile, lie, repeat. Over.
+    Dex: He recorded his own cheat sheet. He's feeding himself lines through the earpiece!
+    <<give studio_walkie>>
+    <<flag f_took_walkie>>
+<<endif>>
+===
+
+title: F_Board_Look
+---
+Dex: The sound board. Two decks, labelled "DANCE-OFF: CONTESTANT 1" and "DANCE-OFF: CONTESTANT 2".
+===
+title: F_Board_Use
+---
+<<if flagged("f_track_ready")>>
+    Dex: Dolly's mix is cued up in deck two. I'm not touching anything else. Too many buttons.
+<<elseif flagged("f_ejected")>>
+    Dex: Deck two is empty. I need my own dance-off track to put in it.
+<<else>>
+    Dex: Deck one: "Chet's Pump-Up Jams, Volume 9". Deck two: ALSO "Chet's Pump-Up Jams, Volume 9". He loaded his tape in my deck!
+    Dex: (click) I eject the one in my deck. Now it's empty. I'll need something to put in it.
+    <<give chet_mixtape>>
+    <<flag f_ejected>>
+    <<flag f_saw_decks>>
+<<endif>>
+===
+title: F_Board_Tape
+---
+Dex: Dolly's mix, into deck two. Click. It even sounds good just sitting there.
+<<take floor_fillers_tape>>
+<<flag f_track_ready>>
+===
+title: F_Board_ChetTape
+---
+Dex: Put Chet's tape back in my deck? No thank you. "Songs About Chet" is not a dance-off strategy.
+===
+
+title: F_Applause_Look
+---
+Dex: An APPLAUSE sign. The most powerful object in television.
+===
+title: F_Applause_Use
+---
+<<if flagged("finale_won")>>
+    Dex: I flick the APPLAUSE sign on. The audience gives me a standing ovation. Again. Okay, one more time.
+<<else>>
+    Dex: I flick it on. The whole audience cheers. Lou does not cheer. Lou nods, which for Lou is a parade.
+<<endif>>
+===
+
+title: F_Mark_Look
+---
+<<if flagged("finale_won")>>
+    Dex: My contestant mark. Somebody's already drawn a little star on it.
+<<else>>
+    Dex: A taped X on the floor with "DEX" written on it. Wait, no, it says "DEC". Close enough.
+<<endif>>
+===
+title: F_Mark_Use
+---
+<<if flagged("finale_won")>>
+    Dex: I stand on my mark one more time. No cameras, no lights. Just me and the memory of the greatest dance-off of all time.
+<<elseif flagged("f_miked") and flagged("f_shirt_clean") and flagged("f_track_ready") and flagged("f_chet_busted")>>
+    Dex: I step onto my mark. Roxy nods. The red light flicks on.
+    <<jump F_Show>>
+<<elseif not flagged("f_met_roxy")>>
+    Dex: I should check in with the host before I start standing on things.
+<<else>>
+    Dex: I step on the mark. Nothing happens. I'm not ready yet. Roxy said so.
+    <<jump F_Hints>>
+<<endif>>
+===
+
+title: F_Combine_Mic
+---
+Dex: Battery in. Click. A tiny green light! I clip the mic to my collar. "Testing, testing." It works!
+Dr. Mina Volt: (from the audience) Science!
+<<take lapel_mic>>
+<<take nine_volt>>
+<<flag f_miked>>
+===
+title: F_Combine_Blot
+---
+Dex: Club soda on the napkin. Blot. Don't rub. Blot. Blot...
+Dex: The purple fades away. My hibiscus are back! Bree gives me a thumbs up from row two.
+<<take soda_water>>
+<<take cocktail_napkin>>
+<<flag f_shirt_clean>>
+===
+
+title: F_Show
+---
+Roxy Vale: Five, four, three... (she mouths two, one)
+Roxy Vale: GOOD EVENING, AMERICA! This is Speed Daters Live, the grand finale, coming to you LIVE!
+Roxy Vale: Two men. One night. One very confused studio audience. Let's meet our finalists!
+Roxy Vale: In the corner wearing the teeth, it's Chet Studwell!
+Chet Studwell: (points at the camera, winks, points at himself)
+Roxy Vale: And in the corner wearing every flower in Hawaii, it's Dex Dooley!
+Dex: (waves) Hi, Mom. Hi, Uncle Vic. Hi, everybody I met tonight. Please don't look at me directly.
+Roxy Vale: Round one: ELIMINATION! I'll call back every moment of your big night. Remember it, and you stay on. Fluff it, and you're out!
+<<jump F_Elim>>
+===
+title: F_Elim
+---
+<<if has("cowboy_hat")>>
+    Roxy Vale: First memory: a brown cowboy hat. Chet, whose hat is it?
+    Chet Studwell: Mine. I'm a cowboy. Yee... haw? Is it yee-haw?
+    Dex: It's Lacey Rae's. She only dances to real country. Hank Hollister, to be exact.
+    Lacey Rae: (from the audience) THAT'S MY FRESHMAN!
+<<endif>>
+<<if has("bookmark")>>
+    Roxy Vale: Next: a bookmark with a pressed daisy. What poem did it hold?
+    Chet Studwell: "Roses Are Red, Chet Is Great."
+    Dex: "Ode to the Quiet Kid in the Back Row." By Ivy.
+    Ivy: (standing up, loud and clear) "I am listening. I am listening so hard."
+    Dex: She said it out loud. In front of everyone. Somebody give her a medal.
+<<endif>>
+<<if has("sorority_pin")>>
+    Roxy Vale: A sorority pin! Chet, what's the name of the sorority's flamingo?
+    Chet Studwell: Flamingo... Steve?
+    Dex: Fernanda. And she's back on the porch where she belongs.
+    Tess Calloway: (checks a box on her clipboard) Correct, and adorable.
+<<endif>>
+<<if has("glow_bracelet")>>
+    Roxy Vale: A glow-stick bracelet! What kept blowing the Fuse Box's fuse?
+    Chet Studwell: Electricity. Next question.
+    Dex: Dolly's amp. Every time she dropped the bass.
+    Dolly Spark: (cranks her boombox) BWAAAM!
+<<endif>>
+<<if has("safety_goggles")>>
+    Roxy Vale: Safety goggles! Chet, who's the Professor?
+    Chet Studwell: Professor... Studwell? Me. I'm the Professor.
+    Dex: Professor Nibbles. A hamster. Now a lab mascot with a very happy retirement plan.
+    Dr. Mina Volt: (holding up a tiny hamster in a tiny graduation cap) He says hi!
+<<endif>>
+<<if has("protest_button")>>
+    Roxy Vale: A protest button! Chet, what does a good protest need?
+    Chet Studwell: A strongly-worded email from my dad.
+    Dex: A cause, some courage, and fresh batteries.
+    Sky Rivera: (megaphone) CORRECT!
+<<endif>>
+<<if has("diner_name_tag")>>
+    Roxy Vale: A diner name tag! What did Bree need for her audition?
+    Chet Studwell: A better job? Ha!
+    Dex: Headshots. Her audition's tomorrow morning, and she's going to crush it.
+    Bree Marlowe: (throws a napkin at Chet) Captain Coral, reporting for duty!
+<<endif>>
+<<if has("finished_crossword")>>
+    Roxy Vale: A finished crossword! Chet, how do you make Lou smile?
+    Chet Studwell: Tickets to the Chet Studwell Show?
+    Dex: You don't make Lou do anything. You finish her crossword, and you wait.
+    Lou: (the corner of her mouth moves one millimetre)
+    Roxy Vale: Folks, that's her second smile this week. Somebody call a scientist.
+<<endif>>
+<<if has("white_glove")>>
+    Roxy Vale: A single white glove! Mimi, would you like to give Chet a clue?
+    Dex: Mimi mimes a tiny box around Chet. Then she mimes him getting smaller. And smaller. And sadder.
+    Chet Studwell: Charades! Is it... me? Am I winning?
+    Dex: She's saying you're trapped in a box made of your own ego.
+<<endif>>
+<<if has("guitar_pick")>>
+    Roxy Vale: A guitar pick! Jett Vex, is this guy boring?
+    Jett Vex: Bored by everything. Except him. Don't make it a thing.
+<<endif>>
+Roxy Vale: Final elimination question, and it's a big one. Dex, what does your Uncle Vic always say?
+<<jump F_Elim_Final>>
+===
+title: F_Elim_Final
+---
+-> "Always wear a hibiscus shirt to a first date."
+    Roxy Vale: Bzzzt! Sweetie, nobody would say that. Try again.
+    <<jump F_Elim_Final>>
+-> "Be the guy who shows up with what they need."
+    Roxy Vale: Correct! And folks, he really did. Everybody in this audience got exactly what they needed tonight.
+    <<jump F_Elim_Result>>
+-> "Never trust a man with perfect teeth."
+    Roxy Vale: Good advice, but not his! Try again, lover boy.
+    Chet Studwell: Hey!
+    <<jump F_Elim_Final>>
+===
+title: F_Elim_Result
+---
+Roxy Vale: Chet Studwell, without your earpiece you answered zero questions correctly.
+Chet Studwell: The questions were biased! They were about things that happened!
+Roxy Vale: But network rules say the finale always ends in a dance-off. Who wrote that rule?
+Chet Studwell: My dad.
+Roxy Vale: Who owns the network?
+Chet Studwell: My dad.
+Roxy Vale: Then you know what time it is. DANCE! OFF!
+Dolly Spark: Hit it!
+Dex: Dolly's mix starts thumping out of the speakers. Okay, feet. Don't let me down. Or do, but rhythmically.
+<<jump F_Dance1>>
+===
+title: F_Dance1
+---
+Roxy Vale: Move one! Show us how you open!
+Lacey Rae: (from the audience) Boots heavy, heart light, freshman!
+-> Do the worm
+    Dex: I drop to the floor and do the worm. Except I forget the "worm" part. I'm just lying there.
+    Roxy Vale: Bold choice. Get up and try something else, sweetie.
+    <<jump F_Dance1>>
+-> Scoot like Lacey Rae taught me
+    Dex: Heel, toe, scoot, and tip the hat. Heel, toe, scoot, and TIP THE HAT!
+    Lacey Rae: YEEHAW!
+    Dex: The whole front row starts line dancing. Even Lou. Okay, not Lou. But Lou's foot moved.
+    <<jump F_Dance2>>
+-> Moonwalk
+    Dex: I try to moonwalk. I walk backwards into Camera One. The camera operator is not amused.
+    Roxy Vale: Ooh, that's gonna leave a mark. Try again!
+    <<jump F_Dance1>>
+===
+title: F_Dance2
+---
+Roxy Vale: Chet, your move!
+Chet Studwell: Watch and learn, Dooley. The Studwell Spin!
+Dex: Chet spins. And spins. And steps right into the puddle of grape soda he spilled on me earlier.
+Chet Studwell: WHOAAAA!
+Dex: He slides across the stage like a very expensive bowling ball. The audience gasps. Then cheers. For the puddle.
+Roxy Vale: Dex! Move two! Make it big!
+-> Pretend to be stuck in an invisible box
+    Dex: I put my palms up against a wall that isn't there. I push. I find a door. I open it. I'm free!
+    Dex: In the audience, Mimi stands up and mimes slow clapping. A mime's standing ovation. Silent and beautiful.
+    <<jump F_Dance3>>
+-> Do the robot
+    Dex: I do the robot. A robot that needs new batteries. Mina shakes her head sadly.
+    Roxy Vale: Low power, lover boy! Try again!
+    <<jump F_Dance2>>
+-> Shout "LOOK OVER THERE!" and run away
+    Dex: Everyone looks over there. There's nothing there. Everyone looks back at me. I'm still here.
+    Roxy Vale: Nice try. Dance!
+    <<jump F_Dance2>>
+===
+title: F_Dance3
+---
+Roxy Vale: Final move! Make it count!
+Jett Vex: (from the audience) Don't get lame now, Dooley!
+-> Bow politely and sit down
+    Dex: I bow. The audience waits. Jett yawns, very loudly, on purpose.
+    Roxy Vale: Not yet, lover boy! Big finish!
+    <<jump F_Dance3>>
+-> Slide into an air-guitar solo on my knees
+    Dex: I drop to my knees, slide all the way across the stage, and shred the loudest air guitar in television history.
+    Jett Vex: ...Okay. That was NOT boring.
+    Dex: Jett throws her arms in the air. The whole audience is on its feet. Ivy is screaming. IVY is SCREAMING.
+    <<jump F_Call>>
+-> Copy Chet's spin
+    Dex: I try the Studwell Spin. I spin. I get dizzy. I see three Roxys. All three of them look disappointed.
+    Roxy Vale: Be yourself, sweetie! Again!
+    <<jump F_Dance3>>
+===
+title: F_Call
+---
+Roxy Vale: Hold on, folks, we have a caller on the line! Caller, you're live on Speed Daters Live!
+Uncle Vic: (on the phone) Is this thing on? Dexter? It's your Uncle Vic!
+Dex: Uncle Vic?! You're watching?
+Uncle Vic: The whole retirement home is watching, kid. Mrs. Pomeroy fainted during the air guitar. In a good way.
+Uncle Vic: I told you to be the guy who shows up with what they need. I didn't know you'd do it for the whole city in one night.
+Uncle Vic: I'm proud of you, Dexter. Now win the thing. I've got twenty bucks on you with Mrs. Pomeroy.
+Dex: Thanks, Uncle Vic. I love you. Please don't call me Dexter on TV.
+Uncle Vic: Love you too, Dexter!
+<<jump F_Win>>
+===
+title: F_Win
+---
+Roxy Vale: The votes are in! The audience voted, the judges voted, and Mrs. Pomeroy voted twice!
+Roxy Vale: The winner of Speed Daters Live is... DEX DOOLEY!
+Dex: Confetti. So much confetti. Lacey Rae is yodelling. Sky is chanting. Mimi is miming fireworks. Tess has already made a banner.
+Chet Studwell: This is rigged! ...Wait, no, that was me. Never mind.
+Roxy Vale: Dex, you've won the grand prize: a dream date with anyone you choose! So, lover boy, who's it gonna be?
+-> Everybody. Group date at the diner. Bree's section.
+    Bree Marlowe: I'll push some tables together!
+    Lou: I'll bring my own drinks.
+    Roxy Vale: Ten dates at once? That's not a date, that's a parade. I love it!
+-> Roxy, obviously.
+    Roxy Vale: Oh, honey. I'm the host. I'm married to the show. But I'm flattered.
+    Roxy Vale: Pick everybody. It's what you do best.
+    Dex: Then everybody it is! Group date at the diner!
+-> Can I take Uncle Vic?
+    Uncle Vic: (still on the line) I accept!
+    Roxy Vale: Okay, Uncle Vic AND everybody. Diner. Group date. Go!
+Dex: When I signed up for this show I didn't have a talent, a partner, or a clue.
+Dex: Now I've got a cowboy hat, a pocket full of keepsakes, and a whole audience full of friends.
+Dex: Turns out you don't have to be the smoothest guy in the room. You just have to show up with what people need.
+Roxy Vale: That's our show! Goodnight, everybody! Goodnight, lover boy!
+<<flag finale_won>>
+Dex: THE END.
+Dex: (Thanks for playing Big Night Out! Stick around: the studio is still open, and Roxy has a few more things to say.)
+===
+
+title: Item_lapel_mic_Look
+---
+<<if has("nine_volt")>>
+    Dex: A wireless mic pack with an empty battery slot. And I've got a nine-volt right here.
+<<else>>
+    Dex: A wireless mic pack. Battery slot: empty. A mic with no power. Like me before coffee.
+<<endif>>
+===
+title: Item_nine_volt_Look
+---
+Dex: A nine-volt battery from Sky's megaphone. I lick it to check. Yep. Ow. Yep.
+===
+title: Item_soda_water_Look
+---
+Dex: A bottle of club soda from Lou's bag. The bubbles are the only cheerful thing about it.
+===
+title: Item_cocktail_napkin_Look
+---
+Dex: A napkin from Bree's apron. "Blot, don't rub," she said. Bree knows things.
+===
+title: Item_studio_walkie_Look
+---
+Dex: A walkie-talkie with CHET on it in glitter pen, set to channel CHET. Subtle, Chet.
+===
+title: Item_sign_out_sheet_Look
+---
+Dex: The studio equipment sign-out sheet. "Walkie number two. C. Studwell. Reason: winning."
+===
+title: Item_chet_mixtape_Look
+---
+Dex: "Chet's Pump-Up Jams, Volume 9: Songs About Chet." Track one: "Chet". Track two: "Also Chet".
+===
+title: Item_floor_fillers_tape_Look
+---
+Dex: "Dolly's Floor-Fillers, Dex Edition." Written over Chet's label in glitter. Chet's own glitter pen, probably.
+===

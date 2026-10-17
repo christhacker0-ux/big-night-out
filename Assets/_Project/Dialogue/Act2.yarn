@@ -1,0 +1,701 @@
+title: A2_GreekRow_Enter
+---
+<<if not flagged("greek_intro")>>
+    Dex: Greek Row. Big lawns, white columns, and houses with more letters on them than my last report card.
+    Dex: A pink sorority house on one side. A frat house that is visibly vibrating on the other.
+    Roxy Vale: Welcome to Greek Week, lover boy! The Quiz Round happens right here, once you've made some friends.
+    <<flag greek_intro>>
+<<elseif has("sorority_pin") and has("glow_bracelet") and not flagged("act2_done")>>
+    Dex: A sorority pin and a glow-stick bracelet. Roxy's going to love this.
+<<endif>>
+===
+
+title: A2_Hint
+---
+<<if not flagged("met_tess")>>
+    Dex: The sorority president on the porch looks like she's having a worse night than me. I should say hi.
+<<elseif not flagged("met_chad")>>
+    Dex: Tess says the frat has Fernanda. The guy guarding the frat door is the one to talk to.
+<<elseif not has("toga") and not flagged("toga_on")>>
+    <<if not has("bedsheet") and not flagged("took_sheet")>>
+        <<if flagged("sheet_ok")>>
+            Dex: Tess said I could borrow a sheet off the sorority clothesline.
+        <<else>>
+            Dex: I need a toga. There's a bedsheet on the sorority clothesline, but I'd better ask Tess first.
+        <<endif>>
+    <<elseif not has("safety_pin")>>
+        Dex: A sheet won't stay on by itself. The DJ in the Fuse Box bar is wearing about a hundred safety pins.
+    <<else>>
+        Dex: Bedsheet plus safety pin equals toga. Time for some arts and crafts.
+    <<endif>>
+<<elseif not flagged("toga_on")>>
+    Dex: I've got a toga. Chad needs to see it.
+<<elseif not flagged("frat_dark")>>
+    Dex: Fernanda's in a spotlight with the whole frat watching. If the lights went out... That breaker box in the frat house looked old.
+<<elseif has("fernanda")>>
+    Dex: I've got a seven-foot flamingo under my arm. Tess will want her back.
+<<elseif not flagged("took_fernanda")>>
+    Dex: The frat house lights are out. Now's my chance to grab Fernanda.
+<<elseif not flagged("dolly_fused")>>
+    <<if flagged("met_dolly")>>
+        Dex: Dolly needs a thirty-amp screw-in fuse. Funny, I have exactly one of those in my pocket.
+    <<else>>
+        Dex: I wonder why the bar called the Fuse Box is so quiet.
+    <<endif>>
+<<elseif not flagged("won_dolly")>>
+    Dex: Dolly wants a first request. The chalkboard in the bar says what she likes.
+<<else>>
+    Dex: A pin and a bracelet. Roxy is waiting at the podium.
+<<endif>>
+===
+
+title: A2_ToCampus_Look
+---
+Dex: The path back to the main quad.
+===
+title: A2_ToCampus_Use
+---
+<<go campus from_map>>
+===
+
+title: A2_Bedsheet_Look
+---
+Dex: A plain white bedsheet drying on the sorority clothesline. Big enough for a sail. Or a toga.
+===
+title: A2_Bedsheet_Use
+---
+<<if flagged("sheet_ok")>>
+    Dex: One borrowed bedsheet. It smells like lavender and organisation.
+    <<give bedsheet>>
+    <<flag took_sheet>>
+<<else>>
+    Dex: Tess is watching me over her clipboard. Stealing a sorority's laundry in front of its president is how people disappear.
+    Dex: I'd better ask her first.
+<<endif>>
+===
+
+title: A2_Tess_Look
+---
+<<if flagged("won_tess")>>
+    Dex: Tess Calloway, beaming at Fernanda and already planning a welcome-home brunch.
+<<else>>
+    Dex: Pearls, a clipboard, and the posture of someone with a five-year plan for her five-year plan.
+<<endif>>
+===
+title: A2_Tess_Talk
+---
+<<if flagged("won_tess")>>
+    Tess Calloway: Dex! Fernanda's home, the sisters are planning a parade, and I've scheduled it for nine fifteen.
+    -> Ask about the pin
+        Tess Calloway: It means you're a friend of the house. You can come to brunch. Nobody gets to come to brunch.
+    -> Ask about Fernanda
+        Tess Calloway: Seven feet of pink. Our mascot since 1987. She's seen things, Dex. She doesn't talk about them.
+    -> Ask about the Quiz Round
+        Tess Calloway: Roxy asks about the people you meet. Names, favourite things. Pay attention and you'll ace it.
+    -> Say goodbye
+        Tess Calloway: Goodbye, Dex. Wear the pin where people can see it.
+<<elseif has("fernanda")>>
+    <<jump A2_Tess_GiveFernanda>>
+<<elseif not flagged("met_tess")>>
+    Tess Calloway: Name? (clicks pen) You're not on my list.
+    Dex: Dex Dooley. I'm not on most lists.
+    Tess Calloway: Tess Calloway, chapter president. I'd love to chat, but we're in a crisis. Somebody stole Fernanda.
+    Dex: Who's Fernanda?
+    Tess Calloway: Our mascot! Seven feet of inflatable pink flamingo. She's stood on that stand every Greek Week since 1987.
+    Tess Calloway: And by "somebody" I mean the frat across the street. Chad Thunderclap won't let a single sister through the door.
+    Dex: Want me to try?
+    Tess Calloway: You? (looks you up and down) ...Actually, nobody would ever suspect you of anything.
+    Tess Calloway: Bring Fernanda home and you'll have the gratitude of the whole house. And mine.
+    <<flag met_tess>>
+    <<if flagged("met_chad")>>
+        <<jump A2_Tess_SheetOk>>
+    <<endif>>
+<<elseif flagged("toga_on")>>
+    Tess Calloway: You got inside? You're a spy now, Dex. A spy in a bedsheet.
+    <<if flagged("frat_dark")>>
+        Tess Calloway: Their lights just went out. Was that you? Don't answer. Plausible deniability.
+    <<else>>
+        Tess Calloway: They'll have her on display like a trophy. You'll never get her out with everybody watching.
+        Dex: Not with the lights on, anyway.
+    <<endif>>
+<<elseif flagged("met_chad") and not flagged("sheet_ok")>>
+    Dex: Chad says it's a toga party. No toga, no entry.
+    Tess Calloway: A toga party. Of course. Those cavemen think a bedsheet counts as formalwear.
+    <<jump A2_Tess_SheetOk>>
+<<elseif has("bedsheet")>>
+    Tess Calloway: That sheet will slide right off you halfway up the steps. You need something to hold it together.
+    Dex: Something small and pointy... I've seen someone wearing a lot of those.
+<<elseif has("toga")>>
+    Tess Calloway: Very Roman. Now go show it to the meathead at the door.
+<<else>>
+    Tess Calloway: Every minute Fernanda spends in that frat house, she loses a little air and a lot of dignity.
+    <<jump A2_Hint>>
+<<endif>>
+===
+title: A2_Tess_SheetOk
+---
+Tess Calloway: Fine. Take a sheet off our clothesline. Not the monogrammed towels. Those are for photos.
+<<flag sheet_ok>>
+===
+title: A2_Tess_GiveFernanda
+---
+Tess Calloway: FERNANDA! (throws her arms around the flamingo) She's a little deflated. So am I. We'll pump her up together.
+Dex: She was the centrepiece of their party. They were chanting her name.
+Tess Calloway: Of course they were. She's iconic.
+Tess Calloway: Dex Dooley, you are officially a friend of the house. Here, my sorority pin. It's been in my family since sophomore year.
+<<take fernanda>>
+<<give sorority_pin>>
+<<flag won_tess>>
+<<flag fernanda_home>>
+Tess Calloway: And a tip for the Quiz Round: Roxy loves names. Remember Fernanda.
+===
+title: A2_Tess_GiveSheet
+---
+Tess Calloway: You're returning it already? Keep it, it's for the cause. It just needs something to hold it on you.
+===
+title: A2_Tess_GiveToga
+---
+Tess Calloway: Very Roman. Don't show me, show the meathead at the frat door.
+===
+title: A2_Tess_GivePin
+---
+Tess Calloway: Keep it on, Dex. Pins don't work in pockets.
+===
+
+title: A2_Stand_Look
+---
+Dex: An empty stand with a brass plaque: "FERNANDA. Our Queen. Since 1987." Just two little flamingo footprints left.
+<<flag know_fernanda>>
+===
+title: A2_Stand_Use
+---
+Dex: I give the empty stand a respectful nod. Somewhere out there, a flamingo needs me.
+===
+title: A2_HomeFernanda_Look
+---
+Dex: Fernanda, back on her stand and fully re-inflated. She looks smug. Flamingos always look smug.
+===
+title: A2_HomeFernanda_Use
+---
+Dex: I give her a high five. Her wing squeaks.
+===
+
+title: A2_Podium_Look
+---
+Dex: A sparkly podium with a big red buzzer. A sign says "QUIZ ROUND. Bring two keepsakes from Greek Row."
+===
+title: A2_Podium_Use
+---
+<<jump A2_Roxy_Talk>>
+===
+
+title: A2_Roxy_Look
+---
+<<if flagged("act2_done")>>
+    Dex: Roxy Vale, touching up her lipstick in a buzzer's reflection.
+<<else>>
+    Dex: Roxy Vale, host of Speed Daters Live, standing next to a podium with a terrifying buzzer.
+<<endif>>
+===
+title: A2_Roxy_Talk
+---
+<<if flagged("act2_done")>>
+    Roxy Vale: You aced it, lover boy! The Dare Round is at Science Hall. It's on the campus map now.
+<<elseif has("sorority_pin") and has("glow_bracelet")>>
+    <<jump A2_QuizRound>>
+<<elseif not flagged("a2_met_roxy")>>
+    Roxy Vale: Lover boy! Welcome to Greek Week. This round is the Quiz Round.
+    Roxy Vale: I ask questions about the people you've met. Get them right, you go through. Get them wrong, I buzz you. Loudly.
+    Roxy Vale: But first, show me you've made friends here. Two keepsakes from two people on Greek Row.
+    Dex: Friends. On Greek Row. Me. Sure.
+    <<flag a2_met_roxy>>
+<<else>>
+    <<if has("sorority_pin")>>
+        Roxy Vale: A sorority pin! Look at you. One more keepsake and we're on.
+    <<elseif has("glow_bracelet")>>
+        Roxy Vale: Ooh, a glow-stick bracelet. Very rave. One more keepsake and we're on.
+    <<else>>
+        Roxy Vale: Two keepsakes from Greek Row, lover boy. Go be charming.
+    <<endif>>
+    <<jump A2_Hint>>
+<<endif>>
+===
+title: A2_Roxy_Token
+---
+<<if flagged("act2_done")>>
+    Roxy Vale: Keep your souvenirs, lover boy. You already won this one.
+<<elseif has("sorority_pin") and has("glow_bracelet")>>
+    <<jump A2_QuizRound>>
+<<else>>
+    Roxy Vale: Cute! That's one. I need two keepsakes before we start.
+<<endif>>
+===
+
+title: A2_QuizRound
+---
+Roxy Vale: Ladies and gentlemen, it's the Greek Week Quiz Round! Contestant Dex Dooley, are you ready?
+Dex: No. Yes. Go.
+Roxy Vale: Four questions about the people you met tonight. Wrong answers get a buzz and another try. Question one!
+<<jump A2_Quiz1>>
+===
+title: A2_Quiz1
+---
+Roxy Vale: Lacey Rae will only dance to one singer. Who is it?
+-> Hank Hollister
+    Roxy Vale: Correct! Yee-haw!
+    <<jump A2_Quiz2>>
+-> The Grumpy Toasters
+    Roxy Vale: BZZZT! That's the band on your dorm wall, lover boy. Try again.
+    <<jump A2_Quiz1>>
+-> Gil's snoring roommate
+    Roxy Vale: BZZZT! He snores, he doesn't sing. Try again.
+    <<jump A2_Quiz1>>
+===
+title: A2_Quiz2
+---
+Roxy Vale: Question two! What was the title of Ivy's poem at the Talent Round?
+-> "Sonnet for the Loud Kid in the Front Row"
+    Roxy Vale: BZZZT! Close, but backwards. Try again.
+    <<jump A2_Quiz2>>
+-> "Ode to the Quiet Kid in the Back Row"
+    Roxy Vale: Correct! Somewhere in the library, Ms. Hush is quietly proud.
+    <<jump A2_Quiz3>>
+-> "Shhh: A Poem"
+    Roxy Vale: BZZZT! That's just Ms. Hush's whole personality. Try again.
+    <<jump A2_Quiz2>>
+===
+title: A2_Quiz3
+---
+Roxy Vale: Question three! What is the name of the sorority's inflatable flamingo?
+-> Flora
+    Roxy Vale: BZZZT! Flora is a houseplant. Try again.
+    <<jump A2_Quiz3>>
+-> Mrs. Pinkfeathers
+    Roxy Vale: BZZZT! Adorable, but no. Try again.
+    <<jump A2_Quiz3>>
+-> Fernanda
+    Roxy Vale: Correct!
+    Tess Calloway: (from the porch) FER-NAN-DA!
+    <<jump A2_Quiz4>>
+===
+title: A2_Quiz4
+---
+Roxy Vale: Final question! What is Dolly Spark's favourite song?
+-> "Toga Toga Toga"
+    Roxy Vale: BZZZT! That's the only song the frat knows. Try again.
+    <<jump A2_Quiz4>>
+-> "Disco Volcano"
+    Roxy Vale: Correct!
+    <<jump A2_QuizWin>>
+-> "Hank Hollister Live"
+    Roxy Vale: BZZZT! Wrong girl, wrong genre. Try again.
+    <<jump A2_Quiz4>>
+===
+title: A2_QuizWin
+---
+Roxy Vale: Four out of four! Dex Dooley, you actually listen to people. Do you know how rare that is on television?
+Tess Calloway: That's our friend of the house!
+Dolly Spark: (from the bar door, airhorn) BWAAAAMP!
+Dex: I'd like to thank my ears. And everyone who talked to them.
+Roxy Vale: You're through to round three, lover boy! The Dare Round is at Science Hall, and it's on the campus map now.
+<<flag act2_done>>
+<<act 3>>
+Dex: Act Two, done. Science Hall is on the campus map.
+===
+
+title: A2_Chad_Look
+---
+<<if flagged("frat_dark")>>
+    Dex: Chad Thunderclap, guarding a dark frat house with total confidence.
+<<else>>
+    Dex: Chad Thunderclap, frat president. His neck has its own neck.
+<<endif>>
+===
+title: A2_Chad_Talk
+---
+<<if flagged("won_tess")>>
+    Chad Thunderclap: Bro. Somebody stole our stolen flamingo. That's, like, double stealing.
+    Chad Thunderclap: I'm furious. And also kind of impressed.
+<<elseif flagged("frat_dark")>>
+    Chad Thunderclap: Power's out, bro. The party's gone acoustic. We're just chanting now.
+<<elseif flagged("toga_on")>>
+    Chad Thunderclap: Toga bro! Get back in there. The flamingo chant starts on the hour.
+<<elseif not flagged("met_chad")>>
+    Chad Thunderclap: Whoa, whoa, whoa. Toga party, bro. No toga, no entry.
+    Dex: I'm wearing a Hawaiian shirt. That's basically a toga with buttons.
+    Chad Thunderclap: Rules are rules, bro. Togas only. And no sorority girls. They want their bird back.
+    Dex: Bird? You mean Fernanda?
+    Chad Thunderclap: ...I've said too much. TOGA. PARTY.
+    <<flag met_chad>>
+    Dex: A toga is just a bedsheet with ambition. I need a sheet, and something to keep it on me.
+<<else>>
+    Chad Thunderclap: No toga, no entry. It's not personal, bro. It's ancient Greek.
+    <<jump A2_Hint>>
+<<endif>>
+===
+title: A2_Chad_GiveToga
+---
+<<if flagged("toga_on")>>
+    Chad Thunderclap: You're already wearing it, bro.
+<<else>>
+    Chad Thunderclap: (inspects the toga) Draped. Pinned. Tasteful. Bro... it's beautiful.
+    Dex: (pulls it on over the Hawaiian shirt) Hail me.
+    Chad Thunderclap: HAIL YOU, BRO! Get in there!
+    <<take toga>>
+    <<flag toga_on>>
+    <<go frat_house from_row>>
+<<endif>>
+===
+title: A2_Chad_GiveSheet
+---
+Chad Thunderclap: Bro, that's a sheet. A toga is a sheet with commitment. Pin it or it's just bedding.
+===
+title: A2_Chad_GiveFernanda
+---
+Chad Thunderclap: Bro, you can't just hand me... wait. Is that... It's dark. I saw nothing.
+===
+
+title: A2_FratDoor_Look
+---
+Dex: The frat house door. It's thumping like a heartbeat. A very loud, very sweaty heartbeat.
+===
+title: A2_FratDoor_Use
+---
+<<if flagged("toga_on")>>
+    <<go frat_house from_row>>
+<<else>>
+    <<jump A2_Chad_Talk>>
+<<endif>>
+===
+
+title: A2_BarDoor_Look
+---
+Dex: A little bar called the Fuse Box. The neon sign is out. Fitting.
+===
+title: A2_BarDoor_Use
+---
+<<go fuse_box from_row>>
+===
+
+title: A2_Combine_Toga
+---
+Dex: Fold, wrap, drape, pin. I am a Roman senator. I am a bedsheet burrito. I am ready.
+<<take bedsheet>>
+<<take safety_pin>>
+<<give toga>>
+<<flag made_toga>>
+===
+
+title: A2_Frat_Enter
+---
+<<if not flagged("frat_intro")>>
+    Dex: Thirty guys in bedsheets, a disco ball, and a keg. And there, under a spotlight...
+    Dex: Fernanda! Seven feet of pink, surrounded by a whole dance floor chanting her name.
+    Dex: I can't just walk off with her. Everybody's staring right at her.
+    <<flag frat_intro>>
+<<elseif flagged("frat_dark") and not flagged("frat_dark_intro")>>
+    Dex: Still pitch dark in here. The party has evolved into a sing-along.
+    <<flag frat_dark_intro>>
+<<endif>>
+===
+title: A2_FratExit_Look
+---
+Dex: The front door, back out to Greek Row.
+===
+title: A2_FratExit_Use
+---
+<<if has("fernanda") and not flagged("fernanda_escape")>>
+    Dex: Chad's at the door. I'll just stroll past with a seven-foot flamingo. In the dark, she's just a tall friend.
+    Chad Thunderclap: Night, bro. Night, tall lady.
+    <<flag fernanda_escape>>
+<<endif>>
+<<go greek_row from_frat>>
+===
+title: A2_Keg_Look
+---
+Dex: A keg labelled "THE HARD STUFF". It's root beer. Chad's secret is safe with me.
+===
+title: A2_Keg_Use
+---
+Dex: A cup of root beer, served with confidence. Very refreshing. Very hard.
+===
+title: A2_Photos_Look
+---
+Dex: Frat photos going back to 1912. Every year, at least one guy named Chad. They might all be the same Chad.
+===
+title: A2_Photos_Use
+---
+Dex: 1987: "The Year We Almost Got the Flamingo." Looks like they've been trying for a while.
+===
+title: A2_Fernanda_Look
+---
+<<if flagged("frat_dark")>>
+    Dex: A tall pink shape in the dark. Seven feet of fabulous, and nobody's watching her.
+<<else>>
+    Dex: Fernanda, under a spotlight, with a ring of guys in togas dancing around her like she's a campfire.
+<<endif>>
+===
+title: A2_Fernanda_Use
+---
+<<if flagged("frat_dark")>>
+    Dex: I tuck Fernanda under my arm. She squeaks. Somebody in the dark says "Dude, was that you?"
+    Dex: Somebody else says "Is this the bathroom?" Nobody notices a flamingo leaving.
+    <<give fernanda>>
+    <<flag took_fernanda>>
+<<else>>
+    Dex: In the spotlight, with thirty guys watching? I'd be toga-tackled before I took a step.
+    Dex: If only the lights went out for a minute.
+<<endif>>
+===
+title: A2_DanceFloor_Look
+---
+<<if flagged("frat_dark")>>
+    Dex: Thirty guys bumping into each other in the dark. Somebody just apologised to a lamp.
+<<else>>
+    Dex: A disco ball, flashing lights, and thirty guys doing the sprinkler in bedsheets.
+<<endif>>
+===
+title: A2_DanceFloor_Use
+---
+<<if flagged("frat_dark")>>
+    Dex: I join the sing-along. It's "Toga Toga Toga". It's the only song they know.
+<<else>>
+    Dex: I do one sprinkler. Respectfully. A guy named Chad gives me a high five.
+<<endif>>
+===
+title: A2_Breaker_Look
+---
+<<if flagged("frat_dark")>>
+    Dex: The breaker box, with an empty socket where the main fuse used to be.
+<<else>>
+    Dex: An ancient breaker box with old screw-in fuses, like in my grandma's basement. The big one says "MAIN 30A".
+    <<if flagged("met_dolly") and not flagged("dolly_fused")>>
+        Dex: Thirty amps. Old screw-in kind. That's exactly what Dolly needs.
+    <<endif>>
+<<endif>>
+===
+title: A2_Breaker_Use
+---
+<<if flagged("frat_dark")>>
+    Dex: Nothing left to unscrew. Unless I want to unscrew the box itself. I don't.
+<<else>>
+    Dex: Lefty loosey... The music dies. The lights die. Thirty guys scream at the same pitch.
+    Dex: One thirty-amp fuse, warm and slightly sticky, now in my pocket.
+    <<give frat_fuse>>
+    <<flag frat_dark>>
+    <<flag frat_dark_intro>>
+<<endif>>
+===
+title: A2_Breaker_PutBack
+---
+Dex: Put it back? Somebody else needs this more than a dark room full of guys in sheets.
+===
+
+title: A2_Bar_Enter
+---
+<<if not flagged("bar_intro")>>
+    Dex: The Fuse Box. Candles on every table, a DJ booth, a giant amp, and a silence you could cut with a knife.
+    Dolly Spark: Don't say it. I know it's quiet.
+    <<flag bar_intro>>
+<<elseif flagged("dolly_fused") and not flagged("bar_loud")>>
+    Dex: The Fuse Box, alive and pounding. The candles are vibrating.
+    <<flag bar_loud>>
+<<endif>>
+===
+title: A2_BarExit_Look
+---
+Dex: The door back out to Greek Row.
+===
+title: A2_BarExit_Use
+---
+<<go greek_row from_bar>>
+===
+title: A2_Counter_Look
+---
+Dex: A sticky wooden bar lit by candles. A tip jar says "TIPS FOR FUSES".
+===
+title: A2_Counter_Use
+---
+<<if flagged("dolly_fused")>>
+    Dex: The blender works again. Somebody orders a smoothie and cries a little.
+<<else>>
+    Dex: The blender's dead, the soda gun's dead, the lights are dead. Even the candles look tired.
+<<endif>>
+===
+title: A2_FusePanel_Look
+---
+<<if flagged("dolly_fused")>>
+    Dex: The fuse panel, with a borrowed frat fuse glowing happily in the socket.
+<<else>>
+    Dex: The bar's fuse panel. One socket, one blackened, extremely dead fuse. "30A" is scratched on the door.
+<<endif>>
+===
+title: A2_FusePanel_Use
+---
+<<if flagged("dolly_fused")>>
+    Dex: It's working. I'm not touching it.
+<<else>>
+    Dex: I unscrew the dead fuse. It's toasted. I screw it back in out of politeness.
+    Dex: I need an old thirty-amp screw-in fuse. Nobody's made those in decades.
+<<endif>>
+===
+title: A2_Board_Look
+---
+Dex: A chalkboard: "DJ DOLLY SPARK TONIGHT! Requests welcome." Underneath, smaller: "Dolly's number one favourite song: DISCO VOLCANO."
+<<flag know_dolly_song>>
+===
+title: A2_Board_Use
+---
+Dex: Somebody wrote "TOGA TOGA TOGA" underneath. Somebody else crossed it out very hard.
+<<flag know_dolly_song>>
+===
+title: A2_Booth_Look
+---
+<<if flagged("dolly_fused")>>
+    Dex: Two turntables spinning and a laptop covered in stickers. Pure power.
+<<else>>
+    Dex: Two turntables, a laptop covered in stickers, and zero electricity.
+<<endif>>
+===
+title: A2_Booth_Use
+---
+<<if flagged("dolly_fused")>>
+    Dolly Spark: Hands off the decks, friend. You can request, not touch.
+<<else>>
+    Dex: Turntables with no power. Like a car with no wheels. Or a duck with no quack.
+<<endif>>
+===
+title: A2_Amp_Look
+---
+Dex: An amp the size of a fridge. Somebody painted "BIG BERTHA" on the side. This is what keeps eating the fuse.
+===
+title: A2_Amp_Use
+---
+Dolly Spark: Don't touch Bertha. She's sensitive. She just blows fuses when she's happy.
+===
+
+title: A2_Dolly_Look
+---
+<<if flagged("won_dolly")>>
+    Dex: Dolly Spark, glowing neon in the dark and bouncing to Disco Volcano. Again.
+<<else>>
+    Dex: Neon hair, headphones, and a denim jacket held together by more safety pins than jacket.
+<<endif>>
+===
+title: A2_Dolly_Talk
+---
+<<if flagged("won_dolly")>>
+    Dolly Spark: (over the music) FRIEND! You saved my night!
+    -> Ask about the bracelet
+        Dolly Spark: It means you're with the DJ. Flash it at any party and they'll let you near the speakers.
+    -> Ask for another song
+        Dolly Spark: Disco Volcano again? Excellent choice. I'll put it on loop.
+    -> Say goodbye
+        Dolly Spark: Bye, friend! Don't blow any fuses on your way out.
+<<elseif flagged("dolly_fused")>>
+    Dolly Spark: Power's back! Okay, friend, the first request is yours. What do you want to hear?
+    <<jump A2_Dolly_Request>>
+<<else>>
+    <<if not flagged("met_dolly")>>
+        Dolly Spark: Hey. Welcome to the quietest bar on Greek Row. I'm Dolly Spark. I'm the DJ. Allegedly.
+        Dex: Dex. Where's the music?
+        Dolly Spark: (points at the amp) Big Bertha blew the fuse. Third time tonight. And that was the bar's last spare.
+        Dolly Spark: It's the ancient screw-in kind. Thirty amps. They stopped making them before I was born.
+        Dolly Spark: Only the oldest houses on this street still have them. Find me one and I'll play you anything.
+        <<flag met_dolly>>
+    <<else>>
+        Dolly Spark: No fuse, no music. I'm just a girl standing in the dark with a lot of safety pins.
+    <<endif>>
+    -> Ask for a safety pin <<if not flagged("got_pin")>>
+        <<if flagged("met_chad")>>
+            Dex: I need to make a toga. Could I borrow a safety pin?
+            Dolly Spark: A toga for the frat? Ha. Every DJ carries emergency pins. Wardrobe malfunctions, broken headphones, broken hearts.
+            Dolly Spark: Here. Pin responsibly.
+            <<give safety_pin>>
+            <<flag got_pin>>
+        <<else>>
+            Dolly Spark: What for?
+            Dex: ...I don't know yet.
+            Dolly Spark: Come back when you've got a reason. These pins are load-bearing.
+        <<endif>>
+    -> Ask about her favourite song
+        Dolly Spark: "Disco Volcano." Six minutes of bass that hits you like lava. It's on the board. It's always on the board.
+        <<flag know_dolly_song>>
+    -> Ask where to find a fuse
+        Dolly Spark: Old thirty-amp screw-in. Try the oldest house on the street. Hint: it's the loud one.
+    -> Never mind
+        Dolly Spark: Cool. I'll be here. In the dark.
+<<endif>>
+===
+title: A2_Dolly_GiveFuse
+---
+<<if flagged("dolly_fused")>>
+    Dolly Spark: One fuse is plenty, friend. Bertha and I have promised to behave.
+<<else>>
+    Dolly Spark: Is that... a thirty-amp screw-in fuse? Where did you even... No. Don't tell me.
+    Dolly Spark: (screws it into the panel) Lights! Power! Bertha, say hello!
+    Dex: The amp hums like a happy hippo. The candles look relieved.
+    <<take frat_fuse>>
+    <<flag dolly_fused>>
+    <<flag met_dolly>>
+    <<flag bar_loud>>
+    Dolly Spark: You absolute legend. The first request is yours. What do you want to hear?
+    <<jump A2_Dolly_Request>>
+<<endif>>
+===
+title: A2_Dolly_Request
+---
+-> "Disco Volcano"
+    Dolly Spark: (gasps) You know Disco Volcano? Nobody requests Disco Volcano. Except me. Constantly.
+    Dex: The bass hits. The floor shakes. Dolly dances like nobody's watching. I'm watching. It's great.
+    Dolly Spark: Okay, you're officially my favourite person tonight. Here, a glow-stick bracelet. It means you're with the DJ.
+    <<give glow_bracelet>>
+    <<flag won_dolly>>
+    <<flag know_dolly_song>>
+-> "Hank Hollister Live"
+    Dolly Spark: Country? In MY booth? Respect, but no. Think harder, friend. What's my jam?
+    <<if not flagged("know_dolly_song")>>
+        Dex: Her favourite song. Maybe it's written somewhere in here.
+    <<endif>>
+-> "Toga Toga Toga"
+    Dolly Spark: Absolutely not. That song is banned in three states and this bar.
+-> Let me think about it
+    Dolly Spark: Take your time. First requests are sacred.
+===
+title: A2_Dolly_GiveSheet
+---
+Dolly Spark: Cute, but I'm not dressing up as a ghost tonight. Maybe next Halloween.
+===
+title: A2_Dolly_GiveFernanda
+---
+Dolly Spark: Is that the sorority flamingo? You should get her home before Tess Calloway sends a search party. With clipboards.
+===
+
+title: Item_bedsheet_Look
+---
+Dex: A plain white bedsheet, borrowed from the sorority. It smells like lavender and organisation.
+===
+title: Item_safety_pin_Look
+---
+Dex: A big safety pin from Dolly's jacket. Pin responsibly.
+===
+title: Item_toga_Look
+---
+Dex: My homemade toga. A bedsheet with ambition, pinned at the shoulder.
+===
+title: Item_frat_fuse_Look
+---
+Dex: An old screw-in fuse, stamped "30A". It used to keep a whole frat house lit.
+===
+title: Item_fernanda_Look
+---
+Dex: Fernanda, seven feet of inflatable flamingo, folded awkwardly under my arm. She looks judgemental.
+===
+title: Item_sorority_pin_Look
+---
+Dex: Tess Calloway's sorority pin, pink and gold with the house letters on it. I'm a friend of the house.
+===
+title: Item_glow_bracelet_Look
+---
+Dex: Dolly's glow-stick bracelet. It means I'm with the DJ. It also means my wrist is green.
+===

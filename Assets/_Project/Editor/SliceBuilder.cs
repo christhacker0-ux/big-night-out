@@ -18,10 +18,11 @@ using Object = UnityEngine.Object;
 namespace BigNightOut.EditorTools
 {
     /// <summary>
-    /// Big Night Out > Build Dorm Hallway Slice.
-    /// Creates placeholder art, item and room assets, the DexRoom, DormHallway and Lounge room scenes and the Boot scene,
-    /// wires every reference, and adds the scenes to the build. Safe to run again: it overwrites
-    /// the generated files, so do not hand-edit them until the real art arrives.
+    /// Big Night Out > Build Game (also still under its old name, Build Dorm Hallway Slice).
+    /// Reads every World/*.json file (items, item combinations, rooms and their hotspots),
+    /// creates the item and room assets, one scene per room and the Boot scene, wires every
+    /// reference, and adds the scenes to the build. Safe to run again: it overwrites the
+    /// generated files, so change the JSON and Yarn files rather than the scenes.
     /// </summary>
     public static class SliceBuilder
     {
@@ -38,36 +39,22 @@ namespace BigNightOut.EditorTools
         const string RoomFolder = Root + "/Resources/Rooms";
         const string PrefabFolder = Root + "/Prefabs";
         const string BootPath = Root + "/Scenes/Boot.unity";
-        const string HallwayPath = Root + "/Scenes/Rooms/DormHallway.unity";
-        const string DexRoomPath = Root + "/Scenes/Rooms/DexRoom.unity";
-        const string LoungePath = Root + "/Scenes/Rooms/Lounge.unity";
+        const string RoomSceneFolder = Root + "/Scenes/Rooms";
+        const string WorldFolder = Root + "/World";
+        const string FirstRoomId = "dex_room";
 
-        static readonly (string id, string name, Color color)[] Items =
-        {
-            ("earplugs", "Earplugs", new Color(1f, 0.85f, 0.2f)),
-            ("dance_album", "Hank Hollister Live", new Color(0.6f, 0.3f, 0.1f)),
-            ("lemon", "Lemon", new Color(1f, 0.95f, 0.3f)),
-            ("soda", "Soda", new Color(0.3f, 0.7f, 1f)),
-            ("hallway_hooch", "Hallway Hooch", new Color(0.9f, 0.5f, 0.2f)),
-            ("cowboy_hat", "Cowboy Hat", new Color(0.55f, 0.35f, 0.2f)),
-            ("dollar", "Crumpled Dollar", new Color(0.45f, 0.75f, 0.4f)),
-        };
-
-        [MenuItem("Big Night Out/Build Dorm Hallway Slice")]
+        [MenuItem("Big Night Out/Build Game")]
         public static void Build()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
 
-            foreach (var folder in new[] { PlaceholderFolder, ItemFolder, RoomFolder, PrefabFolder, Root + "/Scenes/Rooms" })
+            foreach (var folder in new[] { PlaceholderFolder, ItemFolder, RoomFolder, PrefabFolder, RoomSceneFolder })
                 EnsureFolder(folder);
 
-            BuildItems();
-            BuildRoomDefinition("dex_room", "DexRoom");
-            BuildRoomDefinition("dorm_hallway", "DormHallway");
-            BuildRoomDefinition("lounge", "Lounge");
-            BuildDexRoomScene(RoomAsset("dex_room"));
-            BuildHallwayScene(RoomAsset("dorm_hallway"));
-            BuildLoungeScene(RoomAsset("lounge"));
+            var world = LoadWorld();
+            BuildItems(world);
+            foreach (var room in world.rooms) BuildRoomDefinition(room.id, room.scene);
+            foreach (var room in world.rooms) BuildRoomScene(room);
             BuildSlotPrefab();
             if (Painted("player_dex", true) == null)
                 PlaceholderSprite("player_dex", 32, 80, new Color(0.3f, 0.85f, 0.4f), 32, true);
@@ -75,22 +62,89 @@ namespace BigNightOut.EditorTools
             // Reload every asset by path right before wiring it: importing the placeholder sprites can
             // leave earlier in-memory copies stale, and a stale copy is saved as an empty reference.
             AssetDatabase.SaveAssets();
-            var rooms = new[] { RoomAsset("dex_room"), RoomAsset("dorm_hallway"), RoomAsset("lounge") };
+            var rooms = world.rooms.Select(r => RoomAsset(r.id)).ToArray();
             var database = AssetDatabase.LoadAssetAtPath<ItemDatabase>(DatabasePath);
             var slotPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(SlotPrefabPath).GetComponent<InventorySlot>();
-            BuildBootScene(rooms, rooms[0], database, slotPrefab);
+            BuildBootScene(rooms, RoomAsset(FirstRoomId) ?? rooms[0], database, slotPrefab);
 
-            EditorBuildSettings.scenes = new[]
-            {
-                new EditorBuildSettingsScene(BootPath, true),
-                new EditorBuildSettingsScene(DexRoomPath, true),
-                new EditorBuildSettingsScene(HallwayPath, true),
-                new EditorBuildSettingsScene(LoungePath, true),
-            };
+            EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(BootPath, true) }
+                .Concat(world.rooms.Select(r => new EditorBuildSettingsScene(RoomScenePath(r.scene), true)))
+                .ToArray();
 
             EditorSceneManager.OpenScene(BootPath);
-            Debug.Log("Dorm Hallway slice built. Press Play in the Boot scene.");
+            Debug.Log($"Big Night Out built: {world.rooms.Count} rooms, {world.items.Count} items. Press Play in the Boot scene.");
         }
+
+        // The old menu name, kept so existing instructions still work.
+        [MenuItem("Big Night Out/Build Dorm Hallway Slice")]
+        public static void BuildOldName() => Build();
+
+        static string RoomScenePath(string scene) => $"{RoomSceneFolder}/{scene}.unity";
+
+        // ---------- World files ----------
+        // JsonUtility can't read Vector2 from [x, y], so positions are float arrays.
+
+        [Serializable] public class ItemSpec { public string id; public string name; public float[] color; }
+        [Serializable] public class ComboSpec { public string a; public string b; public string node; }
+        [Serializable] public class EntrySpec { public string name; public float[] pos; public bool faceLeft; }
+        [Serializable] public class ItemNodeSpec { public string item; public string node; }
+        [Serializable] public class HotspotSpec
+        {
+            public string name;
+            public float[] feet;
+            public float[] size;
+            public float[] color;
+            public float[] standAt;
+            public bool faceLeft;
+            public string look;
+            public string use;
+            public ItemNodeSpec[] items;
+            public string hideWhenFlag;
+            public string showWhenFlag;
+        }
+        [Serializable] public class RoomSpec
+        {
+            public string id;
+            public string scene;
+            public string onEnter;
+            public float[] wall;
+            public float[] floor;
+            // Flat list of x, y pairs. Empty means the standard floor strip.
+            public float[] walkable;
+            public EntrySpec[] entries;
+            public HotspotSpec[] hotspots;
+        }
+        [Serializable] public class WorldFile
+        {
+            public ItemSpec[] items;
+            public ComboSpec[] combinations;
+            public RoomSpec[] rooms;
+        }
+
+        public class World
+        {
+            public readonly System.Collections.Generic.List<ItemSpec> items = new System.Collections.Generic.List<ItemSpec>();
+            public readonly System.Collections.Generic.List<ComboSpec> combinations = new System.Collections.Generic.List<ComboSpec>();
+            public readonly System.Collections.Generic.List<RoomSpec> rooms = new System.Collections.Generic.List<RoomSpec>();
+        }
+
+        static World LoadWorld()
+        {
+            var world = new World();
+            foreach (var path in Directory.GetFiles(WorldFolder, "*.json").OrderBy(p => p))
+            {
+                var file = JsonUtility.FromJson<WorldFile>(File.ReadAllText(path));
+                if (file == null) { Debug.LogError($"Could not read {path}."); continue; }
+                if (file.items != null) world.items.AddRange(file.items);
+                if (file.combinations != null) world.combinations.AddRange(file.combinations);
+                if (file.rooms != null) world.rooms.AddRange(file.rooms);
+            }
+            if (world.rooms.Count == 0) throw new Exception($"No rooms found in {WorldFolder}/*.json.");
+            return world;
+        }
+
+        static Vector2 V(float[] a, Vector2 fallback = default) => a != null && a.Length >= 2 ? new Vector2(a[0], a[1]) : fallback;
+        static Color C(float[] a, Color fallback) => a != null && a.Length >= 3 ? new Color(a[0], a[1], a[2]) : fallback;
 
         const string DatabasePath = ItemFolder + "/ItemDatabase.asset";
         const string SlotPrefabPath = PrefabFolder + "/InventorySlot.prefab";
@@ -99,23 +153,23 @@ namespace BigNightOut.EditorTools
 
         // ---------- Data ----------
 
-        static void BuildItems()
+        static void BuildItems(World world)
         {
             // Make every icon first, so no import happens while item references are being wired.
-            foreach (var (id, _, color) in Items)
-                if (Painted($"icon_{id}", false) == null)
-                    PlaceholderSprite($"icon_{id}", 64, 64, color, 64, false);
+            foreach (var spec in world.items)
+                if (Painted($"icon_{spec.id}", false) == null)
+                    PlaceholderSprite($"icon_{spec.id}", 64, 64, C(spec.color, Color.gray), 64, false);
 
-            foreach (var (id, displayName, _) in Items)
+            foreach (var spec in world.items)
             {
-                var item = LoadOrCreate<ItemDefinition>($"{ItemFolder}/Item_{id}.asset");
+                var item = LoadOrCreate<ItemDefinition>($"{ItemFolder}/Item_{spec.id}.asset");
                 var itemSo = new SerializedObject(item);
-                itemSo.FindProperty("id").stringValue = id;
-                itemSo.FindProperty("displayName").stringValue = displayName;
+                itemSo.FindProperty("id").stringValue = spec.id;
+                itemSo.FindProperty("displayName").stringValue = spec.name;
                 itemSo.FindProperty("icon").objectReferenceValue =
-                    AssetDatabase.LoadAssetAtPath<Sprite>($"{PaintedFolder}/icon_{id}.png") ??
-                    AssetDatabase.LoadAssetAtPath<Sprite>($"{PlaceholderFolder}/icon_{id}.png");
-                itemSo.FindProperty("lookNode").stringValue = $"Item_{id}_Look";
+                    AssetDatabase.LoadAssetAtPath<Sprite>($"{PaintedFolder}/icon_{spec.id}.png") ??
+                    AssetDatabase.LoadAssetAtPath<Sprite>($"{PlaceholderFolder}/icon_{spec.id}.png");
+                itemSo.FindProperty("lookNode").stringValue = $"Item_{spec.id}_Look";
                 itemSo.ApplyModifiedPropertiesWithoutUndo();
             }
             AssetDatabase.SaveAssets();
@@ -124,20 +178,23 @@ namespace BigNightOut.EditorTools
             var so = new SerializedObject(database);
             var list = so.FindProperty("items");
             list.ClearArray();
-            foreach (var (id, _, _) in Items)
+            foreach (var spec in world.items)
             {
                 list.InsertArrayElementAtIndex(list.arraySize);
                 list.GetArrayElementAtIndex(list.arraySize - 1).objectReferenceValue =
-                    AssetDatabase.LoadAssetAtPath<ItemDefinition>($"{ItemFolder}/Item_{id}.asset");
+                    AssetDatabase.LoadAssetAtPath<ItemDefinition>($"{ItemFolder}/Item_{spec.id}.asset");
             }
 
             var combos = so.FindProperty("combinations");
             combos.ClearArray();
-            combos.InsertArrayElementAtIndex(0);
-            var combo = combos.GetArrayElementAtIndex(0);
-            combo.FindPropertyRelative("itemA").stringValue = "lemon";
-            combo.FindPropertyRelative("itemB").stringValue = "soda";
-            combo.FindPropertyRelative("node").stringValue = "Combine_Lemon_Soda";
+            foreach (var spec in world.combinations)
+            {
+                combos.InsertArrayElementAtIndex(combos.arraySize);
+                var combo = combos.GetArrayElementAtIndex(combos.arraySize - 1);
+                combo.FindPropertyRelative("itemA").stringValue = spec.a;
+                combo.FindPropertyRelative("itemB").stringValue = spec.b;
+                combo.FindPropertyRelative("node").stringValue = spec.node;
+            }
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(database);
@@ -157,74 +214,29 @@ namespace BigNightOut.EditorTools
 
         // ---------- Room scene ----------
 
-        static void BuildDexRoomScene(RoomDefinition definition)
+        static void BuildRoomScene(RoomSpec spec)
         {
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var root = AddRoomShell("DexRoom", definition, "DexRoom_Enter", new Color(0.3f, 0.4f, 0.45f), new Color(0.4f, 0.32f, 0.25f));
-            AddEntry(root, "start", new Vector2(-2f, -4f), false);
-            AddEntry(root, "from_hallway", new Vector2(6.4f, -4f), true);
-
-            AddHotspot(root, "Bed", new Vector2(-5.5f, -3.4f), new Vector2(3f, 1.2f), new Color(0.7f, 0.25f, 0.3f),
-                new Vector2(-3.6f, -4.2f), true, "Bed_Look", "Bed_Use");
-            AddHotspot(root, "Mirror", new Vector2(-1.2f, -1.2f), new Vector2(1f, 1.6f), new Color(0.75f, 0.85f, 0.9f),
-                new Vector2(-1.2f, -3.4f), false, "Mirror_Look", "Mirror_Use");
-            AddHotspot(root, "Desk", new Vector2(2.2f, -2.8f), new Vector2(2f, 1.4f), new Color(0.55f, 0.4f, 0.25f),
-                new Vector2(2.2f, -3.8f), false, "Desk_Look", "Desk_Use");
-            AddHotspot(root, "Door to hallway", new Vector2(7.6f, -2.6f), new Vector2(1.4f, 3f), new Color(0.45f, 0.3f, 0.2f),
-                new Vector2(6.6f, -3.6f), false, "DexDoor_Look", "DexDoor_Use");
-
-            EditorSceneManager.SaveScene(scene, DexRoomPath);
-        }
-
-        static void BuildHallwayScene(RoomDefinition definition)
-        {
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var root = AddRoomShell("DormHallway", definition, "DormHallway_Enter", new Color(0.35f, 0.3f, 0.45f), new Color(0.45f, 0.35f, 0.3f));
-            AddEntry(root, "start", new Vector2(-7f, -4f), false);
-            AddEntry(root, "from_room", new Vector2(-7f, -4f), false);
-            AddEntry(root, "from_lounge", new Vector2(-5f, -3.8f), false);
-
-            AddHotspot(root, "Your door", new Vector2(-8.2f, -2.6f), new Vector2(1.2f, 3f), new Color(0.45f, 0.3f, 0.2f),
-                new Vector2(-7.4f, -3.6f), true, "HallDoor_Look", "HallDoor_Use");
-            AddHotspot(root, "Lounge", new Vector2(-5f, -2.6f), new Vector2(1.6f, 3f), new Color(0.25f, 0.2f, 0.3f),
-                new Vector2(-5f, -3.6f), false, "LoungeDoor_Look", "LoungeDoor_Use");
-            AddHotspot(root, "Lacey Rae", new Vector2(-2f, -2.8f), new Vector2(1f, 2.6f), new Color(0.95f, 0.5f, 0.65f),
-                new Vector2(-3.2f, -3.4f), false, "Lacey_Look", "Lacey_Talk",
-                ("dance_album", "Lacey_GiveAlbum"), ("hallway_hooch", "Lacey_GiveDrink"));
-            AddHotspot(root, "Gil", new Vector2(5f, -2.7f), new Vector2(1f, 2.4f), new Color(0.4f, 0.55f, 0.95f),
-                new Vector2(3.8f, -3.4f), false, "Gil_Look", "Gil_Talk",
-                ("earplugs", "Gil_GiveEarplugs"));
-            AddHotspot(root, "Vending machine", new Vector2(7.6f, -2.6f), new Vector2(1.4f, 3f), new Color(0.6f, 0.6f, 0.65f),
-                new Vector2(6.6f, -3.6f), false, "Vending_Look", "Vending_Use",
-                ("dollar", "Vending_Use"));
-            AddHotspot(root, "Drinks table", new Vector2(1.5f, -3.3f), new Vector2(2.2f, 1f), new Color(0.5f, 0.3f, 0.2f),
-                new Vector2(1.5f, -4.2f), false, "DrinksTable_Look", "DrinksTable_Use");
-
-            EditorSceneManager.SaveScene(scene, HallwayPath);
-        }
-
-        static void BuildLoungeScene(RoomDefinition definition)
-        {
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var root = AddRoomShell("Lounge", definition, "Lounge_Enter", new Color(0.4f, 0.28f, 0.3f), new Color(0.3f, 0.3f, 0.35f));
-            AddEntry(root, "from_hallway", new Vector2(-7f, -4f), false);
-
-            AddHotspot(root, "Hallway", new Vector2(-8.2f, -2.6f), new Vector2(1.2f, 3f), new Color(0.25f, 0.2f, 0.3f),
-                new Vector2(-7.4f, -3.6f), true, "LoungeExit_Look", "LoungeExit_Use");
-            AddHotspot(root, "Couch", new Vector2(-2f, -3.4f), new Vector2(3f, 1.2f), new Color(0.35f, 0.5f, 0.35f),
-                new Vector2(-2f, -4.2f), false, "Couch_Look", "Couch_Use");
-            AddHotspot(root, "TV", new Vector2(2f, -1.6f), new Vector2(2.4f, 1.6f), new Color(0.15f, 0.15f, 0.2f),
-                new Vector2(2f, -3.6f), false, "TV_Look", "TV_Use");
-            // Covers the clipboard, the "Contestant sign-up" card above it and the pen below.
-            AddHotspot(root, "Sign-up sheet", new Vector2(6f, -0.5f), new Vector2(1.2f, 2.2f), new Color(0.95f, 0.95f, 0.85f),
-                new Vector2(6f, -3.6f), false, "SignUp_Look", "SignUp_Use",
-                ("cowboy_hat", "SignUp_GiveHat"));
-
-            EditorSceneManager.SaveScene(scene, LoungePath);
+            var root = AddRoomShell(spec.scene, RoomAsset(spec.id), spec.onEnter,
+                C(spec.wall, new Color(0.35f, 0.3f, 0.4f)), C(spec.floor, new Color(0.4f, 0.32f, 0.25f)), spec.walkable);
+            foreach (var entry in spec.entries ?? new EntrySpec[0])
+                AddEntry(root, entry.name, V(entry.pos), entry.faceLeft);
+            foreach (var h in spec.hotspots ?? new HotspotSpec[0])
+            {
+                var feet = V(h.feet);
+                var itemNodes = (h.items ?? new ItemNodeSpec[0]).Select(i => (i.item, i.node)).ToArray();
+                var go = AddHotspot(root, h.name, feet, V(h.size, Vector2.one), C(h.color, Color.gray),
+                    V(h.standAt, new Vector2(feet.x, -3.6f)), h.faceLeft, h.look, h.use, itemNodes);
+                var so = new SerializedObject(go);
+                so.FindProperty("hideWhenFlag").stringValue = h.hideWhenFlag ?? "";
+                so.FindProperty("showWhenFlag").stringValue = h.showWhenFlag ?? "";
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+            EditorSceneManager.SaveScene(scene, RoomScenePath(spec.scene));
         }
 
         /// <summary>The parts every room has: Room component, background, floor and walkable area.</summary>
-        static Transform AddRoomShell(string name, RoomDefinition definition, string onEnterNode, Color wall, Color floorColor)
+        static Transform AddRoomShell(string name, RoomDefinition definition, string onEnterNode, Color wall, Color floorColor, float[] walkablePoints)
         {
             var id = definition.Id;
             var root = new GameObject(name);
@@ -248,7 +260,9 @@ namespace BigNightOut.EditorTools
             walkable.transform.SetParent(root.transform, false);
             var polygon = walkable.AddComponent<PolygonCollider2D>();
             polygon.isTrigger = true;
-            polygon.points = new[] { new Vector2(-9f, -5f), new Vector2(9f, -5f), new Vector2(8.5f, -2.6f), new Vector2(-8.5f, -2.6f) };
+            polygon.points = walkablePoints != null && walkablePoints.Length >= 6
+                ? Enumerable.Range(0, walkablePoints.Length / 2).Select(i => new Vector2(walkablePoints[2 * i], walkablePoints[2 * i + 1])).ToArray()
+                : new[] { new Vector2(-9f, -5f), new Vector2(9f, -5f), new Vector2(8.5f, -2.6f), new Vector2(-8.5f, -2.6f) };
             walkable.AddComponent<WalkableArea>();
 
             return root.transform;
@@ -264,10 +278,11 @@ namespace BigNightOut.EditorTools
             SetBool(point, "faceLeft", faceLeft);
         }
 
-        static void AddHotspot(Transform parent, string displayName, Vector2 feet, Vector2 size, Color color,
+        static Hotspot AddHotspot(Transform parent, string displayName, Vector2 feet, Vector2 size, Color color,
             Vector2 standAt, bool faceLeft, string lookNode, string useNode, params (string item, string node)[] itemNodes)
         {
-            var slug = displayName.ToLowerInvariant().Replace(' ', '_');
+            // "Ms. Hush" -> ms_hush, "Sign-up sheet" -> sign_up_sheet: the name of its art file.
+            var slug = System.Text.RegularExpressions.Regex.Replace(displayName.ToLowerInvariant(), "[^a-z0-9]+", "_").Trim('_');
             var go = new GameObject($"Hotspot_{slug}");
             go.transform.SetParent(parent, false);
             go.transform.position = feet;
@@ -304,6 +319,7 @@ namespace BigNightOut.EditorTools
                 element.FindPropertyRelative("node").stringValue = node;
             }
             so.ApplyModifiedPropertiesWithoutUndo();
+            return hotspot;
         }
 
         // ---------- Boot scene ----------

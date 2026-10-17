@@ -194,3 +194,16 @@ title: Item_cowboy_hat_Look
 ---
 Dex: Lacey Rae's hat. Proof that tonight is going my way.
 ===
+
+title: Stairs_Look
+---
+Dex: The stairwell. Down to the main campus, and the rest of my life.
+===
+title: Stairs_Use
+---
+<<if flagged("signed_up")>>
+    <<go campus from_dorm>>
+<<else>>
+    Dex: Not yet. The party's up here, and so is my first chance at a big night out.
+<<endif>>
+===

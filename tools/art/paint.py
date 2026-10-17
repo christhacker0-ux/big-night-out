@@ -966,6 +966,53 @@ def bunting(c, x0, x1, y, letters, colors, sag=30):
             c.text(q[0], q[1] + 20, ch, 22, (255, 250, 230), stroke=2)
 
 
+def fire_door(c, x0, y0, x1, y1):
+    """Metal stairwell fire door; (x0..x1, y0..y1) is the whole steel frame."""
+    fr = (150, 158, 166)
+    c.shadow((x0 + x1) / 2, y1, (x1 - x0) / 2 + 6, 6, 0.3)
+    c.paint(rect(x0, y0, x1, y1), fr, shade=(-4, 0, dk(fr, 0.75)), hi=(0, 4, lt(fr, 0.35)))
+    lx0, ly0, lx1, ly1 = x0 + 11, y0 + 11, x1 - 9, y1 - 3
+    leaf = (104, 126, 146)
+    c.paint(rect(lx0, ly0, lx1, ly1), ("v", lt(leaf, 0.12), dk(leaf, 0.88)), ow=3, shade=(-6, 0, dk(leaf, 0.8)),
+            hi=(3, 0, lt(leaf, 0.25)))
+    mx = (lx0 + lx1) / 2
+    # door closer arm at the top
+    c.paint(rrect(lx0 + 6, ly0 + 4, lx0 + 34, ly0 + 14, 3), (70, 74, 80), ow=2.5)
+    c.line([(lx0 + 30, ly0 + 9), (lx0 + 52, ly0 + 2)], 3, (70, 74, 80))
+    # STAIRS sign with a little stair icon
+    c.paint(rrect(lx0 + 7, ly0 + 20, lx1 - 7, ly0 + 62, 4), (36, 140, 84), shade=(-3, -3, (24, 100, 60)),
+            hi=(2, 2, (110, 200, 140), 1.5))
+    c.text(mx, ly0 + 33, "STAIRS", 12, (255, 255, 240))
+    st = [(mx - 20, ly0 + 56)]
+    for k in range(4):
+        st += [(mx - 20 + k * 9, ly0 + 56 - (k + 1) * 3.5), (mx - 11 + k * 9, ly0 + 56 - (k + 1) * 3.5)]
+    c.line(st, 2.2, (255, 255, 240))
+    c.paint(poly([(mx + 18, ly0 + 41), (mx + 24, ly0 + 49), (mx + 12, ly0 + 49)]), (255, 255, 240), ow=0)
+    c.line([(mx + 18, ly0 + 48), (mx + 18, ly0 + 56)], 2.2, (255, 255, 240))
+    # small wired-glass window
+    wx0, wy0, wx1, wy1 = lx0 + 18, ly0 + 78, lx1 - 18, ly0 + 158
+
+    def wire(p):
+        for k in range(-8, 12):
+            p.line([(wx0 + k * 9, wy0), (wx0 + k * 9 + 80, wy1)], 0.9, (170, 190, 200))
+            p.line([(wx1 - k * 9, wy0), (wx1 - k * 9 - 80, wy1)], 0.9, (170, 190, 200))
+        p.poly([(wx0 + 4, wy1 - 8), (wx0 + 20, wy0 + 4), (wx0 + 30, wy0 + 4), (wx0 + 12, wy1 - 8)], (230, 245, 255))
+    c.paint(rect(wx0 - 5, wy0 - 5, wx1 + 5, wy1 + 5), (170, 176, 184), ow=3, shade=(-3, -3))
+    c.paint(rect(wx0, wy0, wx1, wy1), ("v", (120, 160, 170), (70, 100, 120)), ow=2.5, pattern=wire)
+    # push bar
+    by = ly0 + (ly1 - ly0) * 0.56
+    c.paint(rrect(lx0 + 4, by - 8, lx0 + 16, by + 12, 3), (80, 84, 90), ow=2.5)
+    c.paint(rrect(lx1 - 16, by - 8, lx1 - 4, by + 12, 3), (80, 84, 90), ow=2.5)
+    c.paint(rrect(lx0 + 12, by - 2, lx1 - 12, by + 8, 4), (196, 200, 206), ow=2.5, hi=(0, 2, (240, 244, 248)))
+    c.paint(rrect(mx - 14, by + 12, mx + 14, by + 22, 2), (220, 40, 40), ow=2)
+    # kick plate + hinges
+    c.paint(rect(lx0 + 3, ly1 - 42, lx1 - 3, ly1 - 6), (176, 180, 186), ow=2.5,
+            pattern=lambda p: [p.line([(lx0 + 4, ly1 - 38 + i * 6), (lx1 - 4, ly1 - 38 + i * 6)], 0.8,
+                                      (150, 154, 160)) for i in range(6)])
+    for hy in (ly0 + 40, ly0 + (ly1 - ly0) / 2, ly1 - 60):
+        c.paint(rect(lx1 - 3, hy, lx1 + 3, hy + 22), (90, 94, 100), ow=2)
+
+
 def paint_dorm_hallway():
     c = Canvas(W_BG, H_BG, ow=4, bg=(0, 0, 0))
     rng = random.Random(1999)
@@ -1134,12 +1181,16 @@ def paint_dorm_hallway():
             pattern=lambda p: [p.rect(1760, 562 + i * 12, 1776, 570 + i * 12, (250, 220, 90)) for i in range(6)])
     c.paint(rect(1760, 650, 1776, 666), (40, 40, 46), ow=2.5)
     c.paint(rect(1670, 744, 1750, 778), (40, 30, 40), ow=3)
-    # trash can at hall end
-    c.shadow(1860, 800, 34, 6)
-    c.paint(poly([(1832, 720), (1888, 720), (1882, 800), (1838, 800)]), (90, 120, 150), shade=(-5, 0),
-            pattern=lambda p: [p.line([(1844 + i * 10, 724), (1846 + i * 9, 796)], 2, (70, 96, 124)) for i in range(5)])
-    c.paint(poly([(1840, 720), (1852, 702), (1868, 708), (1880, 720)], 1), (250, 248, 240), ow=3)
-    c.paint(ell(1864, 712, 9, 7), (220, 40, 50), ow=2.5)
+    # trash can (between the fountain and the vending machine; the hall end is the stairwell door)
+    tx = -270
+    c.shadow(1860 + tx, 800, 34, 6)
+    c.paint(poly([(1832 + tx, 720), (1888 + tx, 720), (1882 + tx, 800), (1838 + tx, 800)]), (90, 120, 150),
+            shade=(-5, 0), pattern=lambda p: [p.line([(1844 + tx + i * 10, 724), (1846 + tx + i * 9, 796)], 2,
+                                                     (70, 96, 124)) for i in range(5)])
+    c.paint(poly([(1840 + tx, 720), (1852 + tx, 702), (1868 + tx, 708), (1880 + tx, 720)], 1), (250, 248, 240), ow=3)
+    c.paint(ell(1864 + tx, 712, 9, 7), (220, 40, 50), ow=2.5)
+    # stairwell fire door at the hall end (x 1815-1915, y 480-800), under the EXIT sign
+    fire_door(c, 1815, 480, 1915, 800)
     # EXIT sign
     c.paint(rrect(1806, 300, 1906, 340, 4), (30, 30, 30), ow=3)
     c.text(1856, 320, "EXIT", 22, (255, 70, 60))
@@ -1935,6 +1986,1194 @@ def paint_icon_dollar():
     icon("icon_dollar.png", -12, draw)
 
 
+# =========================================================================== 8. campus quad (evening)
+def bricks(col, x0, y0, x1, y1, bw=44, bh=18, seed=0):
+    """Pattern fn: running-bond brick courses with a few odd-coloured bricks."""
+    rng = random.Random(seed)
+    mort = dk(col, 0.6)
+
+    def pat(p):
+        y, row = y0, 0
+        while y < y1:
+            off = (bw / 2) * (row % 2)
+            x = x0 - off
+            while x < x1:
+                if rng.random() < 0.18:
+                    p.rect(x + 2, y + 2, x + bw - 2, y + bh - 2, rng.choice([lt(col, 0.12), dk(col, 0.9)]))
+                p.line([(x, y), (x, y + bh)], 1.5, mort)
+                x += bw
+            p.line([(x0, y), (x1, y)], 1.5, mort)
+            y += bh
+            row += 1
+    return pat
+
+
+def lit_window(c, x0, y0, x1, y1, lit=True, frame=(236, 220, 190), arch=False):
+    glass = ("v", (255, 226, 140), (255, 168, 80)) if lit else ("v", (110, 90, 150), (70, 56, 110))
+    if arch:
+        r = (x1 - x0) / 2
+        outer = Sh([ell_pts((x0 + x1) / 2, y0 + r, r + 6, r + 6, 0, 24, 180, 360) + [(x1 + 6, y1 + 6), (x0 - 6, y1 + 6)]])
+        inner = Sh([ell_pts((x0 + x1) / 2, y0 + r, r, r, 0, 24, 180, 360) + [(x1, y1), (x0, y1)]])
+    else:
+        outer, inner = rect(x0 - 6, y0 - 6, x1 + 6, y1 + 6), rect(x0, y0, x1, y1)
+    c.paint(outer, frame, ow=3, shade=(-3, 0, dk(frame, 0.8)))
+    c.paint(inner, glass, ow=2.5,
+            pattern=lambda p: p.poly([(x0 + 4, y1 - 6), (x0 + (x1 - x0) * 0.45, y0 + 4),
+                                      (x0 + (x1 - x0) * 0.6, y0 + 4), (x0 + 12, y1 - 6)],
+                                     (255, 244, 200) if lit else (140, 120, 180)))
+    c.line([((x0 + x1) / 2, y0 + (2 if not arch else 0)), ((x0 + x1) / 2, y1)], 3, frame)
+    c.line([(x0, (y0 + y1) / 2 + 6), (x1, (y0 + y1) / 2 + 6)], 3, frame)
+    c.paint(rect(x0 - 10, y1 + 4, x1 + 10, y1 + 12), frame, ow=2.5, shade=(0, -3))
+
+
+def cloud(c, cx, cy, w, h, col, seed=0):
+    rng = random.Random(seed)
+    sh = ell(cx, cy + h * 0.2, w * 0.5, h * 0.32)
+    n = 5
+    for i in range(n):
+        x = cx - w * 0.38 + w * 0.76 * i / (n - 1)
+        r = h * rng.uniform(0.42, 0.62) * (1 - abs(i - (n - 1) / 2) / n * 0.9)
+        sh = sh + ell(x, cy + h * 0.15 - r * 0.6, r * 1.25, r)
+    c.paint(sh, col, ow=3, shade=(0, 8, (255, 206, 140)), hi=(0, 6, lt(col, 0.35), 3))
+
+
+def tree(c, x, base_y, h, w, col=(64, 128, 70), seed=0):
+    rng = random.Random(seed)
+    trunk = (112, 72, 52)
+    c.shadow(x, base_y, w * 0.35, 8, 0.3)
+    c.paint(poly([(x - 14, base_y), (x - 8, base_y - h * 0.5), (x + 8, base_y - h * 0.5), (x + 14, base_y)], 1),
+            trunk, shade=(-4, 0, dk(trunk, 0.72)), hi=(3, 0, lt(trunk, 0.3)))
+    c.paint(cap([(x - 2, base_y - h * 0.45), (x - w * 0.22, base_y - h * 0.62)], 7), trunk, ow=3)
+    c.paint(cap([(x + 2, base_y - h * 0.48), (x + w * 0.2, base_y - h * 0.66)], 7), trunk, ow=3)
+    cy = base_y - h * 0.68
+    sh = ell(x, cy, w * 0.3, h * 0.24)
+    for k in range(9):
+        a = math.radians(k * 40 + rng.uniform(-12, 12))
+        sh = sh + ell(x + math.cos(a) * w * 0.3, cy + math.sin(a) * h * 0.2, w * rng.uniform(0.17, 0.24),
+                      h * rng.uniform(0.13, 0.19))
+    c.paint(sh, col, shade=(-10, 8, dk(col, 0.68)), hi=(-7, 6, (236, 170, 96), 4),
+            pattern=lambda p: [p.ell(x + rng.uniform(-w * 0.4, w * 0.4), cy + rng.uniform(-h * 0.25, h * 0.2),
+                                     rng.uniform(5, 10), rng.uniform(3, 6), dk(col, 0.85), rot=rng.uniform(0, 180))
+                               for _ in range(16)])
+
+
+def lamp_post(c, x, base_y, h=270):
+    pole = (46, 56, 60)
+    c.shadow(x, base_y, 26, 5, 0.4)
+    c.paint(poly([(x - 16, base_y), (x + 16, base_y), (x + 10, base_y - 30), (x - 10, base_y - 30)], 1), pole,
+            shade=(-3, 0), hi=(2, 0, lt(pole, 0.35)))
+    top = base_y - h
+    c.paint(rect(x - 5, top + 6, x + 5, base_y - 28), pole, ow=3, hi=(-2, 0, lt(pole, 0.4)))
+    c.paint(rect(x - 12, top - 2, x + 12, top + 8), pole, ow=3)
+    c.paint(poly([(x - 14, top - 2), (x + 14, top - 2), (x + 19, top - 46), (x - 19, top - 46)]),
+            ("v", (255, 250, 200), (255, 196, 96)), ow=3)
+    c.line([(x, top - 44), (x, top - 4)], 2, pole)
+    c.paint(poly([(x - 27, top - 44), (x + 27, top - 44), (x + 8, top - 62), (x - 8, top - 62)], 1), pole,
+            hi=(0, 3, lt(pole, 0.4)))
+    c.paint(ell(x, top - 66, 5, 5), pole, ow=2.5)
+    return (x, top - 24)
+
+
+def paint_campus():
+    c = Canvas(W_BG, H_BG, ow=4, bg=(0, 0, 0))
+    rng = random.Random(4242)
+    # --- sky: violet dusk overhead to a gold horizon
+    c.paint(rect(0, 0, W_BG, 452), ("vy", 0, 452, (62, 44, 126), (234, 110, 122)), ow=0)
+    c.paint(rect(0, 450, W_BG, WALL_Y + 10), ("vy", 450, 740, (234, 110, 122), (255, 202, 112)), ow=0)
+    c.glow(1250, 560, 420, (255, 190, 110), 0.45)
+    c.paint(ell(1250, 548, 78, 78), (255, 232, 150), ow=0)
+    c.paint(ell(1250, 548, 62, 62), (255, 246, 196), ow=0)
+    for i, y in enumerate((70, 104, 132)):  # a few faint stars up top
+        for k in range(6):
+            sx = (k * 331 + i * 157) % W_BG
+            c.paint(ell(sx, y + (k * 17) % 40, 1.8, 1.8), (255, 246, 220), ow=0, opacity=0.8)
+    cloud(c, 560, 150, 300, 70, (226, 120, 150), 1)
+    cloud(c, 1060, 96, 220, 54, (214, 112, 152), 2)
+    cloud(c, 1560, 210, 360, 80, (240, 138, 140), 3)
+    cloud(c, 1880, 120, 200, 50, (220, 116, 150), 4)
+    cloud(c, 120, 300, 200, 46, (244, 146, 138), 5)
+
+    # --- distant campus buildings (hazy) + clock tower
+    far = mix((150, 70, 80), (234, 120, 120), 0.25)
+    for x0, x1, top, roof in ((660, 900, 520, "flat"), (880, 1160, 480, "gable"), (1140, 1400, 600, "flat"),
+                              (1380, 1560, 470, "gable"), (1540, 1920, 520, "flat")):
+        sh = rect(x0, top, x1, WALL_Y + 4)
+        if roof == "gable":
+            sh = sh + poly([(x0 - 8, top), (x1 + 8, top), ((x0 + x1) / 2, top - 70)])
+        c.paint(sh, far, ow=3, oc=dk(far, 0.55), shade=(-6, 0, dk(far, 0.82)),
+                pattern=lambda p, x0=x0, x1=x1, top=top: [
+                    p.rect(wx, wy, wx + 12, wy + 18, (255, 214, 120) if rng.random() < 0.55 else dk(far, 0.75))
+                    for wy in range(top + 20, WALL_Y - 30, 40) for wx in range(x0 + 16, x1 - 20, 30)])
+    tx = 780
+    c.paint(rect(tx - 44, 236, tx + 44, WALL_Y), far, ow=3, oc=dk(far, 0.55), shade=(-8, 0, dk(far, 0.82)))
+    c.paint(poly([(tx - 54, 240), (tx + 54, 240), (tx, 150)]), dk(far, 0.85), ow=3, oc=dk(far, 0.55))
+    c.paint(rect(tx - 54, 232, tx + 54, 246), lt(far, 0.2), ow=3, oc=dk(far, 0.55))
+    c.paint(ell(tx, 290, 30, 30), (255, 240, 200), ow=3, oc=dk(far, 0.5))
+    c.line([(tx, 290), (tx, 270)], 3, dk(far, 0.4))
+    c.line([(tx, 290), (tx + 15, 296)], 3, dk(far, 0.4))
+    for k in range(12):
+        a = math.radians(k * 30)
+        c.paint(ell(tx + 24 * math.cos(a), 290 + 24 * math.sin(a), 1.6, 1.6), dk(far, 0.4), ow=0)
+    c.line([(tx, 150), (tx, 126)], 3, dk(far, 0.5))
+
+    # --- lawn + curving brick walkway (the walk band y 800-1040 stays open)
+    c.paint(rect(0, WALL_Y - 6, W_BG, H_BG), ("vy", WALL_Y, H_BG, (120, 176, 72), (66, 120, 54)), ow=0)
+    top_edge = bez((0, 834), (960, 806), (W_BG, 830), 40)
+    bot_edge = bez((W_BG, 1016), (960, 1040), (0, 1010), 40)
+    path = poly(top_edge + bot_edge)
+    pv = (210, 140, 100)
+
+    def pavers(p):
+        for i in range(9):
+            t = i / 8
+            y_l = 834 + (1010 - 834) * t
+            y_m = 806 + (1040 - 806) * t
+            y_r = 830 + (1016 - 830) * t
+            pts = bez((0, y_l), (960, y_m), (W_BG, y_r), 40)
+            p.line(pts, 1.8, dk(pv, 0.62))
+            step = 40 + 50 * t
+            off = step / 2 * (i % 2)
+            if i < 8:
+                y_l2, y_m2, y_r2 = (834 + 176 * (i + 1) / 8, 806 + 234 * (i + 1) / 8, 830 + 186 * (i + 1) / 8)
+                pts2 = bez((0, y_l2), (960, y_m2), (W_BG, y_r2), 40)
+                x = -off
+                while x < W_BG:
+                    j = int(x / W_BG * 40)
+                    j = max(0, min(39, j))
+                    p.line([(x, pts[j][1]), (x + (x - 960) * 0.04, pts2[j][1])], 1.6, dk(pv, 0.62))
+                    x += step
+    c.paint(path, ("vy", 806, 1040, lt(pv, 0.1), dk(pv, 0.85)), ow=3, pattern=pavers)
+    # spurs from the doors to the walk
+    c.paint(poly([(70, 794), (210, 794), (220, 830), (60, 834)]), lt(pv, 0.1), ow=3)
+    c.paint(poly([(392, 796), (628, 796), (640, 822), (380, 826)]), lt(pv, 0.1), ow=3)
+    for _ in range(140):  # grass tufts
+        gx = rng.uniform(0, W_BG)
+        gy = rng.choice([rng.uniform(796, 818), rng.uniform(1030, 1078)])
+        c.line([(gx - 5, gy + 4), (gx - 2, gy - 6), (gx + 1, gy + 4), (gx + 4, gy - 4), (gx + 6, gy + 4)], 1.8,
+               (60, 112, 46), opacity=0.8)
+
+    # --- trees behind the quad
+    tree(c, 868, 790, 320, 210, (62, 122, 66), 7)
+    tree(c, 1210, 792, 340, 220, (70, 132, 64), 8)
+    tree(c, 1470, 790, 300, 190, (58, 116, 70), 9)
+
+    # --- dorm building (left); entrance door x 60-220, y 480-800
+    brick = (178, 78, 58)
+    c.paint(rect(-12, 110, 294, 792), brick, shade=(-8, 0, dk(brick, 0.78)), hi=(5, 0, lt(brick, 0.2)),
+            pattern=bricks(brick, -12, 110, 294, 792, seed=41))
+    c.paint(rect(-16, 96, 302, 120), (232, 214, 182), ow=3, shade=(0, -5, (190, 170, 150)))
+    for wy, lits in ((160, (True, False, True)), (318, (False, True, True))):
+        for (wx, lit) in zip((26, 120, 214), lits):
+            lit_window(c, wx, wy, wx + 56, wy + 92, lit)
+    # pennant in a window
+    c.paint(poly([(130, 170), (166, 180), (130, 192)]), (60, 120, 220), ow=2.5)
+    # awning + sign
+    aw = (40, 120, 84)
+    c.paint(poly([(60, 480), (220, 480), (226, 516), (54, 516)]), aw, shade=(0, -5, dk(aw, 0.75)),
+            pattern=lambda p: [p.rect(x, 480, x + 16, 516, lt(aw, 0.3)) for x in range(64, 220, 32)])
+    scal = [(54, 516), (226, 516)]
+    for i in range(8):
+        scal += [(226 - i * 21.5 - 10.75, 528), (226 - (i + 1) * 21.5, 516)]
+    c.paint(poly(scal, 1), aw, ow=3)
+    c.paint(rrect(86, 452, 194, 478, 5), (250, 240, 214), shade=(-3, -3, (210, 196, 170)))
+    c.text(140, 466, "WEST HALL", 13, (40, 90, 60))
+    # double glass doors
+    c.paint(rect(70, 528, 210, 794), (232, 214, 182), shade=(-5, 0, (190, 170, 150)))
+    for dx0 in (80, 141):
+        def lobby(p, dx0=dx0):
+            p.rect(dx0, 538, dx0 + 59, 790, (255, 210, 130))
+            p.rect(dx0, 700, dx0 + 59, 790, (190, 110, 80))
+            p.poly([(dx0 + 6, 780), (dx0 + 30, 546), (dx0 + 42, 546), (dx0 + 18, 780)], (255, 236, 190))
+        c.paint(rect(dx0, 538, dx0 + 59, 790), (255, 210, 130), ow=3, pattern=lobby)
+        c.paint(rect(dx0, 538, dx0 + 59, 790), (0, 0, 0, 0), ow=7, oc=(70, 60, 60))
+        hx = dx0 + 50 if dx0 == 80 else dx0 + 9
+        c.paint(rrect(hx - 3, 640, hx + 3, 700, 2), (220, 210, 190), ow=2.5)
+    c.paint(rect(56, 790, 224, 802), (200, 190, 176), ow=3)
+
+    # --- library (stone, columns); entrance x 400-620, y 440-800
+    stone = (226, 208, 172)
+    sst = dk(stone, 0.8)
+
+    def blocks(p):
+        for y in range(330, 792, 30):
+            p.line([(318, y), (702, y)], 1.4, dk(stone, 0.75))
+            for x in range(318 + (y // 30 % 2) * 40, 702, 80):
+                p.line([(x, y), (x, y + 30)], 1.4, dk(stone, 0.75))
+    c.paint(rect(318, 318, 702, 792), stone, shade=(-8, 0, sst), hi=(5, 0, lt(stone, 0.3)), pattern=blocks)
+    c.paint(rect(308, 290, 712, 322), lt(stone, 0.1), shade=(0, -6, sst))
+    for bx in range(320, 704, 22):  # balustrade
+        c.paint(poly([(bx, 290), (bx + 12, 290), (bx + 10, 270), (bx + 2, 270)]), stone, ow=2.5)
+    c.paint(rect(308, 260, 712, 272), lt(stone, 0.1), ow=3)
+    for wx in (336, 634):
+        lit_window(c, wx, 520, wx + 50, 700, True, frame=lt(stone, 0.2), arch=True)
+        lit_window(c, wx, 360, wx + 50, 430, False, frame=lt(stone, 0.2))
+    lit_window(c, 486, 350, 534, 410, True, frame=lt(stone, 0.2), arch=True)
+    # portico: pediment, entablature with the LIBRARY sign, columns
+    c.paint(poly([(388, 452), (632, 452), (510, 408)]), lt(stone, 0.12), shade=(0, -5, sst), hi=(0, 4, (255, 246, 220)))
+    c.paint(ell(510, 438, 10, 8), (210, 170, 80), ow=2.5)
+    c.paint(rect(392, 450, 628, 500), lt(stone, 0.12), shade=(0, -5, sst), hi=(0, 4, (255, 246, 220)))
+    c.text(510, 476, "LIBRARY", 27, (110, 80, 50), "Display")
+    c.paint(rect(470, 512, 550, 744), (90, 56, 40), ow=3)
+    c.paint(poly(ell_pts(510, 548, 34, 30, 0, 20, 180, 360)), ("v", (255, 230, 150), (255, 180, 90)), ow=3,
+            pattern=lambda p: [p.line([(510, 548), (510 + 34 * math.cos(math.radians(a)),
+                                                     548 + 30 * math.sin(math.radians(a)))], 1.6, (120, 80, 50))
+                               for a in range(195, 360, 30)])
+    for dx0 in (478, 511):
+        c.paint(rect(dx0, 552, dx0 + 31, 744), (150, 84, 50), ow=3, shade=(-4, 0, (110, 60, 40)),
+                pattern=lambda p, dx0=dx0: [p.rect(dx0 + 5, yy, dx0 + 26, yy + 70, (130, 72, 44))
+                                            for yy in (566, 652)])
+        c.paint(ell(dx0 + (26 if dx0 == 478 else 5), 650, 3.5, 3.5), (240, 196, 80), ow=2)
+    for cx in (416, 448, 572, 604):
+        c.paint(rect(cx - 13, 500, cx + 13, 738), lt(stone, 0.15), shade=(-5, 0, sst), hi=(4, 0, (255, 248, 226)),
+                pattern=lambda p, cx=cx: [p.line([(cx + k, 504), (cx + k, 734)], 1.2, dk(stone, 0.82))
+                                          for k in (-6, 0, 6)])
+        c.paint(rect(cx - 17, 498, cx + 17, 508), lt(stone, 0.15), ow=3)
+        c.paint(rect(cx - 17, 732, cx + 17, 744), lt(stone, 0.15), ow=3)
+    for i, (y0, x0) in enumerate(((744, 396), (762, 388), (780, 380))):
+        c.paint(rect(x0, y0, 1020 - x0, y0 + 20), lt(stone, 0.1 - i * 0.04), shade=(0, -5, sst),
+                hi=(0, 4, (255, 246, 220)))
+
+    # --- bench by the library
+    c.shadow(728, 802, 70, 7)
+    bw_ = (150, 92, 56)
+    for lx in (676, 780):
+        c.paint(rect(lx - 4, 770, lx + 4, 800), (50, 56, 60), ow=2.5)
+    c.paint(rect(660, 764, 796, 776), bw_, ow=3, hi=(0, 3, lt(bw_, 0.3)))
+    for y in (728, 744):
+        c.paint(rect(664, y, 792, y + 10), bw_, ow=3, hi=(0, 3, lt(bw_, 0.3)))
+    c.paint(rect(670, 726, 676, 770), (50, 56, 60), ow=2)
+    c.paint(rect(780, 726, 786, 770), (50, 56, 60), ow=2)
+
+    # --- founder statue (x 900-1060, y 300-780)
+    paint_founder_statue(c)
+
+    # --- info kiosk covered in flyers (x 1300-1420, y 520-800)
+    kg = (44, 96, 78)
+    c.shadow(1360, 794, 64, 8, 0.45)
+    c.paint(rect(1304, 772, 1416, 794), dk(kg, 0.85), shade=(-5, 0), hi=(4, 0, lt(kg, 0.3)))
+
+    def flyers(p):
+        r2 = random.Random(77)
+        cols = [(250, 250, 240), (150, 220, 250), (255, 170, 200), (190, 240, 160), (250, 200, 120), (220, 190, 255)]
+        for y in range(566, 776, 34):
+            for x in range(1306, 1420, 30):
+                fx, fy = x + r2.uniform(-6, 6), y + r2.uniform(-6, 6)
+                w, h = r2.uniform(22, 30), r2.uniform(28, 36)
+                q = rot_pts([(fx, fy), (fx + w, fy), (fx + w, fy + h), (fx, fy + h)], r2.uniform(-10, 10), fx + w / 2,
+                            fy + h / 2)
+                col = r2.choice(cols)
+                p.poly([(a + 1.5, b + 1.5) for a, b in q], dk(col, 0.7))
+                p.poly(q, col)
+                for k in range(3):
+                    p.line([(fx + 4, fy + 8 + k * 7), (fx + w - 6, fy + 8 + k * 7)], 1.4, dk(col, 0.55))
+    c.paint(rect(1316, 560, 1404, 774), kg, shade=(-12, 0, dk(kg, 0.7)), hi=(8, 0, lt(kg, 0.25)), pattern=flyers)
+    c.paint(rect(1308, 552, 1412, 566), dk(kg, 0.85), ow=3, hi=(0, 3, lt(kg, 0.3)))
+    c.paint(poly(ell_pts(1360, 552, 56, 30, 0, 24, 180, 360)), kg, shade=(-8, 0, dk(kg, 0.7)),
+            hi=(6, 4, lt(kg, 0.3), 3))
+    c.paint(ell(1360, 518, 7, 7), (240, 196, 80), ow=2.5, hi=(-2, -2, (255, 240, 170)))
+    big = Canvas(96, 116, ow=3)
+    big.paint(wonky(10, 10, 86, 106, 2, random.Random(5)), (255, 228, 64), shade=(-3, -3, (220, 180, 40)),
+              pattern=lambda p: [p.poly([(48, 62), (48 + 60 * math.cos(math.radians(a)), 62 + 60 * math.sin(math.radians(a))),
+                                         (48 + 60 * math.cos(math.radians(a + 14)),
+                                          62 + 60 * math.sin(math.radians(a + 14)))], (255, 200, 60))
+                                 for a in range(0, 360, 30)])
+    big.paint(poly([(48, 48), (53, 59), (65, 60), (56, 68), (59, 80), (48, 73), (37, 80), (40, 68), (31, 60),
+                    (43, 59)]), (236, 50, 130), ow=2)
+    big.text(48, 26, "TALENT", 15, (200, 30, 90), stroke=1.4, sc=(255, 250, 230))
+    big.text(48, 42, "ROUND", 15, (200, 30, 90), stroke=1.4, sc=(255, 250, 230))
+    big.text(48, 94, "TONIGHT!", 12, (60, 40, 140), "Black")
+    c.stamp(big, 1360, 664, angle=-3)
+    c.paint(ell(1358, 612, 4.5, 4.5), (230, 50, 60), ow=2)
+
+    # --- outdoor audition stage (x 1500-1910, deck top ~y 720, front edge to y 800)
+    paint_campus_stage(c)
+
+    # --- lamp posts
+    lamps = [lamp_post(c, 300, 806, 280), lamp_post(c, 836, 804, 270), lamp_post(c, 1262, 804, 262)]
+
+    lights = [(x, y, 360, 0.45, (255, 200, 120)) for x, y in lamps] + \
+             [(1250, 560, 1100, 0.30, (255, 170, 110)), (1705, 600, 300, 0.35, (255, 220, 170))]
+    light_pass(c, 0.86, lights, vign=0.38, front=0.25)
+    for x, y in lamps:
+        c.glow(x, y, 90, (255, 214, 130), 0.55)
+    c.glow(1250, 548, 160, (255, 220, 150), 0.35)
+    for x, y in ((1546, 392), (1864, 392)):
+        c.glow(x, y, 60, (255, 250, 210), 0.5)
+    for k in range(9):
+        c.glow(1530 + k * 44, 746, 22, (255, 220, 130), 0.5)
+    c.save("bg_campus.png")
+
+
+def paint_founder_statue(c):
+    bz, bz_sh, bz_hi = (98, 150, 124), (56, 98, 92), (190, 206, 150)
+    stn = (196, 186, 172)
+    c.shadow(980, 784, 90, 10, 0.45)
+    # plinth
+    c.paint(wonky(908, 756, 1052, 786, 1.5, random.Random(1)), stn, shade=(-6, 0, dk(stn, 0.75)),
+            hi=(0, 4, lt(stn, 0.35)))
+    c.paint(rect(928, 612, 1032, 758), stn, shade=(-8, 0, dk(stn, 0.75)), hi=(5, 0, lt(stn, 0.3)))
+    c.paint(wonky(916, 594, 1044, 616, 1.5, random.Random(2)), stn, shade=(0, -5, dk(stn, 0.75)),
+            hi=(0, 4, lt(stn, 0.35)))
+    c.paint(rrect(944, 642, 1016, 724, 6), (176, 132, 70), shade=(-3, -3, (130, 96, 50)),
+            hi=(3, 3, (226, 186, 110), 2))
+    c.text(980, 660, "OUR", 9, (70, 46, 24), "Bold")
+    c.text(980, 676, "FOUNDER", 12, (70, 46, 24))
+    c.text(980, 694, "A. PLUMWORTH", 7.5, (70, 46, 24), "Bold")
+    c.text(980, 710, "1861", 9, (70, 46, 24), "Bold")
+    # robe (pompous belly forward / to the left)
+    robe = poly([(938, 440), (962, 426), (1010, 426), (1034, 442), (1040, 500), (1050, 596), (916, 596),
+                 (918, 548), (908, 500), (922, 462)], 2) + ell(948, 516, 38, 48)
+    c.paint(robe, bz, shade=(-8, 0, bz_sh), hi=(6, 2, bz_hi, 3),
+            pattern=lambda p: [p.line([(x, 470), (x - 4, 594)], 2, bz_sh) for x in (952, 990, 1022)])
+    # academic stole down the front
+    c.paint(poly([(958, 428), (972, 428), (968, 596), (950, 596)], 1), lt(bz, 0.15), ow=3, shade=(-3, 0, bz_sh))
+    c.paint(poly([(990, 428), (1004, 428), (1008, 596), (992, 596)], 1), lt(bz, 0.15), ow=3, shade=(-3, 0, bz_sh))
+    # far arm: book clutched to the belly
+    c.paint(poly([(1012, 436), (1034, 450), (1038, 516), (1012, 522), (1004, 474)], 2), bz, shade=(-4, 0, bz_sh))
+    c.paint(poly(rot_pts([(968, 498), (1014, 498), (1014, 554), (968, 554)], -8, 990, 526)), lt(bz, 0.1),
+            shade=(-4, -3, bz_sh), hi=(3, 3, bz_hi, 2))
+    c.paint(ell(1012, 520, 9, 10), bz, shade=(-2, 2, bz_sh))
+    # near arm: wide sleeve, finger pointing grandly at the sky
+    c.paint(cap([(946, 448), (926, 396)], 26), bz, shade=(-5, 0, bz_sh), hi=(4, 0, bz_hi, 2))
+    c.paint(poly([(912, 406), (942, 396), (940, 380), (914, 382)], 1), lt(bz, 0.1), ow=3)
+    c.paint(cap([(926, 388), (920, 350)], 12), bz, shade=(-3, 0, bz_sh))
+    c.paint(ell(920, 340, 9, 10) + cap([(916, 334), (912, 306)], 5.5) + cap([(926, 336), (930, 330)], 5), bz,
+            shade=(-2, 2, bz_sh), hi=(2, 0, bz_hi))
+    # head, chin raised, facing left: bald dome, jowls, big nose, side tufts
+    c.paint(cap([(994, 426), (994, 410)], 30), bz, shade=(-4, 0, bz_sh))
+    c.paint(poly([(1018, 352), (1040, 344), (1036, 360), (1048, 366), (1036, 376), (1044, 392), (1028, 398),
+                  (1016, 384)], 1), lt(bz, 0.08), shade=(-2, 2, bz_sh))  # hair tuft behind the ear
+    head = ell(994, 374, 38, 42) + poly([(958, 386), (962, 414), (990, 430), (1016, 422), (1030, 398)], 2)
+    c.paint(head, bz, shade=(-6, 4, bz_sh), hi=(5, 3, bz_hi, 3))
+    c.curve((970, 418), (990, 428), (1012, 418), 2.0, bz_sh)  # double chin
+    c.paint(ell(1030, 386, 7, 11), bz, shade=(-2, 2, bz_sh))  # ear
+    c.curve((1032, 380), (1028, 386), (1032, 392), 1.6, bz_sh)
+    c.paint(ell(948, 384, 13, 11, -10), bz, shade=(-3, 3, bz_sh), hi=(3, -2, bz_hi, 1.5))  # big proud nose
+    # smug closed eyes + bushy lofty brows
+    c.curve((960, 370), (967, 363), (975, 369), 2.6)
+    c.curve((988, 368), (997, 361), (1006, 367), 2.6)
+    c.paint(poly([(956, 356), (966, 348), (978, 352), (976, 358), (966, 356)], 1), lt(bz, 0.1), ow=2.5)
+    c.paint(poly([(986, 352), (998, 344), (1012, 350), (1008, 356), (996, 352)], 1), lt(bz, 0.1), ow=2.5)
+    # neat moustache + pursed, self-satisfied mouth
+    c.paint(poly([(942, 398), (956, 392), (968, 396), (980, 394), (986, 402), (972, 404), (958, 402)], 2, True),
+            lt(bz, 0.1), shade=(0, 3, bz_sh))
+    c.curve((962, 410), (970, 414), (978, 410), 2.2)
+    # the dark sunglasses perched on top of the head
+    shade_col = (22, 20, 30)
+    c.line([(1018, 338), (1034, 348)], 3.5, shade_col)
+    for gx, gy, rx in ((972, 340, 12), (1002, 336, 14)):
+        c.paint(ell(gx, gy, rx, 8.5, -6), shade_col, ow=3, hi=(-3, 3, (90, 110, 150), 2))
+        c.line([(gx - rx * 0.45, gy - 2), (gx - rx * 0.1, gy - 5)], 2.2, (200, 220, 255))
+    c.line([(983, 339), (989, 337)], 3.2, shade_col)
+
+
+def paint_campus_stage(c):
+    truss = (196, 200, 210)
+
+    def tower(x0, x1, y0, y1):
+        c.paint(rect(x0, y0, x1, y1), (0, 0, 0, 0), ow=3)
+        c.line([(x0, y0), (x0, y1)], 4, truss)
+        c.line([(x1, y0), (x1, y1)], 4, truss)
+        y = y0
+        while y < y1:
+            c.line([(x0, y), (x1, min(y1, y + 18))], 2, truss)
+            y += 18
+    # backdrop curtain behind the stage (starry midnight blue)
+    cur = (44, 40, 112)
+
+    def stars(p):
+        r2 = random.Random(9)
+        for x in range(1546, 1880, 40):
+            p.line([(x, 452), (x + 2, 704)], 3, dk(cur, 0.7))
+            p.line([(x + 8, 452), (x + 10, 704)], 1.8, lt(cur, 0.2))
+        for _ in range(60):
+            sx, sy = r2.uniform(1540, 1880), r2.uniform(460, 700)
+            s = r2.uniform(2, 4.5)
+            p.poly([(sx, sy - s * 2), (sx + s * 0.5, sy - s * 0.5), (sx + s * 2, sy), (sx + s * 0.5, sy + s * 0.5),
+                    (sx, sy + s * 2), (sx - s * 0.5, sy + s * 0.5), (sx - s * 2, sy), (sx - s * 0.5, sy - s * 0.5)],
+                   (255, 220, 110))
+    c.paint(rect(1536, 450, 1884, 704), cur, pattern=stars, shade=(0, -8, dk(cur, 0.7)))
+    # truss towers + top beam
+    tower(1510, 1534, 330, 708)
+    tower(1876, 1900, 330, 708)
+    c.paint(rect(1504, 326, 1906, 352), (0, 0, 0, 0), ow=3)
+    c.line([(1504, 328), (1906, 328)], 4, truss)
+    c.line([(1504, 350), (1906, 350)], 4, truss)
+    for x in range(1504, 1906, 22):
+        c.line([(x, 328), (x + 22, 350)], 2, truss)
+    # banner
+    ban = (226, 36, 120)
+    for bx in (1576, 1834):
+        c.line([(bx, 350), (bx, 362)], 2.5, (60, 60, 70))
+    c.paint(wonky(1560, 360, 1850, 444, 2, random.Random(11)), ban, shade=(0, -6, dk(ban, 0.72)),
+            hi=(0, 5, lt(ban, 0.35), 2),
+            pattern=lambda p: [p.ell(1560 + i * 29, 372 if i % 2 else 432, 3, 3, (255, 230, 90)) for i in range(11)])
+    c.text(1705, 388, "SPEED DATERS", 31, (255, 230, 60), "Italic", stroke=2.5, sc=(120, 10, 70))
+    c.text(1705, 424, "★ LIVE ★", 22, (255, 255, 255), "Black", stroke=2, sc=(120, 10, 70))
+    # spotlights on the truss
+    for sx, ang in ((1546, -30), (1864, 30)):
+        c.paint(poly([(sx - 14, 352), (sx + 14, 352), (sx, 368)]), (60, 60, 70), ow=2.5)
+        c.paint(rrect(sx - 16, 370, sx + 16, 404, 6), (40, 40, 50), ow=3, hi=(0, 3, (90, 90, 110)))
+        c.paint(ell(sx, 404, 14, 6), (255, 250, 210), ow=2.5)
+    for sx, tx in ((1546, 1680), (1864, 1730)):
+        c.paint(poly([(sx - 12, 406), (sx + 12, 406), (tx + 70, 716), (tx - 70, 716)]), (255, 248, 200), ow=0,
+                opacity=0.13)
+    # speakers at either side of the deck
+    for x0 in (1540, 1820):
+        c.paint(rrect(x0, 618, x0 + 52, 704, 4), (46, 42, 50), shade=(-4, 0), hi=(0, 3, (90, 86, 100)))
+        c.paint(ell(x0 + 26, 644, 14, 14), (24, 22, 28), ow=2.5, hi=(-2, -2, (110, 110, 120), 2))
+        c.paint(ell(x0 + 26, 684, 9, 9), (24, 22, 28), ow=2.5)
+    # deck (top surface y ~700-738) + front skirt down to y 800
+    wd = (186, 120, 70)
+
+    def planks(p):
+        for k in range(1, 6):
+            y = 700 + k * 6.3
+            p.line([(1490, y), (1920, y)], 1.4, dk(wd, 0.7))
+        for x in range(1520, 1910, 70):
+            p.line([(x, 700), (x - 2, 738)], 1.2, dk(wd, 0.7))
+    c.paint(poly([(1502, 700), (1908, 700), (1914, 738), (1496, 738)]), ("v", lt(wd, 0.15), wd), pattern=planks,
+            hi=(0, 3, lt(wd, 0.35)))
+    sk = (176, 30, 60)
+    scal = [(1496, 738), (1914, 738), (1914, 790)]
+    n = 14
+    for i in range(n):
+        x = 1914 - (i + 0.5) * (418 / n)
+        scal += [(x, 800), (1914 - (i + 1) * (418 / n), 790)]
+    c.paint(poly(scal, 1), sk, shade=(0, -6, dk(sk, 0.7)),
+            pattern=lambda p: [p.line([(x, 744), (x - 1, 796)], 2.4, dk(sk, 0.72)) for x in range(1510, 1914, 26)])
+    c.paint(rect(1494, 736, 1916, 752), (240, 196, 80), ow=3, hi=(0, 3, (255, 236, 150)))
+    for k in range(9):  # footlights
+        c.paint(ell(1530 + k * 44, 746, 5, 4), (255, 248, 200), ow=2)
+    # little steps on the right
+    c.paint(rect(1916, 752, 1930, 800), wd, ow=3)
+
+
+# =========================================================================== 9. campus library (ground floor)
+def bankers_lamp(c, x, base_y, s=1.0):
+    """Brass banker's lamp with a green glass shade; returns the bulb position."""
+    brass = (214, 168, 70)
+    c.paint(ell(x, base_y - 3 * s, 16 * s, 5 * s), brass, ow=2.5, hi=(0, 2, (255, 230, 150)))
+    c.line([(x, base_y - 4 * s), (x, base_y - 24 * s)], 3.4 * s, OUT)
+    c.line([(x, base_y - 4 * s), (x, base_y - 24 * s)], 2 * s, brass)
+    sh = poly([(x - 26 * s, base_y - 24 * s), (x + 26 * s, base_y - 24 * s), (x + 22 * s, base_y - 36 * s),
+               (x + 12 * s, base_y - 42 * s), (x - 12 * s, base_y - 42 * s), (x - 22 * s, base_y - 36 * s)], 1)
+    c.paint(sh, (34, 140, 84), shade=(0, 4 * s, (20, 96, 60)), hi=(0, -3 * s, (110, 210, 150), 2 * s))
+    c.paint(rect(x - 22 * s, base_y - 26 * s, x + 22 * s, base_y - 22 * s), (255, 236, 160), ow=1.6)
+    c.line([(x + 18 * s, base_y - 22 * s), (x + 18 * s, base_y - 14 * s)], 1.4, brass)
+    return (x, base_y - 22 * s)
+
+
+def book_row(c, x0, x1, y_base, hmin, hmax, rng, cols, lean_last=True):
+    x = x0
+    while x < x1 - 8:
+        w = rng.uniform(8, 16)
+        if x + w > x1:
+            break
+        h = rng.uniform(hmin, hmax)
+        col = rng.choice(cols)
+        if rng.random() < 0.06 and x + 24 < x1:  # a gap
+            x += rng.uniform(10, 20)
+            continue
+        c.paint(rect(x, y_base - h, x + w, y_base), col, ow=2.4, shade=(-2.5, 0, dk(col, 0.75)),
+                pattern=lambda p, x=x, w=w, h=h, col=col: (
+                    p.rect(x, y_base - h * 0.78, x + w, y_base - h * 0.72, (240, 200, 90)),
+                    p.rect(x, y_base - h * 0.3, x + w, y_base - h * 0.25, (240, 200, 90))))
+        x += w + 0.5
+    if lean_last and x + 20 < x1:
+        h = rng.uniform(hmin, hmax)
+        col = rng.choice(cols)
+        c.paint(poly([(x + 2, y_base), (x + 13, y_base), (x + 13 + h * 0.4, y_base - h * 0.92),
+                      (x + 2 + h * 0.4, y_base - h * 0.92)]), col, ow=2.4, shade=(-2.5, 0, dk(col, 0.75)))
+
+
+def paint_library():
+    c = Canvas(W_BG, H_BG, ow=4, bg=(0, 0, 0))
+    rng = random.Random(5150)
+    wp = (44, 98, 78)
+
+    def paper(p):
+        for x in range(0, W_BG, 48):
+            p.rect(x, 60, x + 18, 560, lt(wp, 0.07))
+            for y in range(100, 560, 64):
+                yy = y + (32 if (x // 48) % 2 else 0)
+                p.poly([(x + 33, yy - 7), (x + 38, yy), (x + 33, yy + 7), (x + 28, yy)], (186, 160, 90))
+    c.paint(rect(0, 0, W_BG, 560), ("vy", 60, 560, dk(wp, 0.8), wp), ow=0, pattern=paper)
+    # coffered ceiling band + crown molding
+    c.paint(rect(0, 0, W_BG, 50), (80, 46, 30), ow=0,
+            pattern=lambda p: [p.rect(x + 10, 8, x + 110, 42, (100, 60, 38)) for x in range(0, W_BG, 120)])
+    c.paint(rect(-10, 46, W_BG + 10, 64), (150, 96, 56), ow=3, hi=(0, 4, (196, 140, 86)), shade=(0, -4))
+    # wood wainscoting
+    wd = (116, 66, 40)
+
+    def panels(p):
+        for x in range(10, W_BG, 120):
+            p.rect(x, 590, x + 100, 760, dk(wd, 0.85))
+            p.rect(x + 4, 594, x + 96, 756, lt(wd, 0.06))
+            p.line([(x + 4, 594), (x + 96, 594)], 2, lt(wd, 0.3))
+    c.paint(rect(0, 560, W_BG, WALL_Y), wd, ow=0, pattern=panels)
+    c.paint(rect(-10, 552, W_BG + 10, 572), (90, 52, 32), ow=3, hi=(0, 4, (150, 96, 60)), shade=(0, -4))
+    plank_floor(c, (146, 88, 50), seed=52)
+    baseboard(c, color=(70, 40, 26))
+    # long runner rug down the reading room
+    rug = (140, 36, 48)
+    c.paint(poly([(250, 880), (1680, 880), (1760, 1000), (170, 1000)]), rug, ow=3,
+            pattern=lambda p: [p.poly([(268, 890), (1666, 890), (1736, 990), (194, 990)], (210, 160, 70)),
+                               p.poly([(276, 896), (1660, 896), (1726, 984), (204, 984)], rug),
+                               *[p.poly([(x, 920), (x + 14, 940), (x, 960), (x - 14, 940)], (210, 160, 70))
+                                 for x in range(330, 1640, 90)]])
+
+    # --- exit door (x 60-220, y 480-800)
+    door(c, 70, 500, 210, 792, (130, 74, 44), knob="R", casing=(176, 120, 70))
+    c.paint(rect(102, 530, 178, 610), ("v", (170, 120, 170), (250, 160, 110)), ow=3,
+            pattern=lambda p: p.poly([(108, 604), (130, 536), (140, 536), (118, 604)], (255, 220, 200)))
+    c.line([(140, 530), (140, 610)], 2.5, (176, 120, 70))
+    c.paint(rrect(90, 446, 190, 478, 5), (30, 30, 30), ow=3)
+    c.text(140, 462, "EXIT", 20, (90, 255, 140))
+
+    # --- card catalogue between the door and the desk
+    cc = (150, 92, 54)
+    c.shadow(300, 796, 66, 8)
+    c.paint(wonky(246, 612, 354, 792, 1.5, rng), cc, shade=(-6, 0, dk(cc, 0.72)), hi=(0, 4, lt(cc, 0.3)))
+    for r in range(6):
+        for k in range(3):
+            x0, y0 = 254 + k * 32, 622 + r * 27
+            c.paint(rect(x0, y0, x0 + 28, y0 + 22), lt(cc, 0.12), ow=2, shade=(-2, -2))
+            c.paint(rect(x0 + 9, y0 + 5, x0 + 19, y0 + 10), (250, 240, 214), ow=1.4)
+            c.paint(ell(x0 + 14, y0 + 15, 3, 2), (220, 180, 80), ow=1.4)
+    # stack of books + globe-ish paperweight on top
+    for i, (w, col) in enumerate(((64, (60, 90, 160)), (56, (170, 50, 60)), (60, (60, 130, 90)))):
+        c.paint(rect(268 + i * 3, 600 - i * 12, 268 + i * 3 + w, 612 - i * 12), col, ow=2.5, hi=(0, 2, lt(col, 0.3)))
+
+    # --- big arched window behind the librarian's spot
+    wx0, wy0, wx1, wy1 = 790, 160, 940, 520
+    r = (wx1 - wx0) / 2
+    frm = (176, 120, 70)
+    c.paint(Sh([ell_pts((wx0 + wx1) / 2, wy0 + r, r + 14, r + 14, 0, 30, 180, 360) +
+                [(wx1 + 14, wy1 + 14), (wx0 - 14, wy1 + 14)]]), frm, shade=(-5, 0, dk(frm, 0.75)))
+
+    def dusk(p):
+        p.rect(wx0, wy0, wx1, wy1, (110, 70, 150))
+        for k in range(10):
+            p.rect(wx0, wy0 + 60 + k * 30, wx1, wy0 + 90 + k * 30, mix((120, 70, 150), (255, 170, 110), k / 9))
+        p.ell(900, 470, 34, 34, (255, 230, 150))
+        for tx_, th in ((800, 90), (850, 120), (910, 80), (950, 110)):
+            p.ell(tx_, wy1 - th * 0.6, 40, th * 0.6, (50, 40, 70))
+        p.rect(wx0, wy1 - 30, wx1, wy1, (40, 30, 60))
+    c.paint(Sh([ell_pts((wx0 + wx1) / 2, wy0 + r, r, r, 0, 30, 180, 360) + [(wx1, wy1), (wx0, wy1)]]),
+            (110, 70, 150), ow=3, pattern=dusk)
+    c.line([((wx0 + wx1) / 2, wy0), ((wx0 + wx1) / 2, wy1)], 5, frm)
+    for y in (300, 410):
+        c.line([(wx0, y), (wx1, y)], 4, frm)
+    c.paint(poly([(wx0 + 16, wy1 - 20), (wx0 + 60, wy0 + 60), (wx0 + 74, wy0 + 60), (wx0 + 30, wy1 - 20)]),
+            (255, 255, 255), ow=0, opacity=0.10)
+    c.paint(rect(wx0 - 26, wy1 + 10, wx1 + 26, wy1 + 28), frm, shade=(0, -5, dk(frm, 0.72)))
+
+    # --- SILENCE sign + wall clock over the desk
+    c.paint(rrect(420, 352, 660, 420, 8), (40, 30, 26), shade=(-4, -4), hi=(3, 3, (90, 70, 56), 2))
+    c.paint(rrect(428, 360, 652, 412, 5), (0, 0, 0, 0), ow=2, oc=(214, 168, 70))
+    c.text(540, 386, "SILENCE", 34, (240, 200, 90), "Display")
+    c.paint(ell(540, 270, 40, 40), (214, 168, 70), shade=(-4, -4), hi=(3, 3, (255, 230, 150), 2))
+    c.paint(ell(540, 270, 31, 31), (250, 244, 226), ow=3)
+    for k in range(12):
+        a = math.radians(k * 30)
+        c.line([(540 + 24 * math.cos(a), 270 + 24 * math.sin(a)), (540 + 28 * math.cos(a), 270 + 28 * math.sin(a))], 2)
+    c.line([(540, 270), (540, 250)], 3.5)
+    c.line([(540, 270), (556, 276)], 3.5)
+    # small "SHHH" placard on the wainscot between the stacks and the reading table
+    c.paint(rrect(1318, 612, 1386, 644, 4), (250, 240, 214), ow=3, shade=(-3, -3, (210, 196, 170)))
+    c.text(1352, 628, "SHHH!", 13, (180, 40, 50))
+
+    # --- librarian's front desk (x 380-700, y 640-820)
+    dsk = (150, 90, 52)
+    c.shadow(540, 822, 180, 14, 0.5)
+    c.paint(wonky(386, 690, 696, 822, 1.5, rng), dsk, shade=(-8, 0, dk(dsk, 0.72)), hi=(0, 5, lt(dsk, 0.25)))
+    for x in (400, 504, 600):
+        c.paint(rrect(x, 708, x + 86, 806, 5), dsk, ow=2.5, shade=(0, -4, dk(dsk, 0.75)), hi=(0, 3, lt(dsk, 0.3)))
+    c.paint(rrect(518, 736, 572, 756, 3), (214, 168, 70), ow=2.5, hi=(0, 2, (255, 230, 150)))
+    c.text(545, 746, "RETURNS", 7, (70, 46, 24), "Black")
+    c.paint(poly([(376, 676), (704, 676), (710, 694), (370, 694)]), lt(dsk, 0.12), hi=(0, 4, lt(dsk, 0.4)),
+            shade=(0, -4, dk(dsk, 0.75)))
+    c.paint(poly([(396, 679), (690, 679), (694, 690), (392, 690)]), (40, 110, 76), ow=0, opacity=0.8)
+    # bell
+    c.paint(ell(424, 682, 18, 4), (60, 60, 66), ow=2.5)
+    c.paint(Sh([ell_pts(424, 680, 15, 15, 0, 20, 180, 360)]), (226, 186, 90), shade=(-3, 0, (170, 130, 60)),
+            hi=(3, 3, (255, 240, 180), 2))
+    c.paint(cap([(424, 664), (424, 660)], 5), (180, 180, 190), ow=2)
+    # banker's lamp
+    desk_lamp = bankers_lamp(c, 486, 680, 0.95)
+    # date stamp + ink pad
+    c.paint(rect(530, 672, 556, 680), (60, 60, 120), ow=2.5)
+    c.paint(rect(564, 666, 576, 680), (90, 60, 40), ow=2.5)
+    c.paint(ell(570, 662, 8, 5), (40, 40, 44), ow=2.5)
+    # stack of returns with a tag
+    y = 680
+    for i, (w, h, col) in enumerate(((84, 9, (60, 90, 160)), (78, 8, (200, 120, 40)), (88, 9, (90, 50, 110)),
+                                     (72, 8, (40, 130, 110)), (80, 8, (190, 50, 60)))):
+        dx = (-4, 3, -2, 5, -3, 2)[i]
+        x0 = 640 - w / 2 + dx
+        c.paint(rect(x0, y - h, x0 + w, y), col, ow=2.4, hi=(0, 2, lt(col, 0.3)),
+                pattern=lambda p, x0=x0, w=w, y=y, h=h: p.rect(x0 + w - 8, y - h, x0 + w - 4, y, (250, 244, 226)))
+        y -= h
+    c.paint(poly([(680, 652), (696, 646), (700, 662), (684, 666)]), (250, 240, 214), ow=2)
+    c.line([(678, 658), (684, 658)], 1.4)
+
+    # --- tall bookshelves (x 1000-1300, y 300-800)
+    sw = (110, 62, 36)
+    c.shadow(1150, 800, 170, 12, 0.5)
+    c.paint(wonky(1000, 314, 1300, 800, 1.5, rng), sw, shade=(-8, 0, dk(sw, 0.72)), hi=(6, 0, lt(sw, 0.2)))
+    c.paint(rect(1018, 340, 1282, 782), (46, 26, 20), ow=3)
+    c.paint(wonky(990, 300, 1310, 326, 1.2, rng), lt(sw, 0.1), shade=(0, -5, dk(sw, 0.72)), hi=(0, 4, lt(sw, 0.35)))
+    book_cols = [(170, 50, 60), (60, 90, 160), (60, 130, 90), (200, 140, 50), (120, 70, 140), (40, 110, 120),
+                 (220, 200, 140), (150, 60, 40)]
+    shelves = [340, 428, 516, 604, 692, 782]
+    for i in range(5):
+        top, bot = shelves[i], shelves[i + 1]
+        book_row(c, 1022, 1278, bot - 10, (bot - top) * 0.55, (bot - top) * 0.82, rng, book_cols)
+        c.paint(rect(1012, bot - 10, 1288, bot), lt(sw, 0.1), ow=3, hi=(0, 3, lt(sw, 0.35)))
+        c.paint(rect(1138, bot - 9, 1162, bot - 1), (214, 168, 70), ow=1.6)
+    # rolling ladder
+    lad = (170, 110, 60)
+    c.line([(1236, 330), (1252, 798)], 7, OUT)
+    c.line([(1282, 330), (1298, 798)], 7, OUT)
+    for k in range(12):
+        y = 370 + k * 36
+        t = (y - 330) / 468
+        c.line([(1236 + 16 * t, y), (1282 + 16 * t, y)], 6, OUT)
+        c.line([(1236 + 16 * t, y), (1282 + 16 * t, y)], 3, lad)
+    c.line([(1236, 330), (1252, 798)], 3.5, lad)
+    c.line([(1282, 330), (1298, 798)], 3.5, lad)
+    c.paint(rect(1226, 318, 1292, 326), (214, 168, 70), ow=2)
+    c.paint(ell(1252, 794, 6, 6), (40, 40, 44), ow=2)
+    c.paint(ell(1298, 794, 6, 6), (40, 40, 44), ow=2)
+
+    # --- portrait of the founder over the reading area
+    gold = (214, 168, 70)
+    c.paint(wonky(1440, 200, 1640, 460, 1.5, rng), gold, shade=(-5, -5, (160, 120, 50)), hi=(4, 4, (255, 230, 150), 3))
+
+    def oil(p):
+        p.rect(1456, 216, 1624, 444, (70, 46, 34))
+        p.ell(1540, 330, 70, 90, (96, 64, 44))
+        p.poly([(1470, 444), (1490, 380), (1540, 364), (1590, 380), (1610, 444)], (40, 40, 60))
+        p.poly([(1520, 372), (1560, 372), (1540, 420)], (240, 236, 220))
+        p.ell(1540, 318, 36, 42, (232, 186, 150))
+        p.ell(1510, 324, 8, 7, (232, 186, 150))
+        p.poly([(1512, 336), (1526, 330), (1540, 336), (1554, 330), (1566, 338), (1540, 346)], (200, 196, 190))
+        p.ell(1574, 312, 10, 18, (200, 196, 190))
+        p.line([(1522, 306), (1534, 304)], 2.5, OUT)
+        p.line([(1546, 304), (1558, 306)], 2.5, OUT)
+        p.line([(1518, 296), (1536, 290)], 2.5, (160, 156, 150))
+        p.line([(1546, 290), (1562, 294)], 2.5, (160, 156, 150))
+    c.paint(rect(1456, 216, 1624, 444), (70, 46, 34), ow=3, pattern=oil)
+    c.paint(rrect(1508, 466, 1572, 482, 3), gold, ow=2)
+
+    # --- reading table (x 1380-1700, y 690-850) with chair, lamp and open books
+    tw = (138, 82, 46)
+    c.shadow(1540, 850, 170, 12, 0.5)
+    ch = (120, 64, 40)
+    for px in (1562, 1610):  # chair back seen behind the table
+        c.paint(rect(px - 4, 700, px + 4, 742), ch, ow=2.5, shade=(-2, 0, dk(ch, 0.72)))
+    for px in (1576, 1586, 1596):
+        c.paint(rect(px - 2, 704, px + 2, 742), ch, ow=2)
+    c.paint(poly(ell_pts(1586, 706, 34, 12, 0, 16, 180, 360)), ch, shade=(0, -3, dk(ch, 0.72)),
+            hi=(0, 3, lt(ch, 0.3)))
+    for lx in (1398, 1682):
+        c.paint(poly([(lx - 8, 772), (lx + 8, 772), (lx + 5, 848), (lx - 5, 848)], 1), tw, shade=(-3, 0, dk(tw, 0.72)),
+                hi=(2, 0, lt(tw, 0.3)))
+        c.paint(ell(lx, 806, 9, 6), tw, ow=2.5)
+    c.paint(rect(1388, 756, 1692, 776), dk(tw, 0.85), ow=3, shade=(0, -4))
+    c.paint(poly([(1384, 738), (1696, 738), (1704, 760), (1376, 760)]), lt(tw, 0.12), hi=(0, 4, lt(tw, 0.4)),
+            shade=(0, -4, dk(tw, 0.75)))
+    table_lamp = bankers_lamp(c, 1440, 744, 1.0)
+    # open books
+    c.paint(poly([(1520, 748), (1560, 742), (1562, 730), (1522, 736)], 1), (250, 244, 226), ow=2.5)
+    c.paint(poly([(1562, 742), (1604, 748), (1604, 736), (1564, 730)], 1), (240, 232, 210), ow=2.5)
+    for k in range(4):
+        c.line([(1528, 739 + k * 2.4), (1554, 735 + k * 2.4)], 0.9, (150, 140, 130))
+        c.line([(1570, 735 + k * 2.4), (1598, 739 + k * 2.4)], 0.9, (150, 140, 130))
+    c.paint(poly([(1618, 750), (1676, 748), (1674, 738), (1622, 740)]), (60, 90, 160), ow=2.5,
+            hi=(0, 2, (120, 150, 210)))
+    c.paint(poly([(1624, 740), (1670, 738), (1668, 732), (1628, 734)]), (190, 60, 70), ow=2.5)
+    c.paint(poly([(1480, 752), (1508, 748), (1510, 742), (1484, 746)]), (250, 244, 226), ow=2)
+
+    # --- globe on a stand (right edge, clear of the standing spot)
+    c.shadow(1880, 800, 34, 6)
+    c.paint(poly([(1864, 798), (1896, 798), (1884, 760), (1876, 760)]), (120, 70, 44), ow=3)
+    c.paint(Sh(caps=[(ell_pts(1880, 724, 36, 36, 0, 20, 200, 340), 4)]), (214, 168, 70), ow=2.5)
+    c.paint(ell(1880, 724, 30, 30), (90, 160, 200), shade=(-5, 4, (60, 110, 160)), hi=(4, -4, (170, 220, 240), 2),
+            pattern=lambda p: [p.ell(1872, 716, 12, 9, (120, 170, 90), rot=20), p.ell(1892, 736, 8, 6, (120, 170, 90))])
+
+    lights = [(desk_lamp[0], desk_lamp[1], 360, 0.6, (255, 220, 150)),
+              (table_lamp[0], table_lamp[1], 420, 0.6, (255, 220, 150)),
+              (865, 380, 380, 0.35, (255, 170, 140)), (960, 120, 1100, 0.18, (255, 220, 170))]
+    light_pass(c, 0.66, lights, vign=0.45)
+    c.glow(desk_lamp[0], desk_lamp[1] + 6, 90, (255, 230, 150), 0.45)
+    c.glow(table_lamp[0], table_lamp[1] + 6, 100, (255, 230, 150), 0.45)
+    c.save("bg_library.png")
+
+
+# =========================================================================== 10. Roxy Vale (game-show host)
+def sparkle(p, x, y, s, col):
+    p.poly([(x, y - s), (x + s * 0.28, y - s * 0.28), (x + s, y), (x + s * 0.28, y + s * 0.28), (x, y + s),
+            (x - s * 0.28, y + s * 0.28), (x - s, y), (x - s * 0.28, y - s * 0.28)], col)
+
+
+def paint_roxy_vale():
+    c = Canvas(110, 270, ow=3)
+    skin, skin_sh = (250, 200, 162), (214, 142, 116)
+    hair, hair_sh, hair_hi = (92, 40, 60), (58, 22, 44), (214, 120, 150)
+    blz, blz_sh = (232, 40, 150), (168, 22, 112)
+    blk, blk_hi = (44, 32, 52), (110, 90, 130)
+
+    def sequins(p):
+        r2 = random.Random(31)
+        for _ in range(70):
+            x, y = r2.uniform(14, 104), r2.uniform(86, 150)
+            if r2.random() < 0.25:
+                sparkle(p, x, y, r2.uniform(2.2, 3.4), (255, 236, 250))
+            else:
+                p.ell(x, y, 1.1, 1.1, r2.choice([(255, 150, 210), (255, 220, 120), (255, 255, 255)]))
+
+    # big glossy hair mass behind everything
+    back = poly([(34, 34), (40, 12), (60, 2), (84, 6), (100, 22), (104, 46), (100, 68), (108, 88), (98, 108),
+                 (82, 104), (86, 90), (74, 82), (66, 66)], 2, True)
+    c.paint(back, hair, shade=(4, 3, hair_sh),
+            pattern=lambda p: [p.line(bez((70 + k * 6, 14), (100 + k * 2, 50), (88 + k * 4, 100)), 2.2, hair_hi)
+                               for k in range(2)])
+    # far arm: open palm presenting to the side
+    c.paint(cap([(74, 100), (92, 116), (100, 106)], 8.5), skin, shade=(3, 2, skin_sh))
+    c.paint(ell(102, 102, 6.5, 5.5, -30) + cap([(104, 98), (108, 92)], 3) + cap([(100, 97), (103, 91)], 3), skin,
+            shade=(2, 2, skin_sh))
+    c.paint(cap([(72, 100), (90, 114)], 15), blz, pattern=sequins, shade=(3, 2, blz_sh))
+    c.paint(ell(92, 115, 4, 7.5, 40), (255, 246, 250), ow=2)
+    # legs + magenta heels (pointing left)
+    c.paint(cap([(60, 186), (64, 240)], 10.5), skin, shade=(3, 0, skin_sh))
+    c.paint(cap([(46, 186), (40, 242)], 11), skin, shade=(3, 0, skin_sh))
+    for xh, xt, yt, yb in ((72, 48, 238, 252), (50, 18, 241, 256)):
+        foot = shoe_shape(xh, xt, yt, yb, pointy=True)
+        c.paint(foot, blz, shade=(3, -2, blz_sh), hi=(-2, 2, (255, 140, 200), 1.5))
+        c.paint(poly([(xh - 5, yb - 3), (xh + 1, yb - 3), (xh, yb + 6), (xh - 3, yb + 6)]), blk, ow=2)
+    # sequinned pencil skirt
+    skirt = poly([(36, 136), (76, 136), (78, 160), (70, 194), (36, 194), (32, 160)], 1)
+    c.paint(skirt, blk, shade=(4, 0, (24, 18, 30)), hi=(-2, 2, blk_hi, 1.5),
+            pattern=lambda p: [p.ell(36 + (k * 13) % 40, 140 + (k * 17) % 52, 0.9, 0.9, (200, 190, 220))
+                               for k in range(24)])
+    c.line([(60, 176), (62, 194)], 1.3)
+    # neck
+    c.paint(cap([(56, 80), (56, 96)], 9.5), skin, shade=(3, 0, skin_sh))
+    # blazer, nipped waist, satin lapels, sparkle
+    torso = poly([(34, 96), (54, 90), (76, 96), (80, 108), (74, 128), (78, 144), (34, 144), (38, 126), (30, 108)], 2)
+    c.paint(torso, blz, pattern=sequins, shade=(5, 2, blz_sh), hi=(-3, 3, (255, 130, 200), 2))
+    c.paint(poly([(48, 92), (64, 92), (56, 118)]), (255, 250, 246), ow=2)
+    c.paint(poly([(44, 90), (54, 94), (56, 122), (46, 106)], 1), blk, ow=2.2, hi=(-1, 1, blk_hi))
+    c.paint(poly([(68, 90), (58, 94), (56, 122), (66, 106)], 1), blk, ow=2.2, hi=(-1, 1, blk_hi))
+    c.paint(ell(56, 126, 2.6, 2.6), (255, 220, 120), ow=1.4)
+    c.paint(ell(56, 136, 2.6, 2.6), (255, 220, 120), ow=1.4)
+    for k in range(5):  # pearl choker
+        c.paint(ell(50 + k * 3, 94 - abs(k - 2) * 0.4, 1.6, 1.6), (255, 252, 240), ow=1)
+    # near arm: microphone held up by the chin
+    c.paint(cap([(36, 100), (28, 124), (24, 106)], 8.5), skin, shade=(3, 2, skin_sh))
+    c.paint(cap([(36, 98), (30, 118)], 15), blz, pattern=sequins, shade=(3, 2, blz_sh))
+    c.paint(ell(29, 121, 7.5, 4, -15), (255, 246, 250), ow=2)
+    c.paint(cap([(28, 108), (18, 84)], 5.5), blk, ow=2.4, hi=(-1, 0, blk_hi))
+    c.paint(ell(16, 80, 7.5, 8.5, -20), (196, 200, 210), ow=2.5, hi=(-2, -2, (250, 250, 255), 1.5),
+            pattern=lambda p: [p.line([(8, 76 + k * 3), (24, 72 + k * 3)], 0.8, (120, 124, 136)) for k in range(5)])
+    c.paint(rect(16, 90, 24, 96), (226, 40, 140), ow=1.8)
+    c.paint(ell(24, 104, 6.5, 7), skin, shade=(2, 2, skin_sh))
+    c.paint(cap([(19, 100), (19, 106)], 3.5), skin, ow=1.8)
+    c.paint(ell(22, 99, 2.2, 1.6), (226, 40, 140), ow=1)  # nail polish
+
+    # ---- head (3/4, facing left)
+    head = ell(56, 56, 23, 25.5) + poly([(34, 60), (38, 78), (50, 87), (62, 84), (76, 70)], 2) + ell(32, 61, 5, 4.8)
+    c.paint(head, skin, shade=(4, 3, skin_sh), hi=(-3, 4, (255, 222, 192), 2.5))
+    c.paint(ell(77, 62, 5.5, 8), skin, shade=(2, 2, skin_sh))
+    c.curve((33, 64), (30, 65), (29, 62), 1.4)
+    c.paint(ell(52, 70, 6, 3.4), (255, 110, 130), ow=0, opacity=0.5)
+    c.paint(ell(37, 69, 3.4, 2.6), (255, 110, 130), ow=0, opacity=0.45)
+    eye(c, 52, 55, 8, 9.5, 48.5, 56, 2.5, lid=0.18, skin=skin, lashes=1, iris=(110, 60, 200))
+    eye(c, 37, 54.5, 5.6, 9, 34.5, 55.5, 2.2, lid=0.18, skin=skin, lashes=-1, iris=(110, 60, 200))
+    c.line([(44, 40), (52, 36), (62, 39)], 2.2, hair_sh)
+    c.line([(32, 43), (39, 40)], 2.0, hair_sh)
+    # HUGE smile
+    mouth = poly([(36, 72), (46, 74), (58, 71), (62, 68), (58, 79), (48, 84), (39, 80)], 1)
+    c.paint(mouth, (150, 20, 60), ow=2, pattern=lambda p: (p.poly([(36, 72), (46, 74), (58, 71), (62, 68), (58, 75),
+                                                                   (46, 78), (38, 76)], (255, 255, 255)),
+                                                            p.ell(49, 83, 6, 3, (255, 120, 140))))
+    c.line([(36, 72), (46, 74), (58, 71), (62, 68)], 2.2, (214, 30, 110))
+    c.paint(ell(78, 74, 4, 4.6), (0, 0, 0, 0), ow=1.8, oc=(244, 200, 80))  # hoop
+    # glossy front hair: big swoop over the forehead
+    front = poly([(30, 46), (34, 30), (46, 20), (64, 16), (80, 22), (90, 36), (88, 56), (92, 74), (86, 82),
+                  (80, 70), (76, 52), (68, 40), (56, 36), (46, 40), (38, 46)], 2, True)
+    c.paint(front, hair, shade=(3, 3, hair_sh), hi=(-2, 3, hair_hi, 2))
+    c.curve((44, 26), (58, 20), (74, 26), 2.0, hair_hi)
+    c.curve((80, 34), (86, 50), (84, 66), 1.6, hair_hi)
+    c.curve((66, 40), (76, 50), (78, 64), 1.3, hair_sh)
+    c.fit(margin=3)
+    c.save("hs_roxy_vale.png")
+
+
+# =========================================================================== 11. Ivy (shy bookworm)
+def paint_ivy():
+    c = Canvas(110, 245, ow=3)
+    skin, skin_sh = (255, 222, 196), (226, 166, 140)
+    hair, hair_sh, hair_hi = (120, 70, 42), (84, 46, 30), (176, 116, 70)
+    card, card_sh, card_hi = (222, 168, 46), (176, 120, 30), (250, 210, 110)
+    plaid_c = (52, 96, 80)
+
+    def knit(p):
+        for x in range(0, 110, 5):
+            p.line([(x, 80), (x, 180)], 0.8, dk(card, 0.85))
+
+    def plaid(p):
+        for x in range(20, 100, 9):
+            p.line([(x, 140), (x - 2, 190)], 2.4, (36, 66, 110))
+            p.line([(x + 4, 140), (x + 2, 190)], 0.9, (220, 60, 50))
+        for y in range(146, 190, 9):
+            p.line([(20, y), (100, y)], 2.2, (36, 66, 110))
+            p.line([(20, y + 4), (100, y + 4)], 0.9, (250, 210, 80))
+
+    # braid down the back
+    for k in range(7):
+        y = 74 + k * 11
+        x = 84 - k * 0.6
+        c.paint(ell(x + (2 if k % 2 else -2), y, 7.5 - k * 0.3, 7.5, 25 if k % 2 else -25), hair,
+                shade=(3, 2, hair_sh), hi=(-2, 2, hair_hi, 1))
+    c.paint(cap([(80, 152), (84, 152)], 6), (220, 60, 80), ow=2)
+    c.paint(poly([(80, 154), (86, 154), (88, 164), (82, 166), (78, 162)], 1), hair, shade=(2, 0, hair_sh))
+    # legs, knee socks, Mary Janes (slightly pigeon-toed)
+    c.paint(cap([(60, 184), (62, 230)], 9.5), skin, shade=(3, 0, skin_sh))
+    c.paint(cap([(46, 184), (46, 232)], 10), skin, shade=(3, 0, skin_sh))
+    for lx in (62, 46):
+        c.paint(cap([(lx, 204), (lx, 232)], 10.5), (250, 248, 240), shade=(3, 0, (210, 206, 214)))
+        c.line([(lx - 5, 206), (lx + 5, 206)], 1.2, (200, 60, 70))
+    for xh, xt, yt, yb in ((70, 50, 230, 242), (54, 30, 232, 244)):
+        foot = shoe_shape(xh, xt, yt, yb)
+        c.paint(foot, (120, 52, 40), shade=(3, -2, (84, 34, 30)), hi=(-2, 2, (180, 100, 80), 1.5))
+        c.line([(xh - 3, yt + 2), (xh - 13, yt + 2)], 1.8)
+    # pleated plaid skirt
+    skirt = poly([(38, 140), (72, 140), (80, 188), (28, 188)], 1)
+    c.paint(skirt, plaid_c, pattern=plaid, shade=(4, 0, dk(plaid_c, 0.7)))
+    for x in (40, 50, 60, 70):
+        c.line([(x + (x - 54) * 0.05, 146), (x + (x - 54) * 0.35, 188)], 1.3, dk(plaid_c, 0.5))
+    # cardigan torso (blouse collar peeks out)
+    c.paint(cap([(56, 82), (56, 96)], 9.5), skin, shade=(3, 0, skin_sh))
+    torso = poly([(36, 96), (54, 92), (72, 96), (78, 112), (76, 144), (34, 144), (32, 112)], 2)
+    c.paint(torso, card, pattern=knit, shade=(5, 0, card_sh), hi=(-3, 3, card_hi, 2))
+    c.paint(poly([(46, 92), (56, 98), (52, 104), (42, 98)], 1), (252, 250, 244), ow=2)
+    c.paint(poly([(66, 92), (56, 98), (60, 104), (70, 98)], 1), (252, 250, 244), ow=2)
+    c.paint(cap([(36, 141), (76, 141)], 5), dk(card, 0.85), ow=2)
+    # far hand peeking at the top of the book
+    c.paint(cap([(72, 100), (78, 116), (70, 112)], 9), card, pattern=knit, shade=(3, 2, card_sh))
+    c.paint(ell(66, 108, 5.5, 5), skin, shade=(2, 2, skin_sh))
+    # the hugged poetry book
+    bk = (46, 110, 120)
+    book = poly(rot_pts([(36, 102), (70, 102), (70, 142), (36, 142)], -8, 53, 122))
+    c.paint(book, bk, shade=(4, 0, dk(bk, 0.7)), hi=(-2, 2, lt(bk, 0.3), 1.5))
+    c.paint(poly(rot_pts([(40, 108), (66, 108), (66, 136), (40, 136)], -8, 53, 122)), (0, 0, 0, 0), ow=1.4,
+            oc=(230, 196, 90))
+    c.text(53, 117, "POEMS", 5.2, (240, 210, 110), "Black", angle=8)
+    c.paint(ell(53, 126, 3, 3), (230, 196, 90), ow=1.2)
+    c.paint(ell(66, 108, 5.5, 5), skin, shade=(2, 2, skin_sh))
+    # near arm wrapped across the book
+    c.paint(cap([(38, 100), (30, 124), (56, 134)], 9), card, pattern=knit, shade=(3, 2, card_sh))
+    c.paint(ell(58, 133, 6, 5), skin, shade=(2, 2, skin_sh))
+    c.paint(cap([(52, 132), (55, 136)], 4), card_sh, ow=1.6)
+
+    # ---- head, tipped down (facing left)
+    head = ell(56, 60, 23, 25) + poly([(36, 66), (40, 82), (50, 90), (62, 87), (76, 72)], 2) + ell(34, 68, 4.5, 4.4)
+    c.paint(head, skin, shade=(4, 3, skin_sh), hi=(-3, 4, (255, 236, 216), 2.5))
+    c.paint(ell(78, 64, 5.5, 8), skin, shade=(2, 2, skin_sh))
+    c.paint(ell(50, 73, 7, 3.6), (255, 120, 130), ow=0, opacity=0.65)
+    c.paint(ell(37, 72, 3.6, 2.8), (255, 120, 130), ow=0, opacity=0.6)
+    # eyes looking down, under big round glasses
+    eye(c, 52, 61, 7.5, 9, 49, 65.5, 2.4, lid=0.38, lid_tilt=0.8, skin=skin, iris=(110, 80, 50))
+    eye(c, 37.5, 60.5, 5.2, 8.4, 35.5, 65, 2.1, lid=0.38, lid_tilt=-0.6, skin=skin, iris=(110, 80, 50))
+    c.line([(44, 47), (51, 46), (58, 48)], 1.9, hair_sh)
+    c.line([(32, 49), (38, 47.5)], 1.8, hair_sh)
+    # tiny wobbly shy mouth
+    c.line([(40, 82.5), (43, 81.5), (46, 83), (49, 82)], 1.5)
+    frame = (150, 60, 50)
+    for gx, gy, rx, ry in ((52, 62, 12, 12.5), (36.5, 61.5, 7.8, 11.5)):
+        c.paint(ell(gx, gy, rx, ry), (220, 240, 255), ow=0, opacity=0.25)
+        c.paint(ell(gx, gy, rx, ry), (0, 0, 0, 0), ow=3.4)
+        c.paint(ell(gx, gy, rx, ry), (0, 0, 0, 0), ow=1.6, oc=frame)
+        c.paint(poly([(gx - rx * 0.6, gy + ry * 0.2), (gx - rx * 0.1, gy - ry * 0.7), (gx + rx * 0.15, gy - ry * 0.7),
+                      (gx - rx * 0.35, gy + ry * 0.2)]), (255, 255, 255), ow=0, opacity=0.35)
+    c.line([(44, 60), (40.5, 59.5)], 2.6)
+    c.line([(64, 61), (76, 60)], 2.4)
+    # hair: neat centre part, bangs, swept to the back
+    front = poly([(32, 52), (34, 38), (44, 30), (58, 28), (74, 32), (84, 44), (86, 62), (82, 74), (78, 66),
+                  (76, 52), (68, 46), (60, 50), (52, 46), (44, 52), (38, 50)], 2, True)
+    c.paint(front, hair, shade=(3, 3, hair_sh), hi=(-2, 3, hair_hi, 1.5))
+    c.curve((50, 34), (60, 31), (72, 36), 1.4, hair_hi)
+    c.line([(58, 32), (56, 46)], 1.2, hair_sh)
+    c.fit(margin=3)
+    c.save("hs_ivy.png")
+
+
+# =========================================================================== 12. Ms. Hush (librarian)
+def paint_ms_hush():
+    """Drawn facing left like the others, then mirrored so she faces right."""
+    c = Canvas(110, 250, ow=3)
+    skin, skin_sh = (244, 200, 172), (210, 150, 128)
+    hair, hair_sh, hair_hi = (190, 190, 200), (140, 140, 158), (236, 236, 244)
+    cd, cd_sh, cd_hi = (128, 58, 110), (90, 36, 82), (180, 110, 160)
+    tweed = (130, 98, 66)
+
+    def tweed_pat(p):
+        r2 = random.Random(5)
+        for _ in range(120):
+            x, y = r2.uniform(24, 90), r2.uniform(140, 222)
+            p.line([(x, y), (x + 3, y + 2)], 0.8, r2.choice([dk(tweed, 0.75), lt(tweed, 0.25)]))
+
+    def knit(p):
+        for x in range(0, 110, 5):
+            p.line([(x, 84), (x, 160)], 0.8, dk(cd, 0.85))
+
+    # far arm with a book tucked against the hip
+    c.paint(cap([(74, 104), (84, 132), (78, 146)], 9.5), cd, pattern=knit, shade=(3, 2, cd_sh))
+    c.paint(poly([(66, 128), (92, 124), (96, 156), (70, 160)], 1), (60, 90, 160), shade=(3, 0, (40, 60, 120)),
+            hi=(-2, 2, (110, 140, 210), 1.5))
+    c.paint(rect(70, 128, 74, 158), (250, 244, 226), ow=1.6)
+    c.paint(ell(80, 146, 6, 5.5), skin, shade=(2, 2, skin_sh))
+    # legs + sensible shoes
+    c.paint(cap([(60, 210), (62, 238)], 9), (210, 170, 150), shade=(3, 0, skin_sh))
+    c.paint(cap([(46, 210), (44, 240)], 9.5), (210, 170, 150), shade=(3, 0, skin_sh))
+    for xh, xt, yt, yb in ((70, 48, 236, 248), (54, 26, 238, 250)):
+        foot = shoe_shape(xh, xt, yt, yb, toe_h=0.6)
+        c.paint(foot, (90, 56, 40), shade=(3, -2, (60, 36, 28)), hi=(-2, 2, (150, 100, 70), 1.5))
+        c.paint(rect(xh - 6, yb - 4, xh + 1, yb + 2), (50, 30, 24), ow=0, clip=foot)
+    # long tweed skirt
+    skirt = poly([(34, 138), (76, 138), (82, 220), (28, 220)], 1)
+    c.paint(skirt, tweed, pattern=tweed_pat, shade=(5, 0, dk(tweed, 0.72)), hi=(-2, 2, lt(tweed, 0.25), 1.5))
+    c.line([(54, 150), (52, 220)], 1.3, dk(tweed, 0.6))
+    # neck + cardigan + high-collar blouse with brooch
+    c.paint(cap([(56, 86), (56, 100)], 9), skin, shade=(3, 0, skin_sh))
+    torso = poly([(36, 98), (54, 94), (74, 98), (78, 112), (76, 144), (34, 144), (32, 112)], 2)
+    c.paint(torso, cd, pattern=knit, shade=(5, 0, cd_sh), hi=(-3, 3, cd_hi, 2))
+    c.paint(poly([(46, 94), (66, 94), (62, 136), (50, 136)], 1), (246, 238, 222), ow=2.2)
+    c.paint(rrect(47, 90, 65, 100, 3), (246, 238, 222), ow=2.2)
+    c.paint(ell(56, 106, 3.4, 4), (60, 160, 140), ow=1.6, hi=(-1, -1, (180, 240, 220)))
+    for by in (116, 126):
+        c.paint(ell(56, by, 1.4, 1.4), (200, 190, 170), ow=1)
+    # glasses chain (beads looping round the neck)
+    for k in range(13):
+        t = k / 12
+        x = 40 + 34 * t
+        y = 66 + 34 * math.sin(math.pi * t) + (t * 2)
+        c.paint(ell(x, y, 1.3, 1.3), (240, 200, 90), ow=0.8)
+    # near arm: forearm up, index finger raised to her lips
+    c.paint(cap([(38, 102), (26, 132), (30, 106)], 9.5), cd, pattern=knit, shade=(3, 2, cd_sh))
+    c.paint(ell(30, 108, 6.5, 3.6, 75), lt(cd, 0.2), ow=2)
+    fist = ell(32, 98, 6.5, 7)
+    c.paint(fist, skin, shade=(2, 2, skin_sh))
+
+    # ---- head (facing left; long face)
+    head = ell(57, 58, 22, 25) + poly([(36, 62), (40, 82), (52, 92), (64, 88), (76, 72)], 2) + ell(33, 63, 5.5, 5)
+    c.paint(head, skin, shade=(4, 3, skin_sh), hi=(-3, 4, (255, 222, 200), 2.5))
+    c.paint(ell(78, 62, 5.5, 8), skin, shade=(2, 2, skin_sh))
+    c.curve((34, 66), (31, 67), (30, 64), 1.4)
+    c.line([(46, 74), (52, 78)], 1.1, skin_sh)  # smile line
+    # narrowed stern eyes + V brows
+    eye(c, 52, 57, 7.5, 8.5, 48.5, 58.5, 2.3, lid=0.5, lid_tilt=-1.6, skin=skin, iris=(80, 110, 140))
+    eye(c, 38, 56.5, 5.2, 8, 35.5, 58, 2.0, lid=0.5, lid_tilt=1.4, skin=skin, iris=(80, 110, 140))
+    c.line([(44, 44), (52, 46), (60, 44)], 2.6, hair_sh)
+    c.line([(32, 45), (39, 48)], 2.4, hair_sh)
+    # pursed lips behind the finger
+    c.paint(ell(39, 79, 3.6, 2.2), (190, 80, 90), ow=1.6)
+    # index finger raised to the lips (drawn over the mouth)
+    c.paint(cap([(34, 94), (37, 70)], 4.4), skin, ow=2.2, shade=(1.5, 0, skin_sh))
+    c.line([(34, 72), (37, 71)], 1.0, skin_sh)
+    # cat-eye glasses
+    frame = (170, 40, 70)
+    for gx, gy, w, hh, tip in ((52, 57, 11, 7.5, 1), (37.5, 56.5, 7, 7, -1)):
+        pts = [(gx - w, gy - hh * 0.4), (gx - w * 0.4, gy - hh), (gx + w * 0.5, gy - hh * 0.9),
+               (gx + w * 1.15, gy - hh * 1.5) if tip > 0 else (gx + w * 0.9, gy - hh * 0.6),
+               (gx + w, gy + hh * 0.2), (gx + w * 0.4, gy + hh), (gx - w * 0.6, gy + hh * 0.9)]
+        if tip < 0:
+            pts[0] = (gx - w * 1.3, gy - hh * 1.4)
+        sh = poly(pts, 2, True)
+        c.paint(sh, (230, 240, 255), ow=0, opacity=0.2)
+        c.paint(sh, (0, 0, 0, 0), ow=3.4)
+        c.paint(sh, (0, 0, 0, 0), ow=1.6, oc=frame)
+    c.line([(44.5, 56), (41, 55.5)], 2.4)
+    c.line([(64, 56), (77, 58)], 2.4)
+    # tight grey hair + bun with a pencil through it
+    front = poly([(34, 52), (36, 38), (46, 30), (60, 28), (74, 32), (82, 44), (82, 58), (78, 64), (76, 50),
+                  (68, 42), (56, 40), (46, 42), (40, 48)], 2, True)
+    c.paint(cap([(62, 22), (86, 8)], 2.6), (250, 200, 50), ow=2)
+    c.paint(cap([(84, 9), (87, 7)], 2.6), (240, 140, 150), ow=2)
+    c.paint(ell(70, 24, 15, 13), hair, shade=(3, 3, hair_sh), hi=(-2, 3, hair_hi, 1.5),
+            pattern=lambda p: [p.line(bez((58, 22), (70, 14 + k * 6), (82, 24)), 1.0, hair_sh) for k in range(3)])
+    c.paint(cap([(56, 30), (62, 27)], 2.6), (250, 200, 50), ow=2)
+    c.paint(ell(55, 31, 2, 2), (230, 130, 140), ow=1.2)
+    c.paint(front, hair, shade=(3, 3, hair_sh), hi=(-2, 3, hair_hi, 1.5))
+    for k in range(3):
+        c.curve((40 + k * 10, 44), (52 + k * 8, 34), (66 + k * 6, 36), 1.2, hair_sh)
+    c.img = c.img.transpose(Image.FLIP_LEFT_RIGHT)
+    c.fit(margin=3)
+    c.save("hs_ms_hush.png")
+
+
+# =========================================================================== 13. frisbee (on the grass)
+FRISBEE = (255, 116, 24)
+
+
+def frisbee_disc(c, cx, cy, rx, ry, rot=0, ow=3):
+    c.paint(ell(cx, cy, rx, ry, rot), FRISBEE, ow=ow, shade=(0, ry * 0.3, (214, 70, 20)),
+            hi=(0, -ry * 0.2, (255, 190, 110), ry * 0.12))
+    c.paint(ell(cx, cy - ry * 0.12, rx * 0.72, ry * 0.62, rot), lt(FRISBEE, 0.12), ow=ow * 0.6,
+            oc=(200, 66, 16), hi=(0, ry * 0.2, (255, 220, 160)))
+    c.paint(ell(cx, cy - ry * 0.12, rx * 0.36, ry * 0.3, rot), (0, 0, 0, 0), ow=ow * 0.5, oc=(220, 80, 20))
+    c.paint(ell(cx - rx * 0.45, cy - ry * 0.35, rx * 0.16, ry * 0.12, rot - 10), (255, 250, 230), ow=0, opacity=0.8)
+
+
+def paint_frisbee():
+    c = Canvas(80, 40, ow=2.5)
+    c.shadow(40, 30, 34, 8, 0.4)
+    frisbee_disc(c, 40, 24, 34, 11, 0, 2.5)
+    for gx in (10, 18, 60, 68, 40):
+        c.line([(gx - 3, 36), (gx - 1, 30), (gx + 1, 36), (gx + 3, 31)], 1.4, (60, 130, 50))
+    c.fit(margin=1)
+    c.save("hs_frisbee.png")
+
+
+# =========================================================================== 14. more inventory icons
+def paint_icon_pen():
+    blue, blue_sh, blue_hi = (40, 120, 230), (24, 76, 170), (140, 190, 255)
+    string = (220, 200, 60)
+
+    def draw(c):
+        # broken string tied to the cap end, frayed
+        c.curve((98, 28), (120, 40), (106, 62), 4, OUT)
+        c.curve((98, 28), (120, 40), (106, 62), 2, string)
+        for a in (-40, 0, 40):
+            r = math.radians(a + 120)
+            c.line([(106, 62), (106 + 7 * math.cos(r), 62 + 7 * math.sin(r))], 1.4, string)
+        c.paint(cap([(32, 96), (94, 34)], 18), blue, shade=(3, 3, blue_sh), hi=(-3, -3, blue_hi, 2))
+        c.paint(poly([(26, 92), (36, 102), (14, 114)]), (210, 214, 224), ow=4, hi=(-2, -2, (250, 250, 255)))
+        c.paint(ell(15, 113, 3, 3), OUT, ow=0)
+        c.paint(cap([(30, 92), (36, 98)], 20), (60, 60, 70), ow=3.5)
+        for k in range(3):
+            c.line([(38 + k * 4, 84 + k * 4 - 6), (44 + k * 4, 90 + k * 4 - 6)], 1.4, (30, 30, 40))
+        c.paint(cap([(80, 38), (100, 26)], 10), (210, 214, 224), ow=3.5, hi=(-2, -2, (250, 250, 255)))
+        c.paint(poly([(78, 36), (84, 30), (64, 52), (60, 54)], 1), (200, 204, 214), ow=3)
+        c.paint(ell(97, 27, 4, 4), (0, 0, 0, 0), ow=2.4, oc=OUT)
+    icon("icon_pen.png", 0, draw)
+
+
+def flyer_face(c, x0, y0, x1, y1, with_text=True):
+    w, h = x1 - x0, y1 - y0
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    c.paint(rect(x0, y0, x1, y1), (255, 228, 64), shade=(-4, 0, (220, 180, 40)),
+            pattern=lambda p: [p.poly([(cx, cy + 10), (cx + 90 * math.cos(math.radians(a)), cy + 10 + 90 * math.sin(math.radians(a))),
+                                       (cx + 90 * math.cos(math.radians(a + 14)),
+                                        cy + 10 + 90 * math.sin(math.radians(a + 14)))], (255, 204, 70))
+                               for a in range(0, 360, 30)])
+    if with_text:
+        s = w / 80
+        c.paint(poly([(cx + dx * s * 1.2, cy + 14 + dy * s * 1.2) for dx, dy in
+                      ((0, -14), (5, -3), (17, -2), (8, 6), (11, 18), (0, 11), (-11, 18), (-8, 6), (-17, -2),
+                       (-5, -3))]), (236, 50, 130), ow=3)
+        c.text(cx, y0 + h * 0.17, "TALENT", 15 * s, (200, 30, 90), stroke=1.4 * s, sc=(255, 250, 230))
+        c.text(cx, y0 + h * 0.33, "ROUND", 15 * s, (200, 30, 90), stroke=1.4 * s, sc=(255, 250, 230))
+        c.text(cx, y0 + h * 0.88, "TONIGHT!", 11 * s, (60, 40, 140), "Black")
+
+
+def paint_icon_flyer():
+    def draw(c):
+        # back half peeking out (folded along the left edge, slightly open)
+        c.paint(poly([(26, 18), (104, 24), (110, 116), (30, 112)]), (236, 204, 50), shade=(-4, 0, (200, 160, 30)))
+        flyer_face(c, 18, 14, 96, 112)
+        c.line([(18, 14), (18, 112)], 3.5, (200, 160, 30))
+        c.paint(poly([(96, 98), (96, 112), (82, 112)]), (236, 204, 50), ow=3)  # dog-eared corner
+    icon("icon_flyer.png", -8, draw)
+
+
+def paint_icon_note_for_ivy():
+    paper = (255, 228, 64)
+    paper_sh = (220, 180, 40)
+
+    def draw(c):
+        # flyer folded into a small square note, back side up, with a tucked triangle flap
+        c.paint(poly([(16, 26), (112, 22), (114, 104), (14, 108)], 1), paper, shade=(-4, 4, paper_sh),
+                hi=(3, -3, (255, 246, 170), 2),
+                pattern=lambda p: [p.line([(20, 70), (108, 66)], 1.4, paper_sh)])
+        c.paint(poly([(14, 108), (114, 104), (66, 70)]), lt(paper, 0.1), ow=3, shade=(0, 3, paper_sh))
+        # a scrap of the printed side showing on the flap edge
+        c.paint(poly([(52, 96), (82, 95), (66, 84)]), (236, 50, 130), ow=0, opacity=0.6)
+        c.text(60, 42, "for Ivy", 17, (40, 70, 170), "Italic", angle=4)
+        c.curve((30, 56), (60, 50), (92, 54), 2, (40, 70, 170))
+        # little heart
+        hx, hy = 96, 80
+        c.paint(ell(hx - 6, hy - 4, 7, 7) + ell(hx + 6, hy - 4, 7, 7) + poly([(hx - 13, hy - 2), (hx + 13, hy - 2),
+                                                                         (hx, hy + 12)]),
+                (230, 40, 80), ow=3, hi=(-2, -2, (255, 140, 160), 1.5))
+    icon("icon_note_for_ivy.png", -6, draw)
+
+
+def paint_icon_frisbee():
+    def draw(c):
+        c.paint(ell(64, 72, 54, 26), (214, 70, 20), ow=5)  # rim thickness underneath
+        frisbee_disc(c, 64, 64, 54, 26, 0, 5)
+        c.paint(ell(64, 60, 30, 13), (0, 0, 0, 0), ow=2.5, oc=(255, 230, 190))
+    icon("icon_frisbee.png", -14, draw)
+
+
+def paint_icon_sunglasses():
+    frame = (30, 28, 36)
+
+    def lens(cx):
+        return poly([(cx - 28, 46), (cx + 26, 44), (cx + 24, 70), (cx + 10, 84), (cx - 14, 84), (cx - 26, 70)], 2, True)
+
+    def draw(c):
+        c.line([(8, 52), (2, 64), (6, 80)], 6)
+        c.line([(120, 52), (126, 64), (122, 80)], 6)
+        c.line([(8, 52), (2, 64), (6, 80)], 3, (60, 58, 70))
+        c.line([(120, 52), (126, 64), (122, 80)], 3, (60, 58, 70))
+        for cx in (36, 92):
+            c.paint(lens(cx), ("v", (70, 60, 110), (20, 18, 30)), ow=6, oc=frame,
+                    hi=(-3, -3, (130, 120, 170), 2))
+            c.paint(poly([(cx - 18, 76), (cx - 2, 50), (cx + 6, 50), (cx - 10, 76)]), (255, 255, 255), ow=0,
+                    opacity=0.35)
+            c.paint(poly([(cx + 4, 78), (cx + 16, 58), (cx + 19, 60), (cx + 8, 78)]), (255, 255, 255), ow=0,
+                    opacity=0.25)
+        c.curve((60, 50), (64, 42), (68, 50), 6, frame)
+        c.paint(rect(4, 44, 18, 54), frame, ow=2)
+        c.paint(rect(110, 44, 124, 54), frame, ow=2)
+    icon("icon_sunglasses.png", -6, draw)
+
+
+def paint_icon_bookmark():
+    card, card_sh = (250, 240, 214), (214, 196, 160)
+    tas = (200, 40, 70)
+
+    def draw(c):
+        c.paint(poly([(40, 6), (88, 6), (88, 112), (64, 98), (40, 112)]), card, shade=(-4, 0, card_sh),
+                hi=(3, 3, (255, 252, 240), 2),
+                pattern=lambda p: [p.rect(40, 6, 88, 14, (120, 160, 110)), p.rect(40, 88, 88, 92, (120, 160, 110))])
+        # pressed flower: stem, leaves, five violet petals
+        c.line([(64, 84), (62, 58), (64, 44)], 2.2, (70, 130, 60))
+        c.paint(ell(56, 68, 7, 3.4, 40), (90, 160, 80), ow=2)
+        c.paint(ell(70, 74, 7, 3.4, -40), (90, 160, 80), ow=2)
+        for k in range(5):
+            a = math.radians(k * 72 - 90)
+            c.paint(ell(64 + 8 * math.cos(a), 40 + 8 * math.sin(a), 7, 5, k * 72 - 90), (150, 100, 210), ow=2,
+                    hi=(-1, -1, (200, 170, 240)))
+        c.paint(ell(64, 40, 4, 4), (255, 220, 80), ow=1.8)
+        # laminate sheen
+        c.paint(poly([(44, 100), (80, 10), (86, 10), (50, 100)]), (255, 255, 255), ow=0, opacity=0.25)
+        # tassel on a cord from the top hole
+        c.paint(ell(64, 22, 4, 4), (90, 70, 50), ow=2)
+        c.curve((64, 22), (94, 20), (104, 44), 3.5, OUT)
+        c.curve((64, 22), (94, 20), (104, 44), 1.8, tas)
+        c.paint(ell(104, 46, 5, 4), tas, ow=2.5)
+        c.paint(poly([(99, 48), (109, 48), (114, 80), (94, 80)], 1), tas, shade=(-3, 0, dk(tas, 0.7)),
+                pattern=lambda p: [p.line([(100 + k * 3, 50), (96 + k * 4, 80)], 1, dk(tas, 0.7)) for k in range(4)])
+        c.paint(rect(98, 50, 110, 55), (240, 196, 80), ow=2)
+    icon("icon_bookmark.png", 16, draw)
+
+
 ASSETS = {"bg_dex_room": paint_dex_room, "bg_dorm_hallway": paint_dorm_hallway,
           "bg_lounge": paint_lounge,
           "player_dex": paint_player_dex,
@@ -1942,7 +3181,13 @@ ASSETS = {"bg_dex_room": paint_dex_room, "bg_dorm_hallway": paint_dorm_hallway,
           "icon_earplugs": paint_icon_earplugs, "icon_dance_album": paint_icon_dance_album,
           "icon_lemon": paint_icon_lemon, "icon_soda": paint_icon_soda,
           "icon_hallway_hooch": paint_icon_hallway_hooch, "icon_cowboy_hat": paint_icon_cowboy_hat,
-          "icon_dollar": paint_icon_dollar}
+          "icon_dollar": paint_icon_dollar,
+          "bg_campus": paint_campus, "bg_library": paint_library,
+          "hs_roxy_vale": paint_roxy_vale, "hs_ivy": paint_ivy, "hs_ms_hush": paint_ms_hush,
+          "hs_frisbee": paint_frisbee,
+          "icon_pen": paint_icon_pen, "icon_flyer": paint_icon_flyer,
+          "icon_note_for_ivy": paint_icon_note_for_ivy, "icon_frisbee": paint_icon_frisbee,
+          "icon_sunglasses": paint_icon_sunglasses, "icon_bookmark": paint_icon_bookmark}
 
 
 def main(argv):

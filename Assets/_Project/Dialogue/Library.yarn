@@ -1,0 +1,131 @@
+title: Library_Enter
+---
+<<if not flagged("library_intro")>>
+    Dex: The library. So quiet I can hear my own nervous sweating.
+    Ms. Hush: Shhh.
+    Dex: I didn't say anything!
+    Ms. Hush: Shhhhh.
+    <<flag library_intro>>
+<<endif>>
+===
+
+title: LibraryExit_Look
+---
+Dex: Back out to the quad, where talking is legal.
+===
+title: LibraryExit_Use
+---
+<<go campus from_library>>
+===
+
+title: FrontDesk_Look
+---
+Dex: The front desk. A bell nobody would dare ring, and a stack of returns taller than me.
+===
+title: FrontDesk_Use
+---
+Dex: I reach for the bell. Ms. Hush turns her head very slowly. I put my hand back in my pocket.
+===
+
+title: Hush_Look
+---
+Dex: Ms. Hush, head librarian. Rumour says she shushed a fire alarm into silence.
+===
+title: Hush_Talk
+---
+<<if flagged("won_ivy")>>
+    Ms. Hush: (whispering) I heard about the Talent Round. Poetry and interpretive dance. Hmph.
+    Ms. Hush: (whispering) ...I would have liked to see that.
+<<elseif not flagged("met_hush")>>
+    Dex: Hi! I'm looking for...
+    Ms. Hush: Shhh. This is a library. Talking is for the cafeteria. Notes are for the desperate.
+    <<flag met_hush>>
+<<else>>
+    Ms. Hush: Shhh.
+<<endif>>
+===
+title: Hush_Note
+---
+Ms. Hush: (reading it) "Circle YES or YES." Hmph. Passing notes is the only civilised way to flirt in here.
+Ms. Hush: Deliver it yourself, young man. Quietly.
+===
+
+title: Shelves_Look
+---
+Dex: Poetry, philosophy, and one shelf just labelled "Feelings". Ivy has clearly read all of it.
+===
+title: Shelves_Use
+---
+<<if not flagged("read_poetry")>>
+    Dex: "Poems to Read Aloud (But Never Will)." Every page has a sticky note in tiny writing. Somebody loves this book.
+    <<flag read_poetry>>
+<<else>>
+    Dex: I'm not much of a reader. I'm more of a... looker-at-the-pictures.
+<<endif>>
+===
+
+title: ReadingTable_Look
+---
+Dex: A reading table under a green lamp, covered in open poetry books and pencil notes.
+===
+title: ReadingTable_Use
+---
+Dex: A notebook lies open: "Ode to the Quiet Kid in the Back Row." It's actually really good.
+<<flag read_ivy_poem>>
+===
+
+title: Ivy_Look
+---
+<<if flagged("won_ivy")>>
+    Dex: Ivy, sunglasses on, reading under her breath like she's rehearsing for the world.
+<<else>>
+    Dex: A girl in big round glasses, hugging a book like it's a shield. She hasn't looked up once.
+<<endif>>
+===
+title: Ivy_Talk
+---
+<<if flagged("won_ivy")>>
+    Ivy: (whispering) Partner! Meet me at the stage. Roxy's waiting.
+<<elseif flagged("ivy_note")>>
+    Ivy: (whispering) I'd read my poem if I didn't have to see all those faces staring at me.
+    Dex: (whispering) What if you couldn't see them?
+    Ivy: (whispering) Like, with my eyes closed? Then I can't read the page, genius.
+<<else>>
+    Dex: Hi! I'm Dex. Do you, uh, have a talent?
+    Ms. Hush: SHHHH!
+    Ivy: ...
+    Dex: She's too scared to even whisper with Ms. Hush watching. Maybe I should write it down.
+    <<flag met_ivy>>
+<<endif>>
+===
+title: Ivy_GiveNote
+---
+<<if flagged("ivy_note")>>
+    Ivy: (whispering) I already circled yes. Twice.
+<<else>>
+    Ivy: (reads it, tries not to smile, writes back)
+    Dex: Her reply: "YES. I write poems. I've never read one out loud. When people stare at me, I freeze."
+    Dex: "If I couldn't see them staring, maybe I could do it." P.S. "Nice handwriting."
+    <<take note_for_ivy>>
+    <<flag ivy_note>>
+    <<flag met_ivy>>
+<<endif>>
+===
+title: Ivy_GiveSunglasses
+---
+<<if not flagged("ivy_note")>>
+    Ivy: ...
+    Dex: She thinks I'm a weirdo handing out sunglasses. She's not wrong. I should introduce myself first. Quietly.
+<<else>>
+    Ivy: (puts them on) Oh. Oh! Everything's dark and blurry, except the page right in front of me.
+    Ivy: (whispering) I can't see the crowd. I can do this. I can actually do this.
+    Ivy: Here, my bookmark. So you know I'm serious. Meet you at the stage, partner.
+    <<take sunglasses>>
+    <<give bookmark>>
+    <<flag won_ivy>>
+<<endif>>
+===
+title: Ivy_ShowHat
+---
+Ivy: (whispering) Is that Lacey Rae's hat? Everybody's talking about you. Now I'm even more nervous.
+===

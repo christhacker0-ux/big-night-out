@@ -1,0 +1,203 @@
+title: Campus_Enter
+---
+<<if not flagged("campus_intro")>>
+    Dex: The main quad at sunset. A stage, a statue, and a hundred people cooler than me.
+    Roxy Vale: Talent Round tonight, people! Bring your talent and your partner!
+    Dex: I have neither. Great start.
+    <<flag campus_intro>>
+<<endif>>
+===
+
+title: CampusDorm_Look
+---
+Dex: My dorm. Room 214 is up there somewhere, missing me.
+===
+title: CampusDorm_Use
+---
+<<go dorm_hallway from_stairs>>
+===
+
+title: LibraryDoor_Look
+---
+Dex: The library. Open late, for people with ambition. Or nowhere else to go.
+===
+title: LibraryDoor_Use
+---
+<<go library from_campus>>
+===
+
+title: Statue_Look
+---
+<<if flagged("statue_shades")>>
+    Dex: Our founder, Augustus Plumworth, looking slightly less cool without the shades.
+<<else>>
+    Dex: Founder Augustus Plumworth. Somebody put a pair of sunglasses on his head. He looks amazing.
+<<endif>>
+===
+title: Statue_Use
+---
+<<if flagged("statue_shades")>>
+    Dex: Sorry, Augustus. You looked better in them anyway. Wait, no, I mean, you look great.
+<<else>>
+    Dex: The sunglasses are way out of reach. I'd need to knock them down with something.
+<<endif>>
+===
+title: Statue_Frisbee
+---
+<<if flagged("statue_shades")>>
+    Dex: He's got nothing left to lose.
+<<else>>
+    Dex: Frisbee, don't fail me now.
+    Dex: Bonk! The shades flip off his head... and land right in my hand. The frisbee lands on the stage roof.
+    <<take frisbee>>
+    <<give sunglasses>>
+    <<flag statue_shades>>
+<<endif>>
+===
+
+title: Frisbee_Look
+---
+Dex: Somebody's frisbee, abandoned on the grass. Neon orange. Very aerodynamic.
+===
+title: Frisbee_Use
+---
+Dex: Finders keepers. Again.
+<<give frisbee>>
+<<flag took_frisbee>>
+===
+
+title: Kiosk_Look
+---
+Dex: A kiosk covered in flyers, with a campus map on the side.
+===
+title: Kiosk_Use
+---
+-> Take a Talent Round flyer <<if not flagged("took_flyer")>>
+    Dex: "TALENT ROUND TONIGHT. Contestants need a talent and a partner." Subtle.
+    <<give flyer>>
+    <<flag took_flyer>>
+-> Read the campus map
+    <<jump Campus_Map>>
+-> Never mind
+===
+title: Campus_Map
+---
+Dex: Where to?
+-> Greek Row <<if current_act() >= 2>>
+    <<go greek_row from_campus>>
+-> Science Hall <<if current_act() >= 3>>
+    <<go science_hall from_campus>>
+-> Downtown <<if current_act() >= 4>>
+    <<go downtown from_campus>>
+-> Uptown <<if current_act() >= 5>>
+    <<go uptown from_campus>>
+-> The TV studio <<if current_act() >= 6>>
+    <<go tv_studio from_campus>>
+-> Stay here
+    <<if current_act() < 2>>
+        Dex: Everywhere else on the map can wait. Tonight, it's the Talent Round.
+    <<endif>>
+===
+
+title: Stage_Look
+---
+Dex: The Speed Daters Live audition stage. Lights, banners, and a terrifying lack of places to hide.
+===
+title: Stage_Use
+---
+<<jump Roxy_Talk>>
+===
+
+title: Roxy_Look
+---
+Dex: Roxy Vale. Host of Speed Daters Live. Her smile has its own lighting crew.
+===
+title: Roxy_Talk
+---
+<<if current_act() >= 2>>
+    <<jump Roxy_NextRound>>
+<<elseif not flagged("met_roxy")>>
+    Roxy Vale: Dex Dooley, room 214! The guy with the cowboy hat!
+    Roxy Vale: Here's the deal, lover boy. Every contestant performs in the Talent Round with a partner.
+    Roxy Vale: Show me someone who'll get up on this stage with you, and show me your talent.
+    Dex: My talent is... uh... I'll get back to you.
+    <<flag met_roxy>>
+<<elseif flagged("won_ivy")>>
+    <<jump Act1_TalentRound>>
+<<else>>
+    Roxy Vale: No partner, no performance! Find somebody brave enough to share the spotlight.
+    <<if flagged("met_ivy")>>
+        Dex: Ivy writes poetry. If she could only face a crowd...
+    <<endif>>
+<<endif>>
+===
+title: Roxy_Token
+---
+<<if current_act() >= 2>>
+    Roxy Vale: Keep your souvenirs, lover boy. You've already proven yourself.
+<<elseif flagged("won_ivy")>>
+    <<jump Act1_TalentRound>>
+<<else>>
+    Roxy Vale: Cute. Now find a partner for the Talent Round.
+<<endif>>
+===
+title: Act1_TalentRound
+---
+Roxy Vale: Ladies and gentlemen, the Talent Round! Please welcome Dex Dooley and Ivy!
+Ivy: (in sunglasses) "Ode to the Quiet Kid in the Back Row." By me.
+Ivy: "You think I'm not listening. I am listening. I am listening so hard."
+Dex: And I... do an interpretive dance. Of the poem. In a cowboy hat.
+Dex: It's terrible. It's glorious. Somebody in the crowd is crying. I think it's me.
+Roxy Vale: Folks, I have never seen anything like that, and I hope I never do again! They're through!
+Roxy Vale: Next up: Greek Week. The Quiz Round is on Greek Row, so get to know some people, lover boy!
+Ivy: That was the scariest and best thing I've ever done. Keep the bookmark. Go win this.
+<<flag act1_done>>
+<<act 2>>
+Dex: Act One, done. Greek Row is on the campus map now.
+===
+title: Roxy_NextRound
+---
+<<if current_act() == 2>>
+    Roxy Vale: The Quiz Round is on Greek Row, lover boy. The campus map will take you there.
+<<elseif current_act() == 3>>
+    Roxy Vale: The Dare Round is over at Science Hall. Bring your goggles!
+<<elseif current_act() == 4>>
+    Roxy Vale: The Date Round is Downtown. Wear something that isn't that shirt.
+<<elseif current_act() == 5>>
+    Roxy Vale: The Finals are Uptown! Only the best of the best, lover boy.
+<<else>>
+    Roxy Vale: Studio's open! The grand finale of Speed Daters Live is tonight!
+<<endif>>
+===
+
+title: Item_pen_Look
+---
+Dex: A pen on a snapped string, liberated from the sign-up sheet.
+===
+title: Item_flyer_Look
+---
+Dex: "TALENT ROUND TONIGHT. Contestants need a talent and a partner." Lots of blank space on the back.
+===
+title: Combine_Pen_Flyer
+---
+Dex: On the back of the flyer I write: "Hi. I'm Dex. You look like someone with a secret talent. Want to be my partner tonight? Circle YES or YES."
+<<take flyer>>
+<<give note_for_ivy>>
+<<flag wrote_note>>
+===
+title: Item_note_for_ivy_Look
+---
+Dex: My note. "Circle YES or YES." Smooth.
+===
+title: Item_frisbee_Look
+---
+Dex: A neon frisbee. Good for throwing at things you can't reach.
+===
+title: Item_sunglasses_Look
+---
+Dex: Dark shades, recently worn by a statue. Very mysterious.
+===
+title: Item_bookmark_Look
+---
+Dex: Ivy's bookmark, with a pressed daisy. She kept her place in her life story with this.
+===

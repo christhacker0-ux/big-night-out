@@ -1,0 +1,996 @@
+{
+ "items": [
+  {
+   "id": "dollar",
+   "name": "Crumpled Dollar",
+   "color": [
+    0.45,
+    0.75,
+    0.4
+   ]
+  },
+  {
+   "id": "earplugs",
+   "name": "Earplugs",
+   "color": [
+    1.0,
+    0.85,
+    0.2
+   ]
+  },
+  {
+   "id": "dance_album",
+   "name": "Hank Hollister Live",
+   "color": [
+    0.6,
+    0.3,
+    0.1
+   ]
+  },
+  {
+   "id": "lemon",
+   "name": "Lemon",
+   "color": [
+    1.0,
+    0.95,
+    0.3
+   ]
+  },
+  {
+   "id": "soda",
+   "name": "Soda",
+   "color": [
+    0.3,
+    0.7,
+    1.0
+   ]
+  },
+  {
+   "id": "hallway_hooch",
+   "name": "Hallway Hooch",
+   "color": [
+    0.9,
+    0.5,
+    0.2
+   ]
+  },
+  {
+   "id": "cowboy_hat",
+   "name": "Cowboy Hat",
+   "color": [
+    0.55,
+    0.35,
+    0.2
+   ]
+  },
+  {
+   "id": "pen",
+   "name": "Pen on a String",
+   "color": [
+    0.2,
+    0.3,
+    0.8
+   ]
+  },
+  {
+   "id": "flyer",
+   "name": "Talent Round Flyer",
+   "color": [
+    1.0,
+    0.6,
+    0.8
+   ]
+  },
+  {
+   "id": "note_for_ivy",
+   "name": "Note for Ivy",
+   "color": [
+    1.0,
+    0.9,
+    0.9
+   ]
+  },
+  {
+   "id": "frisbee",
+   "name": "Frisbee",
+   "color": [
+    1.0,
+    0.5,
+    0.1
+   ]
+  },
+  {
+   "id": "sunglasses",
+   "name": "Sunglasses",
+   "color": [
+    0.1,
+    0.1,
+    0.1
+   ]
+  },
+  {
+   "id": "bookmark",
+   "name": "Ivy's Bookmark",
+   "color": [
+    0.6,
+    0.8,
+    0.4
+   ]
+  }
+ ],
+ "combinations": [
+  {
+   "a": "lemon",
+   "b": "soda",
+   "node": "Combine_Lemon_Soda"
+  },
+  {
+   "a": "pen",
+   "b": "flyer",
+   "node": "Combine_Pen_Flyer"
+  }
+ ],
+ "rooms": [
+  {
+   "id": "dex_room",
+   "scene": "DexRoom",
+   "onEnter": "DexRoom_Enter",
+   "wall": [
+    0.3,
+    0.4,
+    0.45
+   ],
+   "floor": [
+    0.4,
+    0.32,
+    0.25
+   ],
+   "entries": [
+    {
+     "name": "start",
+     "pos": [
+      -2,
+      -4
+     ]
+    },
+    {
+     "name": "from_hallway",
+     "pos": [
+      6.4,
+      -4
+     ],
+     "faceLeft": true
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Bed",
+     "feet": [
+      -5.5,
+      -3.4
+     ],
+     "size": [
+      3,
+      1.2
+     ],
+     "color": [
+      0.7,
+      0.25,
+      0.3
+     ],
+     "standAt": [
+      -3.6,
+      -4.2
+     ],
+     "faceLeft": true,
+     "look": "Bed_Look",
+     "use": "Bed_Use"
+    },
+    {
+     "name": "Mirror",
+     "feet": [
+      -1.2,
+      -1.2
+     ],
+     "size": [
+      1,
+      1.6
+     ],
+     "color": [
+      0.75,
+      0.85,
+      0.9
+     ],
+     "standAt": [
+      -1.2,
+      -3.4
+     ],
+     "look": "Mirror_Look",
+     "use": "Mirror_Use"
+    },
+    {
+     "name": "Desk",
+     "feet": [
+      2.2,
+      -2.8
+     ],
+     "size": [
+      2,
+      1.4
+     ],
+     "color": [
+      0.55,
+      0.4,
+      0.25
+     ],
+     "standAt": [
+      2.2,
+      -3.8
+     ],
+     "look": "Desk_Look",
+     "use": "Desk_Use"
+    },
+    {
+     "name": "Door to hallway",
+     "feet": [
+      7.6,
+      -2.6
+     ],
+     "size": [
+      1.4,
+      3
+     ],
+     "color": [
+      0.45,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      6.6,
+      -3.6
+     ],
+     "look": "DexDoor_Look",
+     "use": "DexDoor_Use"
+    }
+   ]
+  },
+  {
+   "id": "dorm_hallway",
+   "scene": "DormHallway",
+   "onEnter": "DormHallway_Enter",
+   "wall": [
+    0.35,
+    0.3,
+    0.45
+   ],
+   "floor": [
+    0.45,
+    0.35,
+    0.3
+   ],
+   "entries": [
+    {
+     "name": "start",
+     "pos": [
+      -7,
+      -4
+     ]
+    },
+    {
+     "name": "from_room",
+     "pos": [
+      -7,
+      -4
+     ]
+    },
+    {
+     "name": "from_lounge",
+     "pos": [
+      -5,
+      -3.8
+     ]
+    },
+    {
+     "name": "from_stairs",
+     "pos": [
+      8.2,
+      -3.8
+     ],
+     "faceLeft": true
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Your door",
+     "feet": [
+      -8.2,
+      -2.6
+     ],
+     "size": [
+      1.2,
+      3
+     ],
+     "color": [
+      0.45,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      -7.4,
+      -3.6
+     ],
+     "faceLeft": true,
+     "look": "HallDoor_Look",
+     "use": "HallDoor_Use"
+    },
+    {
+     "name": "Lounge",
+     "feet": [
+      -5,
+      -2.6
+     ],
+     "size": [
+      1.6,
+      3
+     ],
+     "color": [
+      0.25,
+      0.2,
+      0.3
+     ],
+     "standAt": [
+      -5,
+      -3.6
+     ],
+     "look": "LoungeDoor_Look",
+     "use": "LoungeDoor_Use"
+    },
+    {
+     "name": "Lacey Rae",
+     "feet": [
+      -2,
+      -2.8
+     ],
+     "size": [
+      1,
+      2.6
+     ],
+     "color": [
+      0.95,
+      0.5,
+      0.65
+     ],
+     "standAt": [
+      -3.2,
+      -3.4
+     ],
+     "look": "Lacey_Look",
+     "use": "Lacey_Talk",
+     "items": [
+      {
+       "item": "dance_album",
+       "node": "Lacey_GiveAlbum"
+      },
+      {
+       "item": "hallway_hooch",
+       "node": "Lacey_GiveDrink"
+      }
+     ]
+    },
+    {
+     "name": "Gil",
+     "feet": [
+      5,
+      -2.7
+     ],
+     "size": [
+      1,
+      2.4
+     ],
+     "color": [
+      0.4,
+      0.55,
+      0.95
+     ],
+     "standAt": [
+      3.8,
+      -3.4
+     ],
+     "look": "Gil_Look",
+     "use": "Gil_Talk",
+     "items": [
+      {
+       "item": "earplugs",
+       "node": "Gil_GiveEarplugs"
+      }
+     ]
+    },
+    {
+     "name": "Vending machine",
+     "feet": [
+      7.6,
+      -2.6
+     ],
+     "size": [
+      1.4,
+      3
+     ],
+     "color": [
+      0.6,
+      0.6,
+      0.65
+     ],
+     "standAt": [
+      6.6,
+      -3.6
+     ],
+     "look": "Vending_Look",
+     "use": "Vending_Use",
+     "items": [
+      {
+       "item": "dollar",
+       "node": "Vending_Use"
+      }
+     ]
+    },
+    {
+     "name": "Drinks table",
+     "feet": [
+      1.5,
+      -3.3
+     ],
+     "size": [
+      2.2,
+      1
+     ],
+     "color": [
+      0.5,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      1.5,
+      -4.2
+     ],
+     "look": "DrinksTable_Look",
+     "use": "DrinksTable_Use"
+    },
+    {
+     "name": "Stairs",
+     "feet": [
+      9.05,
+      -2.6
+     ],
+     "size": [
+      1.0,
+      3.2
+     ],
+     "color": [
+      0.5,
+      0.5,
+      0.55
+     ],
+     "standAt": [
+      8.3,
+      -3.7
+     ],
+     "look": "Stairs_Look",
+     "use": "Stairs_Use"
+    }
+   ]
+  },
+  {
+   "id": "lounge",
+   "scene": "Lounge",
+   "onEnter": "Lounge_Enter",
+   "wall": [
+    0.4,
+    0.28,
+    0.3
+   ],
+   "floor": [
+    0.3,
+    0.3,
+    0.35
+   ],
+   "entries": [
+    {
+     "name": "from_hallway",
+     "pos": [
+      -7,
+      -4
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Hallway",
+     "feet": [
+      -8.2,
+      -2.6
+     ],
+     "size": [
+      1.2,
+      3
+     ],
+     "color": [
+      0.25,
+      0.2,
+      0.3
+     ],
+     "standAt": [
+      -7.4,
+      -3.6
+     ],
+     "faceLeft": true,
+     "look": "LoungeExit_Look",
+     "use": "LoungeExit_Use"
+    },
+    {
+     "name": "Couch",
+     "feet": [
+      -2,
+      -3.4
+     ],
+     "size": [
+      3,
+      1.2
+     ],
+     "color": [
+      0.35,
+      0.5,
+      0.35
+     ],
+     "standAt": [
+      -2,
+      -4.2
+     ],
+     "look": "Couch_Look",
+     "use": "Couch_Use"
+    },
+    {
+     "name": "TV",
+     "feet": [
+      2,
+      -1.6
+     ],
+     "size": [
+      2.4,
+      1.6
+     ],
+     "color": [
+      0.15,
+      0.15,
+      0.2
+     ],
+     "standAt": [
+      2,
+      -3.6
+     ],
+     "look": "TV_Look",
+     "use": "TV_Use"
+    },
+    {
+     "name": "Sign-up sheet",
+     "feet": [
+      6,
+      -0.5
+     ],
+     "size": [
+      1.2,
+      2.2
+     ],
+     "color": [
+      0.95,
+      0.95,
+      0.85
+     ],
+     "standAt": [
+      6,
+      -3.6
+     ],
+     "look": "SignUp_Look",
+     "use": "SignUp_Use",
+     "items": [
+      {
+       "item": "cowboy_hat",
+       "node": "SignUp_GiveHat"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "campus",
+   "scene": "Campus",
+   "onEnter": "Campus_Enter",
+   "wall": [
+    0.85,
+    0.55,
+    0.4
+   ],
+   "floor": [
+    0.35,
+    0.55,
+    0.3
+   ],
+   "entries": [
+    {
+     "name": "from_dorm",
+     "pos": [
+      -7.2,
+      -3.9
+     ]
+    },
+    {
+     "name": "from_library",
+     "pos": [
+      -4.5,
+      -3.8
+     ]
+    },
+    {
+     "name": "from_map",
+     "pos": [
+      3.0,
+      -4.0
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Dorm",
+     "feet": [
+      -8.2,
+      -2.6
+     ],
+     "size": [
+      1.6,
+      3.2
+     ],
+     "color": [
+      0.5,
+      0.3,
+      0.25
+     ],
+     "standAt": [
+      -7.4,
+      -3.7
+     ],
+     "faceLeft": true,
+     "look": "CampusDorm_Look",
+     "use": "CampusDorm_Use"
+    },
+    {
+     "name": "Library",
+     "feet": [
+      -4.5,
+      -2.6
+     ],
+     "size": [
+      2.2,
+      3.6
+     ],
+     "color": [
+      0.7,
+      0.7,
+      0.65
+     ],
+     "standAt": [
+      -4.5,
+      -3.6
+     ],
+     "look": "LibraryDoor_Look",
+     "use": "LibraryDoor_Use"
+    },
+    {
+     "name": "Founder statue",
+     "feet": [
+      0.2,
+      -2.4
+     ],
+     "size": [
+      1.6,
+      4.8
+     ],
+     "color": [
+      0.6,
+      0.6,
+      0.6
+     ],
+     "standAt": [
+      0.2,
+      -3.7
+     ],
+     "look": "Statue_Look",
+     "use": "Statue_Use",
+     "items": [
+      {
+       "item": "frisbee",
+       "node": "Statue_Frisbee"
+      }
+     ]
+    },
+    {
+     "name": "Frisbee",
+     "feet": [
+      2.6,
+      -3.8
+     ],
+     "size": [
+      0.8,
+      0.5
+     ],
+     "color": [
+      1.0,
+      0.5,
+      0.1
+     ],
+     "standAt": [
+      1.9,
+      -4.0
+     ],
+     "look": "Frisbee_Look",
+     "use": "Frisbee_Use",
+     "hideWhenFlag": "took_frisbee"
+    },
+    {
+     "name": "Info kiosk",
+     "feet": [
+      4.0,
+      -2.6
+     ],
+     "size": [
+      1.2,
+      2.8
+     ],
+     "color": [
+      0.3,
+      0.4,
+      0.6
+     ],
+     "standAt": [
+      4.0,
+      -3.7
+     ],
+     "look": "Kiosk_Look",
+     "use": "Kiosk_Use"
+    },
+    {
+     "name": "Stage",
+     "feet": [
+      7.4,
+      -2.6
+     ],
+     "size": [
+      4.0,
+      1.0
+     ],
+     "color": [
+      0.5,
+      0.25,
+      0.5
+     ],
+     "standAt": [
+      5.8,
+      -3.7
+     ],
+     "look": "Stage_Look",
+     "use": "Stage_Use"
+    },
+    {
+     "name": "Roxy Vale",
+     "feet": [
+      7.45,
+      -1.9
+     ],
+     "size": [
+      1.0,
+      2.7
+     ],
+     "color": [
+      0.9,
+      0.3,
+      0.7
+     ],
+     "standAt": [
+      5.8,
+      -3.7
+     ],
+     "look": "Roxy_Look",
+     "use": "Roxy_Talk",
+     "items": [
+      {
+       "item": "cowboy_hat",
+       "node": "Roxy_Token"
+      },
+      {
+       "item": "bookmark",
+       "node": "Roxy_Token"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "library",
+   "scene": "Library",
+   "onEnter": "Library_Enter",
+   "wall": [
+    0.45,
+    0.35,
+    0.25
+   ],
+   "floor": [
+    0.5,
+    0.2,
+    0.2
+   ],
+   "entries": [
+    {
+     "name": "from_campus",
+     "pos": [
+      -7.2,
+      -3.9
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Exit",
+     "feet": [
+      -8.2,
+      -2.6
+     ],
+     "size": [
+      1.6,
+      3.2
+     ],
+     "color": [
+      0.4,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      -7.4,
+      -3.7
+     ],
+     "faceLeft": true,
+     "look": "LibraryExit_Look",
+     "use": "LibraryExit_Use"
+    },
+    {
+     "name": "Front desk",
+     "feet": [
+      -4.2,
+      -2.8
+     ],
+     "size": [
+      3.2,
+      1.8
+     ],
+     "color": [
+      0.5,
+      0.35,
+      0.2
+     ],
+     "standAt": [
+      -4.2,
+      -3.8
+     ],
+     "look": "FrontDesk_Look",
+     "use": "FrontDesk_Use"
+    },
+    {
+     "name": "Ms. Hush",
+     "feet": [
+      -1.8,
+      -2.5
+     ],
+     "size": [
+      1.0,
+      2.5
+     ],
+     "color": [
+      0.6,
+      0.6,
+      0.7
+     ],
+     "standAt": [
+      -0.6,
+      -3.6
+     ],
+     "faceLeft": true,
+     "look": "Hush_Look",
+     "use": "Hush_Talk",
+     "items": [
+      {
+       "item": "note_for_ivy",
+       "node": "Hush_Note"
+      }
+     ]
+    },
+    {
+     "name": "Bookshelves",
+     "feet": [
+      1.9,
+      -2.6
+     ],
+     "size": [
+      3.0,
+      5.0
+     ],
+     "color": [
+      0.45,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      1.9,
+      -3.7
+     ],
+     "look": "Shelves_Look",
+     "use": "Shelves_Use"
+    },
+    {
+     "name": "Reading table",
+     "feet": [
+      5.8,
+      -3.1
+     ],
+     "size": [
+      3.2,
+      1.6
+     ],
+     "color": [
+      0.5,
+      0.35,
+      0.2
+     ],
+     "standAt": [
+      5.8,
+      -4.0
+     ],
+     "look": "ReadingTable_Look",
+     "use": "ReadingTable_Use"
+    },
+    {
+     "name": "Ivy",
+     "feet": [
+      8.2,
+      -2.8
+     ],
+     "size": [
+      1.0,
+      2.45
+     ],
+     "color": [
+      0.9,
+      0.75,
+      0.3
+     ],
+     "standAt": [
+      7.0,
+      -3.8
+     ],
+     "look": "Ivy_Look",
+     "use": "Ivy_Talk",
+     "items": [
+      {
+       "item": "note_for_ivy",
+       "node": "Ivy_GiveNote"
+      },
+      {
+       "item": "sunglasses",
+       "node": "Ivy_GiveSunglasses"
+      },
+      {
+       "item": "cowboy_hat",
+       "node": "Ivy_ShowHat"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

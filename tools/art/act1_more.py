@@ -833,9 +833,18 @@ ASSETS = {"bg_gil_room": paint_gil_room, "bg_student_union": paint_student_union
           "icon_ivy_notebook": paint_icon_ivy_notebook}
 
 
+# Repainted in "style 2" by act1_style2.py (the source of truth for these files). A plain run skips
+# them so it can't overwrite the new art; name one explicitly to get the old version back.
+SUPERSEDED_BY_STYLE2 = {
+    "bg_gil_room", "bg_student_union", "bg_library_stacks", "hs_boomer", "hs_doreen", "hs_kyle",
+    "hs_percival_thorne", "hs_room_216", "hs_student_union", "hs_alarm_clock", "hs_air_freshener"}
+
+
 def main(argv):
     want = [a.lower() for a in argv[1:]]
     for name, fn in ASSETS.items():
+        if not want and name in SUPERSEDED_BY_STYLE2:
+            continue
         if not want or any(w in name for w in want):
             fn()
 

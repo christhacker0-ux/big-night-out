@@ -6,6 +6,8 @@ title: Library_Enter
     Dex: I didn't say anything!
     Ms. Hush: Shhhhh.
     <<flag library_intro>>
+<<elseif flagged("a1_hush_distracted") and not flagged("won_ivy")>>
+    Dex: Ms. Hush is still hunting through the card catalogue. Drawer by drawer. Muttering.
 <<endif>>
 ===
 
@@ -24,12 +26,20 @@ Dex: The front desk. A bell nobody would dare ring, and a stack of returns talle
 ===
 title: FrontDesk_Use
 ---
-Dex: I reach for the bell. Ms. Hush turns her head very slowly. I put my hand back in my pocket.
+<<if flagged("a1_hush_distracted")>>
+    Dex: Ms. Hush is busy. I could ring the bell. I could. I won't. I'm not a monster.
+<<else>>
+    Dex: I reach for the bell. Ms. Hush turns her head very slowly. I put my hand back in my pocket.
+<<endif>>
 ===
 
 title: Hush_Look
 ---
-Dex: Ms. Hush, head librarian. Rumour says she shushed a fire alarm into silence.
+<<if flagged("a1_hush_distracted") and not flagged("won_ivy")>>
+    Dex: Ms. Hush, yanking open catalogue drawers, hunting for whatever dared to ring in her library.
+<<else>>
+    Dex: Ms. Hush, head librarian. Rumour says she shushed a fire alarm into silence.
+<<endif>>
 ===
 title: Hush_Talk
 ---
@@ -40,14 +50,85 @@ title: Hush_Talk
     Dex: Hi! I'm looking for...
     Ms. Hush: Shhh. This is a library. Talking is for the cafeteria. Notes are for the desperate.
     <<flag met_hush>>
+<<elseif flagged("a1_hush_distracted")>>
+    Ms. Hush: (rifling drawers) Somewhere in this catalogue, something RANG. In MY library. Between D and F, I can feel it.
 <<else>>
-    Ms. Hush: Shhh.
+    Ms. Hush: Shhh. (whispering) If you must speak, speak like a moth.
 <<endif>>
+<<jump A1_Hush_Menu>>
+===
+title: A1_Hush_Menu
+---
+-> (whisper) Ask what's upstairs <<if not flagged("a1_cb_puddle")>>
+    Ms. Hush: (whispering) The upper stacks. Closed after dark. Except to that Thorne boy and his so-called slam.
+    Ms. Hush: (whispering) He says his verse is deep. The puddle on my front steps is deeper, and it shows more reflection.
+    Dex: (Ha. "So is the puddle on the library steps, and it shows more reflection." Filing that one away.)
+    <<flag a1_cb_puddle>>
+    <<jump A1_Hush_Menu>>
+-> (whisper) Ask about Percival Thorne <<if flagged("a1_cb_puddle") and not flagged("a1_won_slam")>>
+    Ms. Hush: (whispering) Thirty-seven wins. He doesn't win with rhymes. He wins with insults, and nobody ever has an answer ready.
+    <<jump A1_Hush_Menu>>
+-> (whisper) Ask to go up the ladder <<if not flagged("a1_hush_distracted")>>
+    Ms. Hush: (whispering) No.
+    Dex: (whispering) Not even for a minute?
+    Ms. Hush: (whispering) I've been watching that ladder for thirty years. It has never once gone anywhere without my say-so.
+    <<jump A1_Hush_Menu>>
+-> (whisper) Ask about Ivy <<if flagged("met_ivy") and not flagged("won_ivy")>>
+    Ms. Hush: (whispering) That girl has read every book on the Feelings shelf. Twice. She returns them on time. I'd die for her.
+    <<jump A1_Hush_Menu>>
+-> (whisper) Ask about the founder <<if not flagged("a1_hush_founder")>>
+    Ms. Hush: (whispering) Augustus Plumworth built this library so students would have one quiet place. He'd hate what they did to his statue.
+    <<flag a1_hush_founder>>
+    <<jump A1_Hush_Menu>>
+-> (whisper) Ask what happens if you talk loudly
+    Ms. Hush: (whispering) Nobody knows. Nobody has ever finished the sentence.
+    <<jump A1_Hush_Menu>>
+-> Back away quietly
+    Ms. Hush: Shhh.
 ===
 title: Hush_Note
 ---
 Ms. Hush: (reading it) "Circle YES or YES." Hmph. Passing notes is the only civilised way to flirt in here.
 Ms. Hush: Deliver it yourself, young man. Quietly.
+===
+title: A1_Hush_GiveAlarm
+---
+Dex: Hand the head librarian a loud, ticking alarm clock? I'd be shushed out of existence. It needs to ring somewhere far away from me.
+===
+
+title: A1_Catalogue_Look
+---
+Dex: The card catalogue. Hundreds of tiny drawers. Ms. Hush knows every card in every one of them by heart.
+===
+title: A1_Catalogue_Use
+---
+Dex: I open a drawer. "Plumworth, Augustus. See also: Statues, Pigeons." Riveting. I shut it before Ms. Hush hears.
+===
+title: A1_Catalogue_Alarm
+---
+Dex: I set Boomer's alarm clock to go off in one minute, slip it into drawer E for Emergency, and stroll away. Whistling. No. Not whistling.
+Dex: ...
+Dex: RRRRRRRIIIIIIINNNNNNG!
+Ms. Hush: WHAT. IS. THAT.
+Dex: Ms. Hush flies across the room to the card catalogue and starts pulling out drawers. It might take her all night.
+Dex: Nobody's watching the ladder.
+<<take boomer_alarm>>
+<<flag a1_hush_distracted>>
+===
+
+title: A1_Ladder_Look
+---
+Dex: A rolling ladder up to the mezzanine. A small sign: UPPER STACKS, STAFF ONLY AFTER DARK.
+===
+title: A1_Ladder_Use
+---
+<<if flagged("a1_hush_distracted")>>
+    Dex: Up I go. Quietly. The ladder squeaks once. Ms. Hush is too busy with the drawers to notice.
+    <<go library_stacks from_library>>
+<<else>>
+    Ms. Hush: (without turning around) The upper stacks are closed after dark, young man. And that ladder squeaks.
+    Dex: She didn't even look. She just knew. I'll need to give her something else to listen to.
+<<endif>>
 ===
 
 title: Shelves_Look
@@ -70,8 +151,12 @@ Dex: A reading table under a green lamp, covered in open poetry books and pencil
 ===
 title: ReadingTable_Use
 ---
-Dex: A notebook lies open: "Ode to the Quiet Kid in the Back Row." It's actually really good.
-<<flag read_ivy_poem>>
+<<if flagged("a1_ivy_notebook")>>
+    Dex: Ivy's notebook is back where it belongs. Open to "Ode to the Quiet Kid in the Back Row." It's actually really good.
+    <<flag read_ivy_poem>>
+<<else>>
+    Dex: Pencils, erasers, a coffee ring, and a notebook-shaped gap in the dust. Somebody's notebook used to be here.
+<<endif>>
 ===
 
 title: Ivy_Look
@@ -87,16 +172,49 @@ title: Ivy_Talk
 <<if flagged("won_ivy")>>
     Ivy: (whispering) Partner! Meet me at the stage. Roxy's waiting.
 <<elseif flagged("ivy_note")>>
-    Ivy: (whispering) I'd read my poem if I didn't have to see all those faces staring at me.
-    Dex: (whispering) What if you couldn't see them?
-    Ivy: (whispering) Like, with my eyes closed? Then I can't read the page, genius.
+    Ivy: (whispering) Hi, Dex. Nice handwriting, by the way.
 <<else>>
     Dex: Hi! I'm Dex. Do you, uh, have a talent?
     Ms. Hush: SHHHH!
     Ivy: ...
-    Dex: She's too scared to even whisper with Ms. Hush watching. Maybe I should write it down.
+    Dex: She's too scared to even whisper with Ms. Hush around. Maybe I should write it down.
     <<flag met_ivy>>
 <<endif>>
+<<jump A1_Ivy_Menu>>
+===
+title: A1_Ivy_Menu
+---
+-> Ask her name <<if not flagged("ivy_note") and not flagged("a1_ivy_name")>>
+    Dex: She silently turns her book so I can see the name inside the cover. IVY. Then she turns it back.
+    Ms. Hush: Shhh.
+    Dex: I didn't SAY anything.
+    <<flag a1_ivy_name>>
+    <<jump A1_Ivy_Menu>>
+-> Ask what she's reading <<if not flagged("ivy_note")>>
+    Dex: She tilts the cover toward me. POEMS. Then she hides behind it again.
+    <<jump A1_Ivy_Menu>>
+-> Ask about her stage fright <<if flagged("ivy_note") and not flagged("a1_ivy_shades")>>
+    Ivy: (whispering) I'd read my poem if I didn't have to see all those faces staring at me.
+    Dex: (whispering) What if you couldn't see them?
+    Ivy: (whispering) Like, with my eyes closed? Then I can't read the page, genius.
+    <<jump A1_Ivy_Menu>>
+-> Ask about her notebook <<if flagged("ivy_note") and not flagged("a1_ivy_notebook")>>
+    Ivy: (whispering) My poems are in it. All of them. I left it on the table for one minute.
+    Ivy: (whispering) Percival Thorne took it up to the stacks. He says my poem is "derivative", and he's going to perform it at the Talent Round. As his.
+    <<flag a1_heard_notebook>>
+    <<jump A1_Ivy_Menu>>
+-> Ask about Percival <<if flagged("a1_heard_notebook") and not flagged("a1_won_slam")>>
+    Ivy: (whispering) He runs the Stacks Slam. Nobody beats him. He just insults people until they cry.
+    Ivy: (whispering) The trick is having an answer for every insult. Nobody ever does.
+    <<jump A1_Ivy_Menu>>
+-> Ask about her poem <<if flagged("ivy_note")>>
+    Ivy: (whispering) It's called "Ode to the Quiet Kid in the Back Row." It's about... someone. Nobody. Me.
+    <<jump A1_Ivy_Menu>>
+-> Ask about the Talent Round <<if flagged("ivy_note") and not flagged("won_ivy")>>
+    Ivy: (whispering) Your partner. Me. On a stage. In front of everyone. I said yes, and now I want to lie down in a dark cupboard.
+    <<jump A1_Ivy_Menu>>
+-> Leave her to her book
+    Ivy: (a tiny wave)
 ===
 title: Ivy_GiveNote
 ---
@@ -106,9 +224,11 @@ title: Ivy_GiveNote
     Ivy: (reads it, tries not to smile, writes back)
     Dex: Her reply: "YES. I write poems. I've never read one out loud. When people stare at me, I freeze."
     Dex: "If I couldn't see them staring, maybe I could do it." P.S. "Nice handwriting."
+    Dex: P.P.S. "Also, Percival Thorne stole my notebook. My poem's in it. He's up in the stacks."
     <<take note_for_ivy>>
     <<flag ivy_note>>
     <<flag met_ivy>>
+    <<flag a1_heard_notebook>>
 <<endif>>
 ===
 title: Ivy_GiveSunglasses
@@ -116,16 +236,267 @@ title: Ivy_GiveSunglasses
 <<if not flagged("ivy_note")>>
     Ivy: ...
     Dex: She thinks I'm a weirdo handing out sunglasses. She's not wrong. I should introduce myself first. Quietly.
+<<elseif flagged("a1_ivy_shades")>>
+    Ivy: (whispering) I've already got shades on. Two pairs would be a bit much. Even for me.
 <<else>>
     Ivy: (puts them on) Oh. Oh! Everything's dark and blurry, except the page right in front of me.
     Ivy: (whispering) I can't see the crowd. I can do this. I can actually do this.
-    Ivy: Here, my bookmark. So you know I'm serious. Meet you at the stage, partner.
     <<take sunglasses>>
+    <<flag a1_ivy_shades>>
+    <<jump A1_Ivy_CheckWin>>
+<<endif>>
+===
+title: A1_Ivy_GiveNotebook
+---
+<<if not flagged("ivy_note")>>
+    Ivy: ...
+    Dex: She stares at her notebook, then at me, like I'm a stranger who stole it. Which, from her side, I might be. A note first.
+<<else>>
+    Ivy: (hugging it) My notebook! You beat Percival? Nobody beats Percival!
+    Dex: I had help. A cowgirl, a cook, a possum and a librarian.
+    Ivy: (whispering) That's the best sentence I've ever heard.
+    <<take ivy_notebook>>
+    <<flag a1_ivy_notebook>>
+    <<jump A1_Ivy_CheckWin>>
+<<endif>>
+===
+title: A1_Ivy_CheckWin
+---
+<<if flagged("a1_ivy_shades") and flagged("a1_ivy_notebook")>>
+    Ivy: (whispering) My poem, and a way to hide from the crowd. Okay. Okay!
+    Ivy: Here, my bookmark. So you know I'm serious. Meet you at the stage, partner.
     <<give bookmark>>
     <<flag won_ivy>>
+<<elseif flagged("a1_ivy_shades")>>
+    Ivy: (whispering) But I can't read a poem I don't have. My notebook is still up in the stacks with Percival.
+<<else>>
+    Ivy: (whispering) I have my poem back. Now I just need to not see the hundred people staring at me.
 <<endif>>
 ===
 title: Ivy_ShowHat
 ---
 Ivy: (whispering) Is that Lacey Rae's hat? Everybody's talking about you. Now I'm even more nervous.
+===
+
+title: A1_Stacks_Enter
+---
+<<if not flagged("a1_stacks_intro")>>
+    Dex: The upper stacks. Dust, moonlight, three beanbags facing a microphone, and one guy in a beret, snapping his fingers at nobody.
+    Percival Thorne: Ah. An audience. Finally, the universe apologises.
+    <<flag a1_stacks_intro>>
+<<endif>>
+===
+title: A1_LadderDown_Look
+---
+Dex: The ladder back down to the reading room. Mind the squeaky rung. All of them are the squeaky rung.
+===
+title: A1_LadderDown_Use
+---
+<<go library from_stacks>>
+===
+title: A1_Dusty_Look
+---
+Dex: Shelves of theses nobody has opened since 1962. "The Feelings of Turnips, Volume Four."
+===
+title: A1_Dusty_Use
+---
+<<if not flagged("a1_dusty_book")>>
+    Dex: "Comebacks for Beginners." Every single page has been torn out. Somebody got here first.
+    Dex: Guess I'll have to learn my comebacks from actual people. Ugh. Talking.
+    <<flag a1_dusty_book>>
+<<else>>
+    Dex: More dust. I sneeze. Downstairs, I can hear Ms. Hush shushing the sneeze.
+<<endif>>
+===
+title: A1_Chalk_Look
+---
+Dex: A chalkboard: "STACKS SLAM. Champion: P. THORNE. 37 wins, 0 losses." Thirty-seven little crying faces drawn underneath.
+===
+title: A1_Chalk_Use
+---
+<<if flagged("a1_won_slam")>>
+    Dex: I add a tally under a new column: D. DOOLEY, 1. And a little cowboy hat.
+<<else>>
+    Dex: I could draw a mustache on the champion's name. But then I'd have to explain myself to a man in a beret.
+<<endif>>
+===
+title: A1_Mic_Look
+---
+Dex: An open mic on a stand. Someone has written "PERCIVAL ONLY" on the stand. In calligraphy.
+===
+title: A1_Mic_Use
+---
+Percival Thorne: Do NOT touch the mic. The mic is a sacred instrument. And I just polished it.
+===
+title: A1_Bust_Look
+---
+Dex: A marble bust of founder Augustus Plumworth. Up here, he looks lonely. And dusty. Mostly dusty.
+===
+title: A1_Bust_Use
+---
+Dex: I dust off his nose with my sleeve. Augustus looks grateful. Or constipated. Marble is hard to read.
+===
+title: A1_Bust_Sunglasses
+---
+Dex: He'd look incredible in them. But Ivy needs these more than a man made of rock.
+===
+
+title: A1_Percival_Look
+---
+<<if flagged("a1_won_slam")>>
+    Dex: Percival Thorne, sulking in a beanbag, beret pulled over his eyes. Thirty-seven and one.
+<<else>>
+    Dex: Black turtleneck, beret, a scarf in a heatwave. He's holding a notebook with a pressed daisy drawn on the cover. Ivy's notebook.
+<<endif>>
+===
+title: A1_Percival_Talk
+---
+<<if flagged("a1_won_slam")>>
+    Percival Thorne: Leave me. I'm processing my first loss. Through interpretive silence.
+<<elseif not flagged("a1_met_percival")>>
+    Percival Thorne: Percival Thorne. Poet. Slam champion. Thirty-seven wins, zero losses, and one very good scarf.
+    Dex: Dex Dooley. Is that notebook yours?
+    Percival Thorne: It is now. Some little mouse left it on the reading table. I'll be performing its best poem at the Talent Round. Lightly improved.
+    Percival Thorne: By which I mean I crossed out her name and wrote mine.
+    <<flag a1_met_percival>>
+<<elseif flagged("a1_lost_slam")>>
+    Percival Thorne: Back for another beating? Your comebacks are like your shirt, freshman. Loud and empty.
+<<else>>
+    Percival Thorne: Still here? I don't give autographs. Unless you have a pen.
+<<endif>>
+<<jump A1_Percival_Menu>>
+===
+title: A1_Percival_Menu
+---
+-> Ask him to give the notebook back <<if not flagged("a1_won_slam") and not flagged("a1_slam_rules")>>
+    Percival Thorne: Slam law, freshman. Anything left in the Stacks belongs to the champion.
+    Percival Thorne: Unless someone beats the champion in a slam-off. Which nobody ever has. Or ever will.
+    Dex: How does a slam-off work?
+    Percival Thorne: I insult you in verse. You answer with something better. Run out of answers and you lose.
+    <<flag a1_slam_rules>>
+    <<jump A1_Percival_Menu>>
+-> Challenge him to a slam-off <<if flagged("a1_slam_rules") and not flagged("a1_won_slam")>>
+    <<jump A1_Slam_1>>
+-> Ask about his poetry <<if not flagged("a1_won_slam")>>
+    Percival Thorne: My latest: "Ode to My Own Reflection." It's a trilogy.
+    Percival Thorne: "O mirror, mirror, thin and wide, how lucky you are to see me from outside."
+    Dex: (That was horrible. Ivy's poem is a thousand times better.)
+    <<jump A1_Percival_Menu>>
+-> Tell him the notebook is Ivy's <<if flagged("a1_heard_notebook") and not flagged("a1_won_slam")>>
+    Percival Thorne: Ivy? The girl who never talks? Then she won't complain, will she?
+    Dex: (Oh, I am going to beat this guy.)
+    <<jump A1_Percival_Menu>>
+-> Ask how he's doing <<if flagged("a1_won_slam")>>
+    Percival Thorne: Fine. Great. Writing a poem about it. It's called "Nobody Asked You, Dex." It's mostly crying.
+    <<jump A1_Percival_Menu>>
+-> Leave
+    Percival Thorne: Exit, stage left. Snap snap.
+===
+title: A1_Slam_1
+---
+Percival Thorne: (snaps fingers) Slam-off! Round one!
+Percival Thorne: "I know forty thousand words, freshman!"
+<<flag a1_ins1>>
+-> "Shame the only one you ever use is 'me'." <<if flagged("a1_cb_me")>>
+    Percival Thorne: (staggering) Gah. That... was rude. And accurate. Round two!
+    <<jump A1_Slam_2>>
+-> "So does onion soup, and it has more layers." <<if flagged("a1_cb_onion")>>
+    <<jump A1_Slam_Lose>>
+-> "So is the puddle on the library steps, and it shows more reflection." <<if flagged("a1_cb_puddle")>>
+    <<jump A1_Slam_Lose>>
+-> "People can't look away from car crashes either." <<if flagged("a1_cb_crash")>>
+    <<jump A1_Slam_Lose>>
+-> "Cool story. Tell it to my pillow." <<if flagged("a1_cb_pillow")>>
+    <<jump A1_Slam_Lose>>
+-> "Oh yeah? Well... I know some words too."
+    <<jump A1_Slam_Lose>>
+-> "I'm rubber, you're glue."
+    <<jump A1_Slam_Lose>>
+===
+title: A1_Slam_2
+---
+Percival Thorne: "My poems make grown men weep!"
+<<flag a1_ins2>>
+-> "Shame the only one you ever use is 'me'." <<if flagged("a1_cb_me")>>
+    <<jump A1_Slam_Lose>>
+-> "So does onion soup, and it has more layers." <<if flagged("a1_cb_onion")>>
+    Percival Thorne: (clutching his scarf) Onion soup?! How DARE you compare me to a... delicious soup. Round three!
+    <<jump A1_Slam_3>>
+-> "So is the puddle on the library steps, and it shows more reflection." <<if flagged("a1_cb_puddle")>>
+    <<jump A1_Slam_Lose>>
+-> "People can't look away from car crashes either." <<if flagged("a1_cb_crash")>>
+    <<jump A1_Slam_Lose>>
+-> "Cool story. Tell it to my pillow." <<if flagged("a1_cb_pillow")>>
+    <<jump A1_Slam_Lose>>
+-> "Yeah, because they have to listen to them."
+    <<jump A1_Slam_Lose>>
+-> "I'm rubber, you're glue."
+    <<jump A1_Slam_Lose>>
+===
+title: A1_Slam_3
+---
+Percival Thorne: "My verse is far too deep for the likes of you!"
+<<flag a1_ins3>>
+-> "Shame the only one you ever use is 'me'." <<if flagged("a1_cb_me")>>
+    <<jump A1_Slam_Lose>>
+-> "So does onion soup, and it has more layers." <<if flagged("a1_cb_onion")>>
+    <<jump A1_Slam_Lose>>
+-> "So is the puddle on the library steps, and it shows more reflection." <<if flagged("a1_cb_puddle")>>
+    Percival Thorne: (gasping) A puddle! With... more reflection than me?! Ms. Hush has been talking. Final round!
+    <<jump A1_Slam_4>>
+-> "People can't look away from car crashes either." <<if flagged("a1_cb_crash")>>
+    <<jump A1_Slam_Lose>>
+-> "Cool story. Tell it to my pillow." <<if flagged("a1_cb_pillow")>>
+    <<jump A1_Slam_Lose>>
+-> "I can swim, you know."
+    <<jump A1_Slam_Lose>>
+-> "I'm rubber, you're glue."
+    <<jump A1_Slam_Lose>>
+===
+title: A1_Slam_4
+---
+Percival Thorne: (shaking) "When I perform, nobody can take their eyes off me!"
+<<flag a1_ins4>>
+-> "Shame the only one you ever use is 'me'." <<if flagged("a1_cb_me")>>
+    <<jump A1_Slam_Lose>>
+-> "So does onion soup, and it has more layers." <<if flagged("a1_cb_onion")>>
+    <<jump A1_Slam_Lose>>
+-> "So is the puddle on the library steps, and it shows more reflection." <<if flagged("a1_cb_puddle")>>
+    <<jump A1_Slam_Lose>>
+-> "People can't look away from car crashes either." <<if flagged("a1_cb_crash")>>
+    <<jump A1_Slam_Win>>
+-> "Cool story. Tell it to my pillow." <<if flagged("a1_cb_pillow")>>
+    <<jump A1_Slam_Lose>>
+-> "That's because your scarf is blinding."
+    <<jump A1_Slam_Lose>>
+-> "I'm rubber, you're glue."
+    <<jump A1_Slam_Lose>>
+===
+title: A1_Slam_Lose
+---
+Percival Thorne: Ha! Weak! Limp! Is that a comeback or a cry for help? The champion remains the champion!
+<<flag a1_lost_slam>>
+Dex: That didn't land. I need the RIGHT answer for each of his put-downs.
+Dex: People around campus say clever things all the time. I should listen, and remember.
+===
+title: A1_Slam_Win
+---
+Percival Thorne: (falling into a beanbag) A car crash. He called me a car crash. And he was RIGHT.
+Percival Thorne: Thirty-seven and... one. Take it. Take the notebook. Take my dignity while you're at it.
+Dex: I'll just take the notebook. You can keep the dignity. What's left of it.
+<<give ivy_notebook>>
+<<flag a1_won_slam>>
+===
+title: A1_Percival_ShowHat
+---
+Percival Thorne: A cowboy hat? Is this a costume party? I don't slam against cosplayers.
+===
+title: A1_Percival_ShowNote
+---
+Percival Thorne: "Circle YES or YES." Derivative. Also, coercive. Also... oddly charming. Go away.
+===
+
+title: Item_ivy_notebook_Look
+---
+Dex: Ivy's notebook. A daisy doodled on the cover, and "Ode to the Quiet Kid in the Back Row" inside. Percival's name is crossed out. Good.
 ===

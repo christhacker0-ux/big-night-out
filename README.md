@@ -50,7 +50,7 @@ The auto-setup runs **Big Night Out > Build Game** for you the first time (the o
 - builds `Scenes/Boot.unity`: camera, player, room loader, mouse controls, hover label, inventory bar, pause menu, Yarn's Dialogue System with our bridge,
 - puts Boot and every room in the build list and opens Boot.
 
-Press Play in Boot. The whole story runs from Dex's dorm room to the live Speed Daters Live finale: five acts and a finale, 18 rooms. [Docs/WALKTHROUGH.md](Docs/WALKTHROUGH.md) has the full solution, [Docs/STORY.md](Docs/STORY.md) the story bible, and [Docs/WORLD_FORMAT.md](Docs/WORLD_FORMAT.md) how to add rooms and puzzles. `python3 tools/check_world.py` checks the JSON and Yarn files without Unity, and `python3 tools/art/paint.py` (plus `act2.py` to `finale.py`) regenerates the art.
+Press Play in Boot. The whole story runs from Dex's dorm room to the live Speed Daters Live finale: five acts and a finale, 31 rooms. [Docs/WALKTHROUGH.md](Docs/WALKTHROUGH.md) has the full solution, [Docs/STORY.md](Docs/STORY.md) the story bible, and [Docs/WORLD_FORMAT.md](Docs/WORLD_FORMAT.md) how to add rooms and puzzles. `python3 tools/check_world.py` checks the JSON and Yarn files without Unity, and `python3 tools/art/paint.py` (plus `act2.py` to `finale.py`) regenerates the art.
 
 Press **Esc** for the pause menu: Resume, Save, Load and Quit. Save and Load use one manual slot; the game also autosaves to its own slot on every room change.
 

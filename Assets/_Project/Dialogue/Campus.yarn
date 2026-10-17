@@ -78,6 +78,8 @@ title: Kiosk_Use
     <<flag took_flyer>>
 -> Read the campus map
     <<jump Campus_Map>>
+-> Think about what to do next
+    <<jump A1_Hint>>
 -> Never mind
 ===
 title: Campus_Map
@@ -116,20 +118,47 @@ title: Roxy_Talk
 ---
 <<if current_act() >= 2>>
     <<jump Roxy_NextRound>>
+<<elseif flagged("won_ivy")>>
+    <<jump Act1_TalentRound>>
+<<elseif not flagged("signed_up")>>
+    Roxy Vale: Hi, sweetie! You're not on my list. Contestants sign the sheet in their dorm lounge.
+    Roxy Vale: And bring proof you're a catch. A reference, a trophy, a restraining order that expired. Anything.
 <<elseif not flagged("met_roxy")>>
     Roxy Vale: Dex Dooley, room 214! The guy with the cowboy hat!
     Roxy Vale: Here's the deal, lover boy. Every contestant performs in the Talent Round with a partner.
     Roxy Vale: Show me someone who'll get up on this stage with you, and show me your talent.
     Dex: My talent is... uh... I'll get back to you.
     <<flag met_roxy>>
-<<elseif flagged("won_ivy")>>
-    <<jump Act1_TalentRound>>
 <<else>>
     Roxy Vale: No partner, no performance! Find somebody brave enough to share the spotlight.
-    <<if flagged("met_ivy")>>
-        Dex: Ivy writes poetry. If she could only face a crowd...
-    <<endif>>
 <<endif>>
+<<jump A1_Roxy_Menu>>
+===
+title: A1_Roxy_Menu
+---
+-> Ask about Speed Daters Live
+    Roxy Vale: Five rounds, one night, a live final on national TV. We find love, lover boy. Or at least ratings.
+    <<jump A1_Roxy_Menu>>
+-> Ask what counts as a talent <<if flagged("signed_up")>>
+    Roxy Vale: Juggling, singing, poetry, an emotional monologue about your car. Last year a guy just yelled. He came third.
+    <<jump A1_Roxy_Menu>>
+-> Ask where to find a partner <<if flagged("signed_up")>>
+    <<if flagged("met_ivy")>>
+        Dex: (Ivy writes poetry. If she could only face a crowd...)
+        Roxy Vale: Whoever you're thinking of right now, lover boy, go get them.
+    <<else>>
+        Roxy Vale: Look for the person who'd never volunteer. They're always the showstoppers.
+        Roxy Vale: Try the library. Nobody ever looks in the library.
+    <<endif>>
+    <<jump A1_Roxy_Menu>>
+-> Ask about the hat <<if has("cowboy_hat")>>
+    Roxy Vale: Proof that a real cowgirl likes you. The cameras are going to eat that up. Never take it off.
+    <<jump A1_Roxy_Menu>>
+-> Ask if she's nervous <<if flagged("signed_up")>>
+    Roxy Vale: Honey, I was born on live TV. Literally. My mom was a contestant. She came second.
+    <<jump A1_Roxy_Menu>>
+-> Head off
+    Roxy Vale: Go get 'em, lover boy!
 ===
 title: Roxy_Token
 ---
@@ -144,10 +173,11 @@ title: Roxy_Token
 title: Act1_TalentRound
 ---
 Roxy Vale: Ladies and gentlemen, the Talent Round! Please welcome Dex Dooley and Ivy!
-Ivy: (in sunglasses) "Ode to the Quiet Kid in the Back Row." By me.
+Ivy: (in sunglasses, notebook open) "Ode to the Quiet Kid in the Back Row." By me. Nobody else. Me.
 Ivy: "You think I'm not listening. I am listening. I am listening so hard."
 Dex: And I... do an interpretive dance. Of the poem. In a cowboy hat.
 Dex: It's terrible. It's glorious. Somebody in the crowd is crying. I think it's me.
+Percival Thorne: (from the back) ...Derivative. (sniffs) Beautifully derivative.
 Roxy Vale: Folks, I have never seen anything like that, and I hope I never do again! They're through!
 Roxy Vale: Next up: Greek Week. The Quiz Round is on Greek Row, so get to know some people, lover boy!
 Ivy: That was the scariest and best thing I've ever done. Keep the bookmark. Go win this.
@@ -201,3 +231,218 @@ title: Item_bookmark_Look
 ---
 Dex: Ivy's bookmark, with a pressed daisy. She kept her place in her life story with this.
 ===
+
+title: A1_UnionSign_Look
+---
+Dex: A signpost: STUDENT UNION, with an arrow. Underneath someone wrote "food" and drew a little possum.
+===
+title: A1_UnionSign_Use
+---
+<<go student_union from_campus>>
+===
+
+title: A1_Union_Enter
+---
+<<if not flagged("a1_union_intro")>>
+    Dex: The Student Union cafeteria after dark. Chairs on tables, a humming soda fountain, and one grill still sizzling.
+    Doreen: We're closed, sugar. Unless you're staff. Or the possum.
+    Dex: The possum?
+    <<flag a1_union_intro>>
+<<endif>>
+===
+title: A1_UnionExit_Look
+---
+Dex: The doors back out to the quad.
+===
+title: A1_UnionExit_Use
+---
+<<go campus from_union>>
+===
+title: A1_Menu_Look
+---
+Dex: TONIGHT: Onion Soup. Mystery Loaf. Possum Waffle, MASCOT ONLY. Underneath, in chalk: "No, you can't be the mascot. Love, Doreen."
+===
+title: A1_Menu_Use
+---
+Dex: I'd order something, but the only thing on this menu I can afford is the chalk.
+===
+title: A1_Grill_Look
+---
+Dex: A flat-top grill, a waffle iron shaped like a possum, and a pot of onion soup big enough to bathe in.
+===
+title: A1_Grill_Use
+---
+Doreen: Hands off my grill, sugar. Nobody touches it but me and the health inspector, and he only touched it once.
+===
+title: A1_Fountain_Look
+---
+Dex: The soda fountain. A sign says OUT OF ORDER. A second sign says WE MEAN IT. A third sign just says DOREEN.
+===
+title: A1_Fountain_Use
+---
+Dex: I press the lever. It gurgles, coughs, and spits out a single ice cube. Then it makes a noise like it's judging me.
+===
+title: A1_Fountain_Dollar
+---
+Dex: There's no slot for money. There's barely a slot for hope. Doreen's cooler is the only cold soda in this building.
+===
+title: A1_Bulletin_Look
+---
+Dex: A poster: "STACKS SLAM. Tonight, upper library stacks. Champion: Percival Thorne, 37 wins, 0 losses. Come and lose with dignity."
+Dex: Next to it: "LOST: Pokey's left glove. If found, do NOT smell it."
+===
+title: A1_Bulletin_Use
+---
+Dex: Somebody stapled a flyer to another flyer about not stapling flyers. I respect the chaos.
+===
+
+title: A1_Doreen_Look
+---
+<<if flagged("a1_got_waffle")>>
+    Dex: Doreen, humming, scrubbing the possum waffle iron like it's a family heirloom.
+<<else>>
+    Dex: The night cook. Hairnet, giant spatula, forearms that could flip a car. Her name tag says DOREEN.
+<<endif>>
+===
+title: A1_Doreen_Talk
+---
+<<if not flagged("a1_met_doreen")>>
+    Doreen: Grill's closed, sugar. After nine I cook for staff and for Pokey, and you are neither.
+    Dex: Who's Pokey?
+    Doreen: Pokey the Possum! Our mascot. Only one on this campus who ever says thank you.
+    <<flag a1_met_doreen>>
+<<elseif flagged("a1_got_waffle")>>
+    Doreen: Back again, sugar? My Pokey ate good tonight. Did you see? Two hands on the waffle. Precious.
+<<else>>
+    Doreen: Still closed, sugar. Still not a possum.
+<<endif>>
+<<jump A1_Doreen_Menu>>
+===
+title: A1_Doreen_Menu
+---
+-> Ask what's good here <<if not flagged("a1_cb_onion")>>
+    Doreen: My onion soup. Makes grown men weep.
+    Doreen: And it's still got more layers than any boy on this campus.
+    Dex: (Ha. "So does onion soup, and it has more layers." Filing that one away.)
+    <<flag a1_cb_onion>>
+    <<jump A1_Doreen_Menu>>
+-> Ask about the onion soup again <<if flagged("a1_cb_onion")>>
+    Doreen: Simmered since Tuesday. Which Tuesday, I couldn't tell you.
+    <<jump A1_Doreen_Menu>>
+-> Ask for a possum waffle <<if not flagged("a1_got_waffle")>>
+    Doreen: Possum waffles are for Pokey. It's in his contract. Free waffle, every shift, extra whipped cream.
+    Doreen: You put on a possum head and grunt at me nicely, then we'll talk. Ha! As if.
+    <<jump A1_Doreen_Menu>>
+-> Ask for a soda <<if not has("soda") and not flagged("lacey_has_drink") and not flagged("made_hooch")>>
+    Doreen: Fountain's busted. I've got the last cold cans in my cooler, and they're for staff and for Pokey.
+    <<jump A1_Doreen_Menu>>
+-> Ask about Pokey <<if not flagged("a1_got_waffle")>>
+    Doreen: Sweetest possum on earth. Never talks, always waves. I'd adopt him if he weren't a, you know, possum.
+    Dex: (She thinks Pokey is real. She does not know Kyle is inside.)
+    <<jump A1_Doreen_Menu>>
+-> Ask about Boomer <<if flagged("a1_boomer_dream") and not flagged("a1_boomer_moved")>>
+    Doreen: The big sleepwalker? He shuffled in last week, pyjamas and all, and stood at my counter snoring at the waffle iron.
+    Doreen: I nearly gave him one. Then I remembered the contract.
+    <<jump A1_Doreen_Menu>>
+-> Say goodnight
+    Doreen: Night, sugar. Wipe your feet on the way out. I mean it. Look at that floor.
+===
+title: A1_Doreen_GivePossumHead
+---
+<<if flagged("a1_got_waffle")>>
+    Doreen: Pokey, honey, you already ate. Don't be greedy, it's not cute. It's a little cute.
+<<else>>
+    Dex: I pull Pokey's head over mine. It smells like pine trees and old secrets. I waddle to the counter and grunt politely.
+    Doreen: POKEY! My favourite customer! Sit, sit. One possum waffle, extra whipped cream.
+    Doreen: And a cold soda from my cooler. Don't tell the students.
+    Dex: (muffled) Hrrm. Thank you.
+    Doreen: Did you hear that? He said thank you. Nobody says thank you.
+    <<give possum_waffle>>
+    <<give soda>>
+    <<flag a1_got_waffle>>
+    Kyle: (from his table) Psst. Break's over, buddy. Head, please.
+    Dex: I slip the head back to Kyle under the table. Doreen never notices. A possum waffle AND a soda. Not bad for a guy with no meal plan.
+    <<take possum_head>>
+<<endif>>
+===
+title: A1_Doreen_GiveFreshener
+---
+Doreen: Sugar, this kitchen smells like onions and victory. It does not need a tree.
+===
+
+title: A1_Kyle_Look
+---
+<<if flagged("a1_kyle_has_freshener")>>
+    Dex: Kyle, in the bottom half of a possum suit, smelling like a forest. A happy, sweaty forest.
+<<else>>
+    Dex: A guy in a giant grey possum suit, head off, sweating into a cafeteria table. The head sits next to him, staring at me.
+<<endif>>
+===
+title: A1_Kyle_Talk
+---
+<<if not flagged("a1_met_kyle")>>
+    Kyle: Don't look at me. Pokey is supposed to be magic. Kids can't know there's a Kyle inside.
+    Dex: Your secret's safe with me, Kyle.
+    Kyle: I'm on break. Twenty minutes to breathe air that doesn't smell like possum armpit.
+    <<flag a1_met_kyle>>
+<<elseif flagged("a1_kyle_has_freshener")>>
+    Kyle: My man! I smell like a national park. The kids are going to love it.
+<<else>>
+    Kyle: Still on break. Still sweaty. Still Kyle.
+<<endif>>
+<<jump A1_Kyle_Menu>>
+===
+title: A1_Kyle_Menu
+---
+-> Ask about being the mascot <<if not flagged("a1_cb_crash")>>
+    Kyle: In this suit, nobody can take their eyes off me.
+    Kyle: It's the same reason nobody can look away from a car crash.
+    Dex: (Ooh. "People can't look away from car crashes either." Filing that one away.)
+    <<flag a1_cb_crash>>
+    <<jump A1_Kyle_Menu>>
+-> Ask about the smell <<if not flagged("a1_kyle_has_freshener")>>
+    Kyle: Fourteen years of possum sweat. Every Pokey before me left a little of himself in there.
+    Kyle: I'd give anything for something that smells like a forest. A pine forest. Even one tree.
+    <<jump A1_Kyle_Menu>>
+-> Ask to borrow the possum head <<if not flagged("a1_kyle_has_freshener")>>
+    Kyle: And let someone else smell it? That's cruel.
+    Kyle: Okay, honestly? Make this suit smell better and you can wear the head for the rest of my break.
+    <<jump A1_Kyle_Menu>>
+-> Ask about Doreen <<if not flagged("a1_got_waffle")>>
+    Kyle: Doreen thinks Pokey is real. She feeds him free waffles. I've never had the heart to tell her.
+    Kyle: Honestly, anybody in that head could get a waffle. She doesn't check. She just sees possum.
+    <<jump A1_Kyle_Menu>>
+-> Ask about the Talent Round
+    Kyle: Pokey does the halftime dance. Last year I fell off the stage. They called it my best work.
+    <<jump A1_Kyle_Menu>>
+-> Let him enjoy his break
+    Kyle: Thanks, man. If you see any kids, I'm not here.
+===
+title: A1_Kyle_GiveFreshener
+---
+<<if flagged("a1_kyle_has_freshener")>>
+    Kyle: I already smell like a forest, man.
+<<else>>
+    Kyle: Is that... Alpine Morning? Give it here.
+    Dex: He hangs the pine tree inside the possum head and takes a deep breath.
+    Kyle: Oh, that's beautiful. That's the best thing that's ever happened inside this head.
+    Kyle: Deal's a deal. Wear it for the rest of my break. Just don't take it outside. Kids.
+    <<take pine_freshener>>
+    <<give possum_head>>
+    <<flag a1_kyle_has_freshener>>
+<<endif>>
+===
+title: A1_Kyle_GiveSoda
+---
+Kyle: Cold soda? Tempting, but it doesn't fix the suit. Nothing you drink fixes the suit.
+===
+
+title: Item_possum_head_Look
+---
+Dex: Pokey the Possum's head. Big eyes, bigger teeth, and now a pine tree hanging inside it. Doreen only feeds Pokey.
+===
+title: Item_possum_waffle_Look
+---
+Dex: A possum-shaped waffle with whipped cream ears. It's not for me. Do not eat the possum, Dex.
+===
+

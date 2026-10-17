@@ -21,7 +21,7 @@ title: A2_Hint
         <<if flagged("sheet_ok")>>
             Dex: Tess said I could borrow a sheet off the sorority clothesline.
         <<else>>
-            Dex: I need a toga. There's a bedsheet on the sorority clothesline, but I'd better ask Tess first.
+            Dex: I need a toga. There's a bedsheet on the sorority clothesline, but I'd better tell Tess about the toga rule first.
         <<endif>>
     <<elseif not has("safety_pin")>>
         Dex: A sheet won't stay on by itself. The DJ in the Fuse Box bar is wearing about a hundred safety pins.
@@ -30,20 +30,64 @@ title: A2_Hint
     <<endif>>
 <<elseif not flagged("toga_on")>>
     Dex: I've got a toga. Chad needs to see it.
-<<elseif not flagged("frat_dark")>>
-    Dex: Fernanda's in a spotlight with the whole frat watching. If the lights went out... That breaker box in the frat house looked old.
 <<elseif has("fernanda")>>
     Dex: I've got a seven-foot flamingo under my arm. Tess will want her back.
-<<elseif not flagged("took_fernanda")>>
-    Dex: The frat house lights are out. Now's my chance to grab Fernanda.
-<<elseif not flagged("dolly_fused")>>
-    <<if flagged("met_dolly")>>
-        Dex: Dolly needs a thirty-amp screw-in fuse. Funny, I have exactly one of those in my pocket.
+<<elseif has("disco_record")>>
+    Dex: Dolly's Disco Volcano record. She's going to scream. In a good way.
+<<elseif has("frat_fuse")>>
+    Dex: Dolly needs a thirty-amp screw-in fuse. Funny, I have exactly one of those in my pocket.
+<<elseif not flagged("frat_dark")>>
+    <<if not flagged("a2_met_moose")>>
+        Dex: There's a big pledge standing next to Fernanda in the frat house. I should find out what his deal is.
     <<else>>
-        Dex: I wonder why the bar called the Fuse Box is so quiet.
+        Dex: Fernanda's in a spotlight with the whole frat watching. If the lights went out... That breaker box in the frat house looked old.
     <<endif>>
+<<elseif not flagged("took_fernanda") and not flagged("a2_moose_relieved")>>
+    <<if has("pledge_beanie")>>
+        Dex: I've got a pledge beanie. In the dark, I'm a pledge. Time to relieve Moose of flamingo watch.
+    <<elseif not flagged("a2_know_relief")>>
+        Dex: Moose won't let go of Fernanda, even in the dark. I should ask him about flamingo watch. Or read the rules in the basement.
+    <<elseif flagged("a2_got_beanie")>>
+        Dex: I need to look like a pledge to relieve Moose.
+    <<else>>
+        Dex: Moose only leaves his post if another pledge relieves him. Pledges wear beanies, and the basement dryer is full of them. The blackout stopped it.
+    <<endif>>
+<<elseif not flagged("took_fernanda")>>
+    Dex: Moose is off duty and the lights are out. Nobody is watching Fernanda. Now's my chance.
 <<elseif not flagged("won_dolly")>>
-    Dex: Dolly wants a first request. The chalkboard in the bar says what she likes.
+    <<if not flagged("a2_know_record")>>
+        Dex: Dolly has power again and wants a first request. The chalkboard in the bar says what she likes.
+    <<elseif flagged("a2_pr_won")>>
+        Dex: I won the record back. Dolly's waiting.
+    <<elseif not has("clip_on_tie") and not flagged("a2_tie_on")>>
+        <<if has("volcano_smoothie")>>
+            Dex: Moose is starving, and he wears a clip-on necktie. I've got a smoothie. That's a trade.
+        <<elseif flagged("a2_got_smoothie")>>
+            Dex: I need a necktie to get into the sorority parlor. Moose has one.
+        <<elseif not flagged("a2_know_tie_rule")>>
+            Dex: Mother Whitlock has Dolly's record, inside the sorority house. I should check the sorority's front door.
+        <<else>>
+            Dex: The parlor needs a necktie and Moose has one, but he wants food. The Fuse Box blender works again.
+        <<endif>>
+    <<elseif not flagged("a2_tie_on")>>
+        Dex: I've got a necktie. The sorority door is waiting for a gentleman caller.
+    <<elseif not flagged("a2_pr_tried")>>
+        Dex: Mother Whitlock returns confiscated things to anyone who passes her parlor test. I should ask her about it.
+    <<elseif not flagged("a2_cb1")>>
+        Dex: Mother Whitlock mocked my shirt. Tess grew up on Mother Whitlock's rules. She'll know the right answer.
+    <<elseif not flagged("a2_cb2")>>
+        Dex: Mother Whitlock sneered at my dorm. Chad said Dunk, down in the frat basement, is the only brother who ever passed.
+    <<elseif not flagged("a2_cb3")>>
+        Dex: The sugar question. Dolly lost the record at a tea party. She must know that one.
+    <<elseif not flagged("a2_cb4")>>
+        Dex: The handshake and the gloves. Moose said something about his grandma being a housemother.
+    <<elseif not flagged("a2_cb5")>>
+        Dex: The curtains. There's an embroidered sampler on the parlor wall. Maybe it's not just decoration.
+    <<else>>
+        Dex: I know all five right answers. Time to take Mother Whitlock's test again.
+    <<endif>>
+<<elseif not flagged("won_tess")>>
+    Dex: Tess is still waiting for Fernanda.
 <<else>>
     Dex: A pin and a bracelet. Roxy is waiting at the podium.
 <<endif>>
@@ -74,6 +118,37 @@ title: A2_Bedsheet_Use
 <<endif>>
 ===
 
+title: A2_SororityDoor_Look
+---
+Dex: The sorority's front door: pink, with a wreath. A brass sign says "GENTLEMEN CALLERS: NECKTIES REQUIRED. NO EXCEPTIONS. NOT EVEN YOU."
+<<flag a2_know_tie_rule>>
+===
+title: A2_SororityDoor_Use
+---
+<<if flagged("a2_tie_on")>>
+    <<go sorority_parlor from_row>>
+<<else>>
+    Dex: (knock knock) The mail slot opens. Two very judgemental eyes look out.
+    Mother Whitlock: Good evening. Gentlemen callers wear neckties. You appear to be wearing a fruit salad. Good night.
+    Dex: The mail slot snaps shut.
+    <<if flagged("toga_on")>>
+        Dex: No toga, no entry over there. No necktie, no entry over here. Greek Row has a lot of dress codes.
+    <<else>>
+        Dex: A necktie. The only tie I own is a tie-dye shirt, and that's back in my room.
+    <<endif>>
+    <<flag a2_know_tie_rule>>
+<<endif>>
+===
+title: A2_SororityDoor_Tie
+---
+Dex: I clip on Moose's necktie. Over a toga. Over a Hawaiian shirt. I am three outfits deep.
+Dex: (knock knock) The mail slot opens. The eyes look at the tie for a long time.
+Mother Whitlock: ...A necktie. On a bedsheet. Technically correct. The worst kind of correct. Come in.
+<<take clip_on_tie>>
+<<flag a2_tie_on>>
+<<go sorority_parlor from_row>>
+===
+
 title: A2_Tess_Look
 ---
 <<if flagged("won_tess")>>
@@ -84,17 +159,7 @@ title: A2_Tess_Look
 ===
 title: A2_Tess_Talk
 ---
-<<if flagged("won_tess")>>
-    Tess Calloway: Dex! Fernanda's home, the sisters are planning a parade, and I've scheduled it for nine fifteen.
-    -> Ask about the pin
-        Tess Calloway: It means you're a friend of the house. You can come to brunch. Nobody gets to come to brunch.
-    -> Ask about Fernanda
-        Tess Calloway: Seven feet of pink. Our mascot since 1987. She's seen things, Dex. She doesn't talk about them.
-    -> Ask about the Quiz Round
-        Tess Calloway: Roxy asks about the people you meet. Names, favourite things. Pay attention and you'll ace it.
-    -> Say goodbye
-        Tess Calloway: Goodbye, Dex. Wear the pin where people can see it.
-<<elseif has("fernanda")>>
+<<if has("fernanda")>>
     <<jump A2_Tess_GiveFernanda>>
 <<elseif not flagged("met_tess")>>
     Tess Calloway: Name? (clicks pen) You're not on my list.
@@ -107,41 +172,90 @@ title: A2_Tess_Talk
     Tess Calloway: You? (looks you up and down) ...Actually, nobody would ever suspect you of anything.
     Tess Calloway: Bring Fernanda home and you'll have the gratitude of the whole house. And mine.
     <<flag met_tess>>
-    <<if flagged("met_chad")>>
-        <<jump A2_Tess_SheetOk>>
-    <<endif>>
+<<elseif flagged("won_tess")>>
+    Tess Calloway: Dex! Fernanda's home, the sisters are planning a parade, and I've scheduled it for nine fifteen.
+<<elseif flagged("a2_moose_relieved") and flagged("frat_dark")>>
+    Tess Calloway: The frat's dark, their guard's gone to bed... Dex, this is the moment. Go get our girl.
+<<elseif flagged("frat_dark")>>
+    Tess Calloway: Their lights just went out. Was that you? Don't answer. Plausible deniability.
 <<elseif flagged("toga_on")>>
     Tess Calloway: You got inside? You're a spy now, Dex. A spy in a bedsheet.
-    <<if flagged("frat_dark")>>
-        Tess Calloway: Their lights just went out. Was that you? Don't answer. Plausible deniability.
-    <<else>>
-        Tess Calloway: They'll have her on display like a trophy. You'll never get her out with everybody watching.
-        Dex: Not with the lights on, anyway.
-    <<endif>>
-<<elseif flagged("met_chad") and not flagged("sheet_ok")>>
-    Dex: Chad says it's a toga party. No toga, no entry.
-    Tess Calloway: A toga party. Of course. Those cavemen think a bedsheet counts as formalwear.
-    <<jump A2_Tess_SheetOk>>
+    Tess Calloway: They'll have her on display like a trophy. You'll never get her out with everybody watching.
+<<elseif has("toga")>>
+    Tess Calloway: Very Roman. Now go show it to the meathead at the door.
 <<elseif has("bedsheet")>>
     Tess Calloway: That sheet will slide right off you halfway up the steps. You need something to hold it together.
     Dex: Something small and pointy... I've seen someone wearing a lot of those.
-<<elseif has("toga")>>
-    Tess Calloway: Very Roman. Now go show it to the meathead at the door.
 <<else>>
-    Tess Calloway: Every minute Fernanda spends in that frat house, she loses a little air and a lot of dignity.
-    <<jump A2_Hint>>
+    Tess Calloway: (checks her clipboard) Every minute Fernanda spends in that frat house, she loses a little air and a lot of dignity.
 <<endif>>
+<<jump A2_Tess_Menu>>
+===
+title: A2_Tess_Menu
+---
+-> Tell her about the toga rule <<if flagged("met_chad") and not flagged("sheet_ok")>>
+    Dex: Chad says it's a toga party. No toga, no entry.
+    Tess Calloway: A toga party. Of course. Those cavemen think a bedsheet counts as formalwear.
+    <<jump A2_Tess_SheetOk>>
+-> Ask about Fernanda <<if not flagged("a2_tess_fern") and not flagged("won_tess")>>
+    Tess Calloway: She has a stand, a plaque, a birthday and a fan club. The fan club is me.
+    Tess Calloway: The frat has tried to steal her every year since 1987. This year they finally managed it. During my watch. On my clipboard.
+    <<flag a2_tess_fern>>
+    <<flag know_fernanda>>
+    <<jump A2_Tess_Menu>>
+-> Ask about the sorority house <<if not flagged("a2_tess_house")>>
+    Tess Calloway: Phi Lambda Alpha. Founded 1921. Thirty-one sisters, one flamingo, and Mother Whitlock.
+    Dex: Mother Whitlock?
+    Tess Calloway: Our housemother. She runs the parlor. Gentlemen callers wear neckties or they don't get in. Not even the pizza guy. He keeps one in his car now.
+    Tess Calloway: And anything too loud, too sticky or too fun goes into her confiscation cabinet. Forever.
+    <<flag a2_tess_house>>
+    <<flag a2_know_tie_rule>>
+    <<jump A2_Tess_Menu>>
+-> Ask how to survive Mother Whitlock's test <<if flagged("a2_pr_tried") and not flagged("a2_cb1")>>
+    Tess Calloway: You took the parlor test? Brave. Did she start with your clothes? She always starts with your clothes.
+    Dex: She called my shirt brave. It didn't sound like a compliment.
+    Tess Calloway: Never defend the outfit. Thank her, and give the credit to someone else.
+    Tess Calloway: Say "Thank you. A friend with far better taste than mine helped me choose it." She can't insult a compliment to somebody who isn't in the room.
+    Dex: The other four questions?
+    Tess Calloway: I only ever needed the first one. Everybody on this street has lost to her at least once. Ask around.
+    <<flag a2_cb1>>
+    <<jump A2_Tess_Menu>>
+-> Ask her to repeat the outfit answer <<if flagged("a2_cb1") and not flagged("a2_pr_won")>>
+    Tess Calloway: "Thank you. A friend with far better taste than mine helped me choose it." Chin up. Don't fidget with the toga.
+    <<jump A2_Tess_Menu>>
+-> Ask about the pin <<if flagged("won_tess")>>
+    Tess Calloway: It means you're a friend of the house. You can come to brunch. Nobody gets to come to brunch.
+    <<jump A2_Tess_Menu>>
+-> Ask about the Quiz Round <<if flagged("won_tess")>>
+    Tess Calloway: Roxy asks about the people you meet. Names, favourite things, rules. Pay attention and you'll ace it.
+    <<jump A2_Tess_Menu>>
+-> Ask how she's doing
+    <<if flagged("won_tess")>>
+        Tess Calloway: Honestly? Best Greek Week ever. I've already colour-coded the photos.
+    <<elseif flagged("toga_on")>>
+        Tess Calloway: I'm fine. I'm totally fine. I've rewritten the rescue plan four times. Each one ends with you.
+    <<else>>
+        Tess Calloway: I've made a list of my feelings. It's laminated.
+    <<endif>>
+    <<jump A2_Tess_Menu>>
+-> Say goodbye
+    <<if flagged("won_tess")>>
+        Tess Calloway: Goodbye, Dex. Wear the pin where people can see it.
+    <<else>>
+        Tess Calloway: Go. Be sneaky. Report back.
+    <<endif>>
 ===
 title: A2_Tess_SheetOk
 ---
 Tess Calloway: Fine. Take a sheet off our clothesline. Not the monogrammed towels. Those are for photos.
 <<flag sheet_ok>>
+<<jump A2_Tess_Menu>>
 ===
 title: A2_Tess_GiveFernanda
 ---
 Tess Calloway: FERNANDA! (throws her arms around the flamingo) She's a little deflated. So am I. We'll pump her up together.
-Dex: She was the centrepiece of their party. They were chanting her name.
-Tess Calloway: Of course they were. She's iconic.
+Dex: She was the centrepiece of their party. They had a pledge guarding her around the clock.
+Tess Calloway: Of course they did. She's iconic.
 Tess Calloway: Dex Dooley, you are officially a friend of the house. Here, my sorority pin. It's been in my family since sophomore year.
 <<take fernanda>>
 <<give sorority_pin>>
@@ -160,6 +274,18 @@ Tess Calloway: Very Roman. Don't show me, show the meathead at the frat door.
 title: A2_Tess_GivePin
 ---
 Tess Calloway: Keep it on, Dex. Pins don't work in pockets.
+===
+title: A2_Tess_GiveTie
+---
+Tess Calloway: A necktie! Mother Whitlock will actually let you into the parlor. Clip it on at the front door. And stand up straight. She can smell slouching.
+===
+title: A2_Tess_GiveBeanie
+---
+Tess Calloway: Is that a frat pledge beanie? Get it away from my pearls.
+===
+title: A2_Tess_GiveRecord
+---
+Tess Calloway: Dolly's record! Out of Mother Whitlock's cabinet? Dex, that's never happened. Take it to her before Mother Whitlock changes her mind.
 ===
 
 title: A2_Stand_Look
@@ -201,24 +327,53 @@ title: A2_Roxy_Talk
 ---
 <<if flagged("act2_done")>>
     Roxy Vale: You aced it, lover boy! The Dare Round is at Science Hall. It's on the campus map now.
-<<elseif has("sorority_pin") and has("glow_bracelet")>>
-    <<jump A2_QuizRound>>
 <<elseif not flagged("a2_met_roxy")>>
     Roxy Vale: Lover boy! Welcome to Greek Week. This round is the Quiz Round.
     Roxy Vale: I ask questions about the people you've met. Get them right, you go through. Get them wrong, I buzz you. Loudly.
     Roxy Vale: But first, show me you've made friends here. Two keepsakes from two people on Greek Row.
     Dex: Friends. On Greek Row. Me. Sure.
     <<flag a2_met_roxy>>
+<<elseif has("sorority_pin") and has("glow_bracelet")>>
+    Roxy Vale: A pin AND a bracelet! The buzzer is warmed up, lover boy. Say the word.
+<<elseif has("sorority_pin")>>
+    Roxy Vale: A sorority pin! Look at you. One more keepsake and we're on.
+<<elseif has("glow_bracelet")>>
+    Roxy Vale: Ooh, a glow-stick bracelet. Very rave. One more keepsake and we're on.
 <<else>>
-    <<if has("sorority_pin")>>
-        Roxy Vale: A sorority pin! Look at you. One more keepsake and we're on.
-    <<elseif has("glow_bracelet")>>
-        Roxy Vale: Ooh, a glow-stick bracelet. Very rave. One more keepsake and we're on.
-    <<else>>
-        Roxy Vale: Two keepsakes from Greek Row, lover boy. Go be charming.
-    <<endif>>
-    <<jump A2_Hint>>
+    Roxy Vale: Two keepsakes from Greek Row, lover boy. Go be charming.
 <<endif>>
+<<jump A2_Roxy_Menu>>
+===
+title: A2_Roxy_Menu
+---
+-> Start the Quiz Round <<if has("sorority_pin") and has("glow_bracelet") and not flagged("act2_done")>>
+    <<jump A2_QuizRound>>
+-> Ask how the Quiz Round works <<if not flagged("act2_done")>>
+    Roxy Vale: Five questions about the people you met tonight. Names, songs, rules. Wrong answers get a buzz and another try.
+    Roxy Vale: The trick, lover boy, is listening. Most contestants only listen to themselves.
+    <<jump A2_Roxy_Menu>>
+-> Ask what to try next <<if not flagged("act2_done")>>
+    Roxy Vale: Ooh, strategy. Tell me, lover boy, what's on your mind?
+    <<jump A2_Hint>>
+-> Ask about Greek Row <<if not flagged("a2_roxy_row")>>
+    Roxy Vale: Tess runs the sorority. Chad runs into walls. Dolly runs the only good music on the street.
+    Roxy Vale: And the sorority's housemother runs all three of them. I tried to interview her once. She corrected my posture on live TV.
+    <<flag a2_roxy_row>>
+    <<jump A2_Roxy_Menu>>
+-> Ask about the Dare Round <<if flagged("act2_done")>>
+    Roxy Vale: Science Hall. Bring courage, bring goggles, and do NOT drink anything blue.
+    <<jump A2_Roxy_Menu>>
+-> Ask how the show is going
+    <<if flagged("act2_done")>>
+        Roxy Vale: Ratings are up! The quiz clip of you is trending. Someone made it into a ringtone.
+    <<elseif flagged("won_tess") or flagged("won_dolly")>>
+        Roxy Vale: The producers are thrilled. Well, one is thrilled. The other one is just very caffeinated.
+    <<else>>
+        Roxy Vale: Great! Mostly. Our cameraman got stuck in a toga. Long story.
+    <<endif>>
+    <<jump A2_Roxy_Menu>>
+-> Say goodbye
+    Roxy Vale: Go get 'em, lover boy.
 ===
 title: A2_Roxy_Token
 ---
@@ -235,7 +390,7 @@ title: A2_QuizRound
 ---
 Roxy Vale: Ladies and gentlemen, it's the Greek Week Quiz Round! Contestant Dex Dooley, are you ready?
 Dex: No. Yes. Go.
-Roxy Vale: Four questions about the people you met tonight. Wrong answers get a buzz and another try. Question one!
+Roxy Vale: Five questions about the people you met tonight. Wrong answers get a buzz and another try. Question one!
 <<jump A2_Quiz1>>
 ===
 title: A2_Quiz1
@@ -280,22 +435,37 @@ Roxy Vale: Question three! What is the name of the sorority's inflatable flaming
 ===
 title: A2_Quiz4
 ---
+Roxy Vale: Question four! What must every gentleman caller wear to get into the sorority parlor?
+-> A toga
+    Roxy Vale: BZZZT! Wrong house, lover boy. Try again.
+    <<jump A2_Quiz4>>
+-> A necktie
+    Roxy Vale: Correct!
+    Mother Whitlock: (from an upstairs window) Correct, and stop slouching.
+    <<jump A2_Quiz5>>
+-> A pledge beanie
+    Roxy Vale: BZZZT! That gets you flamingo duty, not tea. Try again.
+    <<jump A2_Quiz4>>
+===
+title: A2_Quiz5
+---
 Roxy Vale: Final question! What is Dolly Spark's favourite song?
 -> "Toga Toga Toga"
     Roxy Vale: BZZZT! That's the only song the frat knows. Try again.
-    <<jump A2_Quiz4>>
+    <<jump A2_Quiz5>>
 -> "Disco Volcano"
     Roxy Vale: Correct!
     <<jump A2_QuizWin>>
 -> "Hank Hollister Live"
     Roxy Vale: BZZZT! Wrong girl, wrong genre. Try again.
-    <<jump A2_Quiz4>>
+    <<jump A2_Quiz5>>
 ===
 title: A2_QuizWin
 ---
-Roxy Vale: Four out of four! Dex Dooley, you actually listen to people. Do you know how rare that is on television?
+Roxy Vale: Five out of five! Dex Dooley, you actually listen to people. Do you know how rare that is on television?
 Tess Calloway: That's our friend of the house!
 Dolly Spark: (from the bar door, airhorn) BWAAAAMP!
+Moose: (from the frat lawn, half asleep) Yeah, bro!
 Dex: I'd like to thank my ears. And everyone who talked to them.
 Roxy Vale: You're through to round three, lover boy! The Dare Round is at Science Hall, and it's on the campus map now.
 <<flag act2_done>>
@@ -313,14 +483,7 @@ title: A2_Chad_Look
 ===
 title: A2_Chad_Talk
 ---
-<<if flagged("won_tess")>>
-    Chad Thunderclap: Bro. Somebody stole our stolen flamingo. That's, like, double stealing.
-    Chad Thunderclap: I'm furious. And also kind of impressed.
-<<elseif flagged("frat_dark")>>
-    Chad Thunderclap: Power's out, bro. The party's gone acoustic. We're just chanting now.
-<<elseif flagged("toga_on")>>
-    Chad Thunderclap: Toga bro! Get back in there. The flamingo chant starts on the hour.
-<<elseif not flagged("met_chad")>>
+<<if not flagged("met_chad")>>
     Chad Thunderclap: Whoa, whoa, whoa. Toga party, bro. No toga, no entry.
     Dex: I'm wearing a Hawaiian shirt. That's basically a toga with buttons.
     Chad Thunderclap: Rules are rules, bro. Togas only. And no sorority girls. They want their bird back.
@@ -328,10 +491,60 @@ title: A2_Chad_Talk
     Chad Thunderclap: ...I've said too much. TOGA. PARTY.
     <<flag met_chad>>
     Dex: A toga is just a bedsheet with ambition. I need a sheet, and something to keep it on me.
+<<elseif flagged("won_tess")>>
+    Chad Thunderclap: Bro. Somebody stole our stolen flamingo. That's, like, double stealing.
+    Chad Thunderclap: I'm furious. And also kind of impressed.
+<<elseif flagged("frat_dark")>>
+    Chad Thunderclap: Power's out, bro. The party's gone acoustic. We're just chanting now.
+<<elseif flagged("toga_on")>>
+    Chad Thunderclap: Toga bro! Get back in there. The flamingo chant starts on the hour.
 <<else>>
     Chad Thunderclap: No toga, no entry. It's not personal, bro. It's ancient Greek.
-    <<jump A2_Hint>>
 <<endif>>
+<<jump A2_Chad_Menu>>
+===
+title: A2_Chad_Menu
+---
+-> Argue that a Hawaiian shirt counts <<if not flagged("toga_on") and not flagged("a2_chad_shirt")>>
+    Dex: Togas were the casual wear of their day. This shirt is the casual wear of my day. It's the same thing, historically.
+    Chad Thunderclap: (thinks so hard a vein appears) ...No, bro. Draped. It has to be draped.
+    <<flag a2_chad_shirt>>
+    <<jump A2_Chad_Menu>>
+-> Ask about Fernanda <<if not flagged("a2_chad_fern")>>
+    <<if flagged("won_tess")>>
+        Chad Thunderclap: Gone, bro. Back on her stand. She looks happier there. Don't tell anyone I said that.
+    <<else>>
+        Chad Thunderclap: What flamingo? ...Okay, fine. She's our guest of honour. We've been trying to borrow her since 1987.
+        Chad Thunderclap: We've got our best pledge watching her around the clock. Our only pledge, actually. The other nine quit.
+    <<endif>>
+    <<flag a2_chad_fern>>
+    <<jump A2_Chad_Menu>>
+-> Ask about Moose <<if flagged("a2_met_moose") and not flagged("a2_chad_moose")>>
+    Chad Thunderclap: Moose! Best pledge ever. Follows the pledge rules like a dog follows a tennis ball.
+    Chad Thunderclap: Rule two: never leave your post until another pledge relieves you. He hasn't moved since nine. I'm so proud.
+    <<flag a2_chad_moose>>
+    <<flag a2_know_relief>>
+    <<jump A2_Chad_Menu>>
+-> Ask about Mother Whitlock <<if flagged("a2_pr_tried") and not flagged("a2_chad_pruitt")>>
+    Chad Thunderclap: Bro. Don't. I've taken her parlor test eleven times.
+    Chad Thunderclap: She said something about my "little frat house" and I said "YOUR little frat house!" She gave me a pamphlet on manners.
+    Chad Thunderclap: Only brother who ever passed is Dunk. He lives in our basement. Like, lives lives.
+    <<flag a2_chad_pruitt>>
+    <<jump A2_Chad_Menu>>
+-> Ask about the blackout <<if flagged("frat_dark") and not flagged("a2_chad_dark")>>
+    Chad Thunderclap: Ancient wiring, bro. Happens every Greek Week. Somebody always plugs in one disco ball too many.
+    Chad Thunderclap: The good news is the dryer finally stopped. That thing's been running since my freshman year.
+    <<flag a2_chad_dark>>
+    <<jump A2_Chad_Menu>>
+-> Ask how the party's going
+    <<if flagged("frat_dark")>>
+        Chad Thunderclap: In the dark? Bro, it's honestly better. Nobody can see me dance.
+    <<else>>
+        Chad Thunderclap: Legendary, bro. We've done the toga chant, the flamingo chant, and the chant about the chants.
+    <<endif>>
+    <<jump A2_Chad_Menu>>
+-> Say goodbye
+    Chad Thunderclap: Later, bro. Toga responsibly.
 ===
 title: A2_Chad_GiveToga
 ---
@@ -353,6 +566,18 @@ Chad Thunderclap: Bro, that's a sheet. A toga is a sheet with commitment. Pin it
 title: A2_Chad_GiveFernanda
 ---
 Chad Thunderclap: Bro, you can't just hand me... wait. Is that... It's dark. I saw nothing.
+===
+title: A2_Chad_GiveBeanie
+---
+Chad Thunderclap: A pledge beanie? Bro, you don't want to be a pledge. Pledges do chores. Like breathing on command.
+===
+title: A2_Chad_GiveTie
+---
+Chad Thunderclap: A necktie? With a toga? Bro. That's two dress codes. Pick a lane.
+===
+title: A2_Chad_GiveSmoothie
+---
+Chad Thunderclap: Bro, I'm on a strict diet of root beer and confidence. Give it to somebody who's actually hungry.
 ===
 
 title: A2_FratDoor_Look
@@ -391,6 +616,7 @@ title: A2_Frat_Enter
 <<if not flagged("frat_intro")>>
     Dex: Thirty guys in bedsheets, a disco ball, and a keg. And there, under a spotlight...
     Dex: Fernanda! Seven feet of pink, surrounded by a whole dance floor chanting her name.
+    Dex: And right next to her, a huge guy in a beanie, standing guard like a bouncer for birds.
     Dex: I can't just walk off with her. Everybody's staring right at her.
     <<flag frat_intro>>
 <<elseif flagged("frat_dark") and not flagged("frat_dark_intro")>>
@@ -418,6 +644,9 @@ Dex: A keg labelled "THE HARD STUFF". It's root beer. Chad's secret is safe with
 title: A2_Keg_Use
 ---
 Dex: A cup of root beer, served with confidence. Very refreshing. Very hard.
+<<if flagged("a2_moose_hungry") and not flagged("a2_got_tie")>>
+    Dex: Moose would kill for this. Except pledge rule three says no root beer until initiation. It has to be actual food.
+<<endif>>
 ===
 title: A2_Photos_Look
 ---
@@ -426,25 +655,36 @@ Dex: Frat photos going back to 1912. Every year, at least one guy named Chad. Th
 title: A2_Photos_Use
 ---
 Dex: 1987: "The Year We Almost Got the Flamingo." Looks like they've been trying for a while.
+Dex: 2019: a guy in sunglasses holding a teacup, labelled "DUNK. THE ONLY ONE WHO PASSED." Passed what?
 ===
 title: A2_Fernanda_Look
 ---
-<<if flagged("frat_dark")>>
+<<if flagged("frat_dark") and flagged("a2_moose_relieved")>>
     Dex: A tall pink shape in the dark. Seven feet of fabulous, and nobody's watching her.
+<<elseif flagged("frat_dark")>>
+    Dex: A tall pink shape in the dark, with a large pledge-shaped shape wrapped around it.
 <<else>>
     Dex: Fernanda, under a spotlight, with a ring of guys in togas dancing around her like she's a campfire.
 <<endif>>
 ===
 title: A2_Fernanda_Use
 ---
-<<if flagged("frat_dark")>>
+<<if not flagged("frat_dark")>>
+    Dex: In the spotlight, with thirty guys watching and a pledge built like a vending machine standing guard? I'd be toga-tackled before I took a step.
+    Dex: If only the lights went out for a minute.
+<<elseif not flagged("a2_moose_relieved")>>
+    Dex: I reach for Fernanda in the dark and grab... an arm. A big arm.
+    Moose: Nobody touches the bird! I've got her! I'll ALWAYS have her!
+    <<if flagged("a2_know_relief")>>
+        Dex: Lights out wasn't enough. Moose won't leave his post unless another pledge relieves him.
+    <<else>>
+        Dex: Lights out wasn't enough. I need Moose out of the way. Maybe I should ask him about this flamingo watch of his.
+    <<endif>>
+<<else>>
     Dex: I tuck Fernanda under my arm. She squeaks. Somebody in the dark says "Dude, was that you?"
     Dex: Somebody else says "Is this the bathroom?" Nobody notices a flamingo leaving.
     <<give fernanda>>
     <<flag took_fernanda>>
-<<else>>
-    Dex: In the spotlight, with thirty guys watching? I'd be toga-tackled before I took a step.
-    Dex: If only the lights went out for a minute.
 <<endif>>
 ===
 title: A2_DanceFloor_Look
@@ -468,7 +708,7 @@ title: A2_Breaker_Look
 <<if flagged("frat_dark")>>
     Dex: The breaker box, with an empty socket where the main fuse used to be.
 <<else>>
-    Dex: An ancient breaker box with old screw-in fuses, like in my grandma's basement. The big one says "MAIN 30A".
+    Dex: An ancient breaker box with old screw-in fuses, like in my grandma's basement. The big one says "MAIN 30A". It runs the whole house.
     <<if flagged("met_dolly") and not flagged("dolly_fused")>>
         Dex: Thirty amps. Old screw-in kind. That's exactly what Dolly needs.
     <<endif>>
@@ -480,6 +720,7 @@ title: A2_Breaker_Use
     Dex: Nothing left to unscrew. Unless I want to unscrew the box itself. I don't.
 <<else>>
     Dex: Lefty loosey... The music dies. The lights die. Thirty guys scream at the same pitch.
+    Dex: Somewhere under the floor, something big and rattly grinds to a stop.
     Dex: One thirty-amp fuse, warm and slightly sticky, now in my pocket.
     <<give frat_fuse>>
     <<flag frat_dark>>
@@ -489,6 +730,544 @@ title: A2_Breaker_Use
 title: A2_Breaker_PutBack
 ---
 Dex: Put it back? Somebody else needs this more than a dark room full of guys in sheets.
+===
+title: A2_BasementDoor_Look
+---
+Dex: A door with a hand-painted sign: "BASEMENT. PLEDGES AND DUNK ONLY." There's a rumbling noise behind it.
+===
+title: A2_BasementDoor_Use
+---
+<<go frat_basement from_frat>>
+===
+
+title: A2_Moose_Look
+---
+<<if flagged("a2_got_tie")>>
+    Dex: Moose: a huge pledge in a toga and a blue beanie, happily licking smoothie off his own face. He's still guarding her.
+<<else>>
+    Dex: A huge pledge in a toga, a blue beanie and a clip-on necktie. His stomach is growling loud enough to dance to.
+<<endif>>
+===
+title: A2_SleepMoose_Look
+---
+Dex: Moose, asleep on a cot, hugging a pink pillow. He misses her already.
+===
+title: A2_Moose_Talk
+---
+<<if flagged("a2_moose_relieved")>>
+    Moose: (half asleep) Zzz... I'm up. I'm up. Is it flamingo time? Is it food time?
+<<elseif not flagged("a2_met_moose")>>
+    Moose: HALT! (salutes) Pledge Moose, flamingo watch. Nobody touches the bird.
+    Dex: I'm Dex. I wasn't going to touch her. I was going to admire her.
+    Moose: Admire from behind the velvet rope, bro. Chad's orders.
+    <<flag a2_met_moose>>
+<<elseif flagged("frat_dark")>>
+    Moose: (hugging Fernanda in the dark) Who's there? I've got the bird. I've ALWAYS got the bird.
+<<else>>
+    Moose: Still on flamingo watch, bro. Hour six. My legs went to sleep in hour four.
+<<endif>>
+<<jump A2_Moose_Menu>>
+===
+title: A2_Moose_Menu
+---
+-> Ask about flamingo watch <<if not flagged("a2_moose_watch") and not flagged("a2_moose_relieved")>>
+    Moose: Pledge rule two: never leave your post until another pledge relieves you.
+    Dex: So get another pledge to relieve you.
+    Moose: There were ten of us. Nine quit at the toga fitting. I'm the last pledge, bro. I'm gonna be on flamingo watch till graduation.
+    Moose: You'd know a pledge if you saw one. We all wear the beanie. Even in the shower.
+    <<flag a2_moose_watch>>
+    <<flag a2_know_relief>>
+    <<jump A2_Moose_Menu>>
+-> Ask about his necktie <<if not flagged("a2_moose_hungry") and not flagged("a2_got_tie")>>
+    Moose: Pledge rule four: wear a tie at all times. Yes, with the toga. It's a clip-on. My mom clipped it.
+    Moose: I'd trade it for literally anything to eat, bro. Pledges eat last, and the brothers haven't eaten yet. They're chanting instead.
+    Dex: There's root beer.
+    Moose: Rule three. No root beer until initiation. Food, bro. I need food.
+    <<flag a2_moose_hungry>>
+    <<jump A2_Moose_Menu>>
+-> Ask what he'd eat <<if flagged("a2_moose_hungry") and not flagged("a2_got_tie")>>
+    Moose: Anything. A sandwich. A smoothie. A crouton. I'd eat a crouton off the floor. I've considered it.
+    <<jump A2_Moose_Menu>>
+-> Ask if he knows Mother Whitlock <<if flagged("a2_pr_tried") and not flagged("a2_cb4")>>
+    Moose: The sorority housemother? Bro, my grandma Bev was a housemother for thirty years. I know the rules.
+    Moose: When a housemother won't shake your hand, you bow. Grandma always said:
+    Moose: "Then allow me to bow instead. It's kinder to your gloves and better for my posture."
+    Moose: I practise on Fernanda. She's never once complained.
+    <<flag a2_cb4>>
+    <<jump A2_Moose_Menu>>
+-> Ask about the frat <<if not flagged("a2_moose_frat")>>
+    Moose: I wanna be a brother so bad, bro. Brothers get a laurel wreath. Brothers get to sit DOWN.
+    <<flag a2_moose_frat>>
+    <<jump A2_Moose_Menu>>
+-> Ask how he's holding up
+    <<if flagged("a2_moose_relieved")>>
+        Moose: Best nap of my life, bro. I dreamed I was a flamingo. Standing on one leg was so restful.
+    <<elseif flagged("a2_got_tie")>>
+        Moose: Full belly. Bare neck. Living the dream, bro.
+    <<else>>
+        Moose: My stomach is louder than the party. Somebody tried to dance to it.
+    <<endif>>
+    <<jump A2_Moose_Menu>>
+-> Say goodbye
+    Moose: Later, bro. I'll be right here. Forever, probably.
+===
+title: A2_Moose_GiveSmoothie
+---
+<<if flagged("a2_got_tie")>>
+    Moose: I already ate, bro. I'm so full I can see sounds.
+<<else>>
+    Moose: Is that... food? Liquid food? Orange liquid food?
+    Dex: Volcano Smoothie. Mango, chilli, and something the bartender called "courage".
+    Moose: (drinks it in one go) ...Bro. BRO. I can feel my legs again.
+    Moose: Take the tie. Take it! Pledge rule four says wear a tie, but pledge rule zero says don't starve.
+    <<take volcano_smoothie>>
+    <<give clip_on_tie>>
+    <<flag a2_got_tie>>
+    Dex: One clip-on necktie, still warm. It has a tiny moose on it.
+<<endif>>
+===
+title: A2_Moose_GiveBeanie
+---
+<<if flagged("a2_moose_relieved")>>
+    Moose: (snoring) Shift change... complete... Zzz.
+<<elseif not flagged("frat_dark")>>
+    Dex: With the lights on he'd see it's just me in a hat. I need him not to see my face.
+<<else>>
+    Dex: (pulls the beanie on, and lowers my voice) Pledge reporting for flamingo watch! Shift change!
+    Moose: (pats my head in the dark) Beanie... beanie... it's a pledge! Bro! A NEW PLEDGE! I'm RELIEVED!
+    Moose: She likes to be told she's pretty every ten minutes. I'm going to go lie down in the basement for nine hours.
+    <<take pledge_beanie>>
+    <<flag a2_moose_relieved>>
+    Dex: He's gone. It's just me, Fernanda, and thirty guys in the dark singing about togas.
+<<endif>>
+===
+title: A2_Moose_GiveJunk
+---
+Moose: Can I eat it? ...No? Then no thanks, bro.
+===
+title: A2_Moose_GiveFuse
+---
+Moose: Is that a battery? Is it a snack battery? Bro, I'm so hungry I'd try.
+===
+title: A2_Moose_GiveFernanda
+---
+Moose: The bird! You have the bird! ...Wait, I'm off duty. Not my problem. Night, bro.
+===
+
+title: A2_Basement_Enter
+---
+<<if not flagged("a2_basement_intro")>>
+    Dex: The frat basement. Concrete, a ping-pong table, a dryer that sounds like a helicopter landing, and a guy who looks like he came with the building.
+    Dunk: Welcome to the Pit. Wipe your feet. Or don't. It's the Pit.
+    <<flag a2_basement_intro>>
+    <<if flagged("frat_dark")>>
+        <<flag a2_basement_dark>>
+    <<endif>>
+<<elseif flagged("frat_dark") and not flagged("a2_basement_dark")>>
+    Dex: It's dark down here too, apart from Dunk's lava lamp, which runs on batteries and spite.
+    Dex: And it's quiet. The dryer has finally stopped.
+    <<flag a2_basement_dark>>
+<<endif>>
+===
+title: A2_BasementExit_Look
+---
+Dex: The stairs back up to the party.
+===
+title: A2_BasementExit_Use
+---
+<<go frat_house from_basement>>
+===
+title: A2_Dryer_Look
+---
+<<if flagged("a2_got_beanie")>>
+    Dex: The dryer, door hanging open. Beanies. So many beanies. I only needed one.
+<<elseif flagged("frat_dark")>>
+    Dex: The dryer's dead quiet now. The door's unlocked and hanging open. Inside: a tangle of blue pledge beanies.
+<<else>>
+    Dex: A dryer rattling like it's full of gravel. A red light says "DOOR LOCKED: CYCLE IN PROGRESS". The timer says "FOREVER".
+    Dex: Through the little window, blue pledge beanies tumble past. Nine of them. One for each pledge who quit.
+<<endif>>
+===
+title: A2_Dryer_Use
+---
+<<if flagged("a2_got_beanie")>>
+    Dex: One beanie's plenty. Two beanies is a cry for help.
+<<elseif flagged("frat_dark")>>
+    Dex: I fish out one blue beanie. Still warm. It says PLEDGE across the front, in case anyone forgets.
+    <<give pledge_beanie>>
+    <<flag a2_got_beanie>>
+<<else>>
+    Dex: Locked mid-cycle. I pull on the handle. The dryer pulls back. It's winning.
+    <<if flagged("a2_know_dryer")>>
+        Dex: Dunk said only a blackout would stop it.
+    <<endif>>
+<<endif>>
+===
+title: A2_PledgeRules_Look
+---
+Dex: A whiteboard: "PLEDGE RULES. 1. Wear the beanie. 2. Never leave your post until another pledge relieves you. 3. No root beer until initiation. 4. Wear a tie at all times (yes, with the toga)."
+Dex: Underneath, in angry capitals: "RULE 2 IS THE IMPORTANT ONE, MOOSE."
+<<flag a2_know_relief>>
+===
+title: A2_PledgeRules_Use
+---
+Dex: Somebody has added "Rule 5: be cool" in a different marker. Then, in a third marker: "Rule 6: Dunk is not a pledge. Stop asking him to do chores."
+===
+title: A2_MascotShelf_Look
+---
+Dex: The frat's trophy shelf of stolen mascots: a garden gnome in a graduation cap, a plaster goat, and a foam finger the size of a canoe.
+Dex: There's an empty spot at the end with a tag: "RESERVED: FLAMINGO".
+===
+title: A2_MascotShelf_Use
+---
+Dex: I pat the gnome on the head. He looks like he's seen things. Probably the goat.
+===
+title: A2_PingPong_Look
+---
+Dex: A ping-pong table with a net made of knotted socks. The scoreboard says "DUNK 4,011. EVERYONE ELSE 3".
+===
+title: A2_PingPong_Use
+---
+<<if flagged("frat_dark")>>
+    Dex: Ping-pong in the dark is mostly catching the ball with your face.
+<<else>>
+    Dex: I serve. The ball bounces off the table, the ceiling, Dunk, and into the dryer's lint trap. Game, set, lint.
+<<endif>>
+===
+
+title: A2_Dunk_Look
+---
+Dex: A man in a faded toga from an earlier decade, sunglasses at night, and a mug that says "WORLD'S OLDEST UNDERGRAD".
+===
+title: A2_Dunk_Talk
+---
+<<if not flagged("a2_met_dunk")>>
+    Dunk: Duncan Pellingham. Call me Dunk. Seventh-year senior.
+    Dex: Seventh year?
+    Dunk: I'm not behind, I'm thorough. I live down here now. Technically I'm a load-bearing alumnus.
+    <<flag a2_met_dunk>>
+<<elseif flagged("a2_moose_relieved")>>
+    Dunk: (nods at the snoring cot) Look at him. First nap in three days. You did a kind thing, man.
+<<elseif flagged("frat_dark")>>
+    Dunk: Blackout. Classic. The '22 blackout lasted a whole weekend. We ate the ping-pong balls. Don't ask.
+<<else>>
+    Dunk: Dex. Pull up a beanbag. That one's mine, that one's also mine. Stand, then.
+<<endif>>
+<<jump A2_Dunk_Menu>>
+===
+title: A2_Dunk_Menu
+---
+-> Ask about the dryer <<if not flagged("a2_know_dryer")>>
+    Dunk: That dryer's been running since 2021. The door locks mid-cycle and the timer's stuck on "forever".
+    Dunk: It's full of pledge beanies. Every pledge who quits throws his beanie in there. It's a tradition. A loud one.
+    Dunk: Only thing that'd ever stop it is a blackout. Don't tell Chad I said that. He thinks it's haunted.
+    <<flag a2_know_dryer>>
+    <<jump A2_Dunk_Menu>>
+-> Ask about Mother Whitlock <<if not flagged("a2_cb2")>>
+    Dunk: (takes off his sunglasses, slowly) The parlor test. 2019. I'm the only brother who ever passed it.
+    Dunk: She tests five courtesies. Every line is a trap. Mine was the one about where I live.
+    Dunk: When she sneers at your home, you never defend it. You praise hers. You say:
+    Dunk: "Then I'm all the luckier to be a guest in a house as lovely as this one."
+    Dunk: The other four I got from people who'd failed. Everybody on Greek Row has lost to her at least once. Ask around.
+    <<flag a2_cb2>>
+    <<jump A2_Dunk_Menu>>
+-> Ask about the trophy shelf <<if not flagged("a2_dunk_shelf")>>
+    Dunk: The gnome is from the agriculture school. The goat is from a petting zoo. The foam finger is from a stadium, and it wants to go home.
+    Dunk: Fernanda was supposed to be the crown jewel. Honestly? She looks better on her own stand.
+    <<flag a2_dunk_shelf>>
+    <<jump A2_Dunk_Menu>>
+-> Ask about Moose <<if flagged("a2_met_moose") and not flagged("a2_dunk_moose")>>
+    Dunk: Good kid. Takes rules more seriously than the people who wrote them. He hasn't eaten since rush, man.
+    <<flag a2_dunk_moose>>
+    <<jump A2_Dunk_Menu>>
+-> Ask why he's still here
+    <<if flagged("a2_pr_won")>>
+        Dunk: You passed the parlor test? Man. Now there's two of us. We should start a club. A quiet, polite club.
+    <<else>>
+        Dunk: The rent's cheap, the ping-pong is undefeated, and every year a new pledge needs someone to tell him it'll be okay.
+    <<endif>>
+    <<jump A2_Dunk_Menu>>
+-> Say goodbye
+    Dunk: Stay thorough, man.
+===
+title: A2_Dunk_GiveSmoothie
+---
+Dunk: Generous, but I'm on a strict diet of nostalgia. Give it to Moose. That kid hasn't eaten since rush.
+===
+title: A2_Dunk_GiveBeanie
+---
+Dunk: Put that on a pledge, man, not on me. I've done my time in the beanie.
+===
+title: A2_Dunk_GiveFernanda
+---
+Dunk: Fernanda! The one that got away. Well, now she's getting away again. Go, run. I didn't see a thing.
+===
+title: A2_Dunk_GiveTie
+---
+Dunk: A clip-on. I wore one exactly like it to the parlor in 2019. Stand up straight in it.
+===
+
+title: A2_Parlor_Enter
+---
+<<if not flagged("a2_parlor_intro")>>
+    Dex: The sorority parlor. Pink wallpaper, doilies on the doilies, and a silence so polite it makes my ears sit up straight.
+    Mother Whitlock: Mister Dooley. I am Mother Whitlock, housemother of Phi Lambda Alpha since before your parents met.
+    Mother Whitlock: You are wearing a necktie on a bedsheet on a fruit salad. We shall discuss it. Or rather, I shall.
+    <<flag a2_parlor_intro>>
+    <<flag a2_met_pruitt>>
+<<endif>>
+===
+title: A2_ParlorExit_Look
+---
+Dex: The front door, back out to the porch. Freedom smells like lawn.
+===
+title: A2_ParlorExit_Use
+---
+<<go greek_row from_parlor>>
+===
+title: A2_Portrait_Look
+---
+Dex: "PRUDENCE LAMBERT, FOUNDER, 1921." She has Mother Whitlock's eyebrows. Maybe the eyebrows get passed down, like the pin.
+===
+title: A2_Portrait_Use
+---
+Dex: I straighten the frame by one millimetre. Somewhere behind me, Mother Whitlock feels it and approves.
+===
+title: A2_TeaCart_Look
+---
+Dex: A silver tea cart. Finger sandwiches cut into perfect triangles. The crusts have been removed and, I assume, punished.
+===
+title: A2_TeaCart_Use
+---
+Mother Whitlock: Those sandwiches are counted, Mister Dooley. Twice. Once by me and once by God.
+Dex: Moose would love one of these. Mother Whitlock would love catching me even more.
+===
+title: A2_Sampler_Look
+---
+Dex: An embroidered sampler in a gold frame: "RULES OF THE PARLOR, 1921."
+Dex: "When lost for words, a guest should be lost for words about the drapes. Say: Forgive me, I was speechless. Are they original to the house?"
+Dex: In smaller stitches: "They are."
+<<flag a2_cb5>>
+===
+title: A2_Sampler_Use
+---
+Dex: Somebody stitched a tiny flamingo in the corner. Fernanda has been here a long time.
+<<flag a2_cb5>>
+===
+title: A2_Cabinet_Look
+---
+Dex: A glass cabinet with a brass plate: "CONFISCATED." Inside: an airhorn, a frat water-balloon catapult, a "Toga Toga Toga" cassette, and forty-one red cups.
+Dex: Each one has a little tag, with a date and a crime.
+===
+title: A2_Cabinet_Use
+---
+Dex: Locked. The key hangs on a chain around Mother Whitlock's neck, next to her other key, which is also on a chain.
+===
+title: A2_Record_Look
+---
+Dex: A vinyl record on a little display stand on top of the cabinet: "DISCO VOLCANO". The tag says "Excessive bass. Founders' Tea. The teacups have not recovered."
+===
+title: A2_Record_Use
+---
+Mother Whitlock: Hands, Mister Dooley. Confiscated property is returned only to a guest who passes the parlor test.
+===
+
+title: A2_Whitlock_Look
+---
+<<if flagged("a2_pr_won")>>
+    Dex: Mother Whitlock. She's almost smiling at me. It's terrifying in a whole new way.
+<<else>>
+    Dex: Mother Whitlock: lilac cardigan, white gloves, silver bun, and a teacup she holds like a weapon.
+<<endif>>
+===
+title: A2_Whitlock_Talk
+---
+<<if flagged("a2_pr_won")>>
+    Mother Whitlock: Mister Dooley. You may sit. Not there. That chair is reserved for 1954.
+<<elseif flagged("a2_pr_tried")>>
+    Mother Whitlock: Back again. Persistence is a virtue, Mister Dooley. So is preparation.
+<<else>>
+    Mother Whitlock: Stand up straight, Mister Dooley. You're slouching in two directions at once.
+<<endif>>
+<<jump A2_Whitlock_Menu>>
+===
+title: A2_Whitlock_Menu
+---
+-> Ask about Dolly's record <<if flagged("a2_know_record") and not flagged("a2_pr_won")>>
+    Mother Whitlock: Miss Spark. One semester a sister. She played that record at our Founders' Tea. With an airhorn.
+    Mother Whitlock: The teacups vibrated off the saucers. A great-aunt fainted. Twice. Confiscated.
+    Dex: Is there any way she could get it back?
+    Mother Whitlock: Confiscated property is returned only to a gentleman who passes the parlor test.
+    <<jump A2_Whitlock_Menu>>
+-> Ask about the parlor test <<if not flagged("a2_pr_won")>>
+    Mother Whitlock: Five courtesies, Mister Dooley. I say something. You answer as a gentleman would.
+    Mother Whitlock: Answer all five correctly and you may reclaim one item from my confiscation cabinet.
+    Mother Whitlock: Slip once and you fail. I shall finish the test anyway. It builds character. Mostly mine.
+    <<jump A2_Whitlock_Menu>>
+-> Take the parlor test <<if not flagged("a2_pr_won")>>
+    <<jump A2_Duel_Start>>
+-> Ask about the cabinet <<if not flagged("a2_pr_cab")>>
+    Mother Whitlock: Fifty years of confiscations. The airhorn: Miss Spark. The catapult: Mister Thunderclap. The cups: also Mister Thunderclap.
+    Mother Whitlock: Nothing leaves that cabinet. Except, once in a very long while, for a victor.
+    <<flag a2_pr_cab>>
+    <<jump A2_Whitlock_Menu>>
+-> Ask about Fernanda <<if not flagged("a2_pr_fern")>>
+    <<if flagged("won_tess")>>
+        Mother Whitlock: The flamingo is home. I heard the squeal from my bath. Well done, I suppose.
+    <<else>>
+        Mother Whitlock: That flamingo is a lawn ornament with delusions of grandeur. But she is OUR lawn ornament. Do bring her home.
+    <<endif>>
+    <<flag a2_pr_fern>>
+    <<jump A2_Whitlock_Menu>>
+-> Ask about Tess <<if flagged("a2_pr_won") and not flagged("a2_pr_tess")>>
+    Mother Whitlock: Miss Calloway is the finest president this house has had. She alphabetises her alphabet soup. I could not be prouder.
+    <<flag a2_pr_tess>>
+    <<jump A2_Whitlock_Menu>>
+-> Ask for a cup of tea <<if flagged("a2_pr_won")>>
+    Mother Whitlock: (pours) No sugar, I presume.
+    Dex: The company is sweet enough.
+    Mother Whitlock: Don't push it, Mister Dooley.
+    <<jump A2_Whitlock_Menu>>
+-> Take your leave
+    Mother Whitlock: Good evening, Mister Dooley. Mind the rug. It's older than you and better behaved.
+===
+
+title: A2_Duel_Start
+---
+Mother Whitlock: Very well. The parlor test. Five courtesies. Shoulders back.
+Dex: Is there a time limit?
+Mother Whitlock: There is a lifetime limit. Begin.
+<<unflag a2_pr_slip>>
+<<flag a2_pr_tried>>
+<<jump A2_Duel1>>
+===
+title: A2_Duel1
+---
+Mother Whitlock: What a brave shirt. I could never be so courageous as to dress like a fruit salad.
+-> "Thank you. A friend with far better taste than mine helped me choose it." <<if flagged("a2_cb1")>>
+    Mother Whitlock: (a tiny nod) Credit given elsewhere. Gracious. One.
+    <<jump A2_Duel2>>
+-> "At least my fruit salad isn't wearing pearls to bed."
+    Mother Whitlock: Rude, and inaccurate. I sleep in a cardigan. That is a slip.
+    <<flag a2_pr_slip>>
+    <<jump A2_Duel2>>
+-> "It's not a shirt. It's a lifestyle."
+    Mother Whitlock: Then it is a lifestyle with a missing button. Slip.
+    <<flag a2_pr_slip>>
+    <<jump A2_Duel2>>
+===
+title: A2_Duel2
+---
+Mother Whitlock: I expect you're very proud of your little dormitory. Do they let you have a spoon?
+-> "We have three spoons. One of them is a fork."
+    Mother Whitlock: Then it is a fork. Slip.
+    <<flag a2_pr_slip>>
+    <<jump A2_Duel3>>
+-> "Room 214 has a mini-fridge. Your move."
+    Mother Whitlock: A mini-fridge is not a move, Mister Dooley. It is a cry for help. Slip.
+    <<flag a2_pr_slip>>
+    <<jump A2_Duel3>>
+-> "Then I'm all the luckier to be a guest in a house as lovely as this one." <<if flagged("a2_cb2")>>
+    Mother Whitlock: (the faintest blush) Flattery of the house. The house accepts. Two.
+    <<jump A2_Duel3>>
+===
+title: A2_Duel3
+---
+Mother Whitlock: Sugar? One lump or two? Or do they not have sugar where you were raised?
+-> "Seven lumps. I'm celebrating."
+    Mother Whitlock: Seven lumps is not a celebration. It is a dental emergency. Slip.
+    <<flag a2_pr_slip>>
+    <<jump A2_Duel4>>
+-> "None for me, thank you. The company is sweet enough." <<if flagged("a2_cb3")>>
+    Mother Whitlock: ...Oh, that old line. It still works. Drat. Three.
+    <<jump A2_Duel4>>
+-> "Just pour it straight in my mouth."
+    Mother Whitlock: Miss Spark said that too. Look where she is now. Slip.
+    <<flag a2_pr_slip>>
+    <<jump A2_Duel4>>
+===
+title: A2_Duel4
+---
+Mother Whitlock: I would shake your hand, but I've only just had my gloves cleaned.
+-> "I washed my hands. Twice. Once with soap."
+    Mother Whitlock: Once with soap. And the other time? No, don't tell me. Slip.
+    <<flag a2_pr_slip>>
+    <<jump A2_Duel5>>
+-> "I'll just high-five the air near you."
+    Mother Whitlock: The air near me has done nothing to deserve that. Slip.
+    <<flag a2_pr_slip>>
+    <<jump A2_Duel5>>
+-> "Then allow me to bow instead. It's kinder to your gloves and better for my posture." <<if flagged("a2_cb4")>>
+    Mother Whitlock: (watches the bow) A bow. How rare. How correct. Four.
+    <<jump A2_Duel5>>
+===
+title: A2_Duel5
+---
+Mother Whitlock: You have been in my parlor for a full minute, and you haven't said one word about the curtains.
+-> "Forgive me, I was speechless. Are they original to the house?" <<if flagged("a2_cb5")>>
+    Mother Whitlock: 1921. Hand-dyed. (sniffs) Five.
+    <<jump A2_Duel_End>>
+-> "They're very... curtain-y."
+    Mother Whitlock: They are. That was never in doubt. Slip.
+    <<flag a2_pr_slip>>
+    <<jump A2_Duel_End>>
+-> "I was thinking of borrowing one for a toga."
+    Mother Whitlock: Over my cardigan. Slip.
+    <<flag a2_pr_slip>>
+    <<jump A2_Duel_End>>
+===
+title: A2_Duel_End
+---
+<<if flagged("a2_pr_slip")>>
+    Mother Whitlock: That will do. It will not do well, but it will do. You have failed, Mister Dooley.
+    Mother Whitlock: Do come back when you have better answers. Everyone on this street has lost to me at least once. A few of them learned something.
+    Dex: Everyone on Greek Row has lost to her. So everyone on Greek Row knows at least one right answer.
+<<else>>
+    Mother Whitlock: (sets down her teacup with a click) Five for five. Not since Duncan Pellingham in 2019.
+    Mother Whitlock: You are a gentleman, Mister Dooley. Under all that bedsheet. You may reclaim one item from my cabinet.
+    <<flag a2_pr_won>>
+    <<jump A2_Duel_Reclaim>>
+<<endif>>
+===
+title: A2_Duel_Reclaim
+---
+Mother Whitlock: Choose carefully. One item.
+-> The Disco Volcano record
+    Mother Whitlock: (unlocks the cabinet) Miss Spark's record. Tell her the teacups have forgiven her. I have not.
+    <<give disco_record>>
+    <<flag a2_got_record>>
+    Dex: Dolly is going to lose her mind.
+-> The airhorn
+    Mother Whitlock: Absolutely not. That airhorn is evidence. Choose again.
+    <<jump A2_Duel_Reclaim>>
+-> The water-balloon catapult
+    Mother Whitlock: That is not an item, Mister Dooley. That is a war crime with a bucket. Choose again.
+    <<jump A2_Duel_Reclaim>>
+===
+title: A2_Whitlock_GiveTie
+---
+Mother Whitlock: You are already wearing one. One is sufficient. Two is a cry for help.
+===
+title: A2_Whitlock_GiveRecord
+---
+Mother Whitlock: It has been reclaimed. Take it to Miss Spark before I reconsider. I am reconsidering now.
+===
+title: A2_Whitlock_GiveFernanda
+---
+Mother Whitlock: Put that bird on her stand, Mister Dooley. Not on my rug.
+===
+title: A2_Whitlock_GiveSmoothie
+---
+Mother Whitlock: That is orange, and it has a straw. I do not consume things with straws.
+Dex: So she's not the hungry one. Moose is.
+===
+title: A2_Whitlock_GiveBeanie
+---
+Mother Whitlock: Absolutely not. That object has been inside a frat house.
+===
+title: A2_Whitlock_GiveToken
+---
+Mother Whitlock: A keepsake. How sentimental. Keep it, Mister Dooley. Keepsakes are for keeping.
 ===
 
 title: A2_Bar_Enter
@@ -512,11 +1291,20 @@ title: A2_BarExit_Use
 ===
 title: A2_Counter_Look
 ---
-Dex: A sticky wooden bar lit by candles. A tip jar says "TIPS FOR FUSES".
+<<if flagged("dolly_fused") and not flagged("a2_got_smoothie")>>
+    Dex: The blender is back on and making something orange. A sign says "VOLCANO SMOOTHIE: FREE FOR WHOEVER FIXED THE FUSE".
+<<else>>
+    Dex: A sticky wooden bar lit by candles. A tip jar says "TIPS FOR FUSES".
+<<endif>>
 ===
 title: A2_Counter_Use
 ---
-<<if flagged("dolly_fused")>>
+<<if flagged("dolly_fused") and not flagged("a2_got_smoothie")>>
+    Dolly Spark: Blender's back, friend! Grab a Volcano Smoothie. On the house. You earned it.
+    Dex: Mango, chilli, and something the bartender calls "courage". It's very orange.
+    <<give volcano_smoothie>>
+    <<flag a2_got_smoothie>>
+<<elseif flagged("dolly_fused")>>
     Dex: The blender works again. Somebody orders a smoothie and cries a little.
 <<else>>
     Dex: The blender's dead, the soda gun's dead, the lights are dead. Even the candles look tired.
@@ -586,46 +1374,75 @@ title: A2_Dolly_Talk
 ---
 <<if flagged("won_dolly")>>
     Dolly Spark: (over the music) FRIEND! You saved my night!
-    -> Ask about the bracelet
-        Dolly Spark: It means you're with the DJ. Flash it at any party and they'll let you near the speakers.
-    -> Ask for another song
-        Dolly Spark: Disco Volcano again? Excellent choice. I'll put it on loop.
-    -> Say goodbye
-        Dolly Spark: Bye, friend! Don't blow any fuses on your way out.
+<<elseif has("disco_record")>>
+    <<jump A2_Dolly_GiveRecord>>
+<<elseif flagged("a2_know_record")>>
+    Dolly Spark: Power, yes. Bertha, happy. Disco Volcano, still locked in Mother Whitlock's cabinet. So close, friend.
 <<elseif flagged("dolly_fused")>>
-    Dolly Spark: Power's back! Okay, friend, the first request is yours. What do you want to hear?
-    <<jump A2_Dolly_Request>>
+    Dolly Spark: Power's back! Okay, friend, the first request is yours.
+<<elseif not flagged("met_dolly")>>
+    Dolly Spark: Hey. Welcome to the quietest bar on Greek Row. I'm Dolly Spark. I'm the DJ. Allegedly.
+    Dex: Dex. Where's the music?
+    Dolly Spark: (points at the amp) Big Bertha blew the fuse. Third time tonight. And that was the bar's last spare.
+    Dolly Spark: It's the ancient screw-in kind. Thirty amps. They stopped making them before I was born.
+    Dolly Spark: Only the oldest houses on this street still have them. Find me one and I'll play you anything.
+    <<flag met_dolly>>
 <<else>>
-    <<if not flagged("met_dolly")>>
-        Dolly Spark: Hey. Welcome to the quietest bar on Greek Row. I'm Dolly Spark. I'm the DJ. Allegedly.
-        Dex: Dex. Where's the music?
-        Dolly Spark: (points at the amp) Big Bertha blew the fuse. Third time tonight. And that was the bar's last spare.
-        Dolly Spark: It's the ancient screw-in kind. Thirty amps. They stopped making them before I was born.
-        Dolly Spark: Only the oldest houses on this street still have them. Find me one and I'll play you anything.
-        <<flag met_dolly>>
-    <<else>>
-        Dolly Spark: No fuse, no music. I'm just a girl standing in the dark with a lot of safety pins.
-    <<endif>>
-    -> Ask for a safety pin <<if not flagged("got_pin")>>
-        <<if flagged("met_chad")>>
-            Dex: I need to make a toga. Could I borrow a safety pin?
-            Dolly Spark: A toga for the frat? Ha. Every DJ carries emergency pins. Wardrobe malfunctions, broken headphones, broken hearts.
-            Dolly Spark: Here. Pin responsibly.
-            <<give safety_pin>>
-            <<flag got_pin>>
-        <<else>>
-            Dolly Spark: What for?
-            Dex: ...I don't know yet.
-            Dolly Spark: Come back when you've got a reason. These pins are load-bearing.
-        <<endif>>
-    -> Ask about her favourite song
-        Dolly Spark: "Disco Volcano." Six minutes of bass that hits you like lava. It's on the board. It's always on the board.
-        <<flag know_dolly_song>>
-    -> Ask where to find a fuse
-        Dolly Spark: Old thirty-amp screw-in. Try the oldest house on the street. Hint: it's the loud one.
-    -> Never mind
-        Dolly Spark: Cool. I'll be here. In the dark.
+    Dolly Spark: No fuse, no music. I'm just a girl standing in the dark with a lot of safety pins.
 <<endif>>
+<<jump A2_Dolly_Menu>>
+===
+title: A2_Dolly_Menu
+---
+-> Make the first request <<if flagged("dolly_fused") and not flagged("a2_know_record") and not flagged("won_dolly")>>
+    Dolly Spark: What do you want to hear, friend?
+    <<jump A2_Dolly_Request>>
+-> Ask for a safety pin <<if not flagged("got_pin")>>
+    <<if flagged("met_chad")>>
+        Dex: I need to make a toga. Could I borrow a safety pin?
+        Dolly Spark: A toga for the frat? Ha. Every DJ carries emergency pins. Wardrobe malfunctions, broken headphones, broken hearts.
+        Dolly Spark: Here. Pin responsibly.
+        <<give safety_pin>>
+        <<flag got_pin>>
+    <<else>>
+        Dolly Spark: What for?
+        Dex: ...I don't know yet.
+        Dolly Spark: Come back when you've got a reason. These pins are load-bearing.
+    <<endif>>
+    <<jump A2_Dolly_Menu>>
+-> Ask where to find a fuse <<if not flagged("dolly_fused")>>
+    Dolly Spark: Old thirty-amp screw-in. Try the oldest house on the street. Hint: it's the loud one.
+    <<jump A2_Dolly_Menu>>
+-> Ask about her favourite song <<if not flagged("won_dolly")>>
+    Dolly Spark: "Disco Volcano." Six minutes of bass that hits you like lava. It's on the board. It's always on the board.
+    <<flag know_dolly_song>>
+    <<jump A2_Dolly_Menu>>
+-> Ask about the confiscated record <<if flagged("a2_know_record") and not flagged("won_dolly") and not flagged("a2_dolly_rec")>>
+    Dolly Spark: Okay, confession. I was a Phi Lambda Alpha sister. For one semester.
+    Dolly Spark: At the Founders' Tea, I played Disco Volcano. With the airhorn. The teacups started dancing. A great-aunt fainted.
+    Dolly Spark: Mother Whitlock confiscated the record "until a gentleman reclaims it". Nobody's reclaimed anything from her since 2019.
+    Dolly Spark: She lives in the sorority parlor. Gentlemen need a necktie just to get through the door.
+    <<flag a2_dolly_rec>>
+    <<flag a2_know_tie_rule>>
+    <<jump A2_Dolly_Menu>>
+-> Ask how she lost to Mother Whitlock <<if (flagged("a2_dolly_rec") or flagged("a2_pr_tried")) and not flagged("a2_cb3")>>
+    Dolly Spark: She did the sugar thing. "One lump or two, or do they not have sugar where you were raised?"
+    Dolly Spark: I said "Just pour it straight in my mouth." Big mistake. Tess told me the right answer afterwards. AFTERWARDS.
+    Dolly Spark: It's "None for me, thank you. The company is sweet enough." Gross, right? It works on her every time.
+    <<flag a2_cb3>>
+    <<jump A2_Dolly_Menu>>
+-> Ask about the bracelet <<if flagged("won_dolly")>>
+    Dolly Spark: It means you're with the DJ. Flash it at any party and they'll let you near the speakers.
+    <<jump A2_Dolly_Menu>>
+-> Ask for another song <<if flagged("won_dolly")>>
+    Dolly Spark: Disco Volcano again? Excellent choice. I'll put it on loop. I had it on loop anyway.
+    <<jump A2_Dolly_Menu>>
+-> Say goodbye
+    <<if flagged("won_dolly")>>
+        Dolly Spark: Bye, friend! Don't blow any fuses on your way out.
+    <<else>>
+        Dolly Spark: Cool. I'll be here. In the dark. Or the light. Depends on you, honestly.
+    <<endif>>
 ===
 title: A2_Dolly_GiveFuse
 ---
@@ -647,20 +1464,41 @@ title: A2_Dolly_Request
 ---
 -> "Disco Volcano"
     Dolly Spark: (gasps) You know Disco Volcano? Nobody requests Disco Volcano. Except me. Constantly.
-    Dex: The bass hits. The floor shakes. Dolly dances like nobody's watching. I'm watching. It's great.
-    Dolly Spark: Okay, you're officially my favourite person tonight. Here, a glow-stick bracelet. It means you're with the DJ.
-    <<give glow_bracelet>>
-    <<flag won_dolly>>
+    Dolly Spark: (digs through her record crate) ...It's not here. Oh no. It's not here because SHE has it.
+    Dolly Spark: Mother Whitlock. The sorority housemother. She confiscated it. Long story. Ask me about it.
+    <<flag a2_know_record>>
     <<flag know_dolly_song>>
+    <<jump A2_Dolly_Menu>>
 -> "Hank Hollister Live"
     Dolly Spark: Country? In MY booth? Respect, but no. Think harder, friend. What's my jam?
     <<if not flagged("know_dolly_song")>>
         Dex: Her favourite song. Maybe it's written somewhere in here.
     <<endif>>
+    <<jump A2_Dolly_Request>>
 -> "Toga Toga Toga"
     Dolly Spark: Absolutely not. That song is banned in three states and this bar.
+    <<jump A2_Dolly_Request>>
 -> Let me think about it
     Dolly Spark: Take your time. First requests are sacred.
+    <<jump A2_Dolly_Menu>>
+===
+title: A2_Dolly_GiveRecord
+---
+<<if flagged("won_dolly")>>
+    Dolly Spark: Already spinning, friend!
+<<elseif not flagged("dolly_fused")>>
+    Dolly Spark: My record! Which I can't play, because there's no power. Hang on to it till Bertha's breathing again.
+<<else>>
+    Dolly Spark: My RECORD! You got it out of Mother Whitlock's cabinet? Nobody gets anything out of that cabinet!
+    Dex: I complimented her curtains.
+    Dolly Spark: You absolute diplomat. (drops the needle)
+    Dex: The bass hits. The floor shakes. Dolly dances like nobody's watching. I'm watching. It's great.
+    Dolly Spark: Okay, you're officially my favourite person tonight. Here, a glow-stick bracelet. It means you're with the DJ.
+    <<take disco_record>>
+    <<give glow_bracelet>>
+    <<flag won_dolly>>
+    <<flag know_dolly_song>>
+<<endif>>
 ===
 title: A2_Dolly_GiveSheet
 ---
@@ -669,6 +1507,18 @@ Dolly Spark: Cute, but I'm not dressing up as a ghost tonight. Maybe next Hallow
 title: A2_Dolly_GiveFernanda
 ---
 Dolly Spark: Is that the sorority flamingo? You should get her home before Tess Calloway sends a search party. With clipboards.
+===
+title: A2_Dolly_GiveTie
+---
+Dolly Spark: A clip-on? I'm a DJ, friend, not a substitute teacher. Wear it to the parlor.
+===
+title: A2_Dolly_GiveSmoothie
+---
+Dolly Spark: That's for you, friend. Or for someone hungrier. I run on bass.
+===
+title: A2_Dolly_GiveBeanie
+---
+Dolly Spark: A frat pledge beanie? I'd rather wear Bertha.
 ===
 
 title: Item_bedsheet_Look
@@ -698,4 +1548,20 @@ Dex: Tess Calloway's sorority pin, pink and gold with the house letters on it. I
 title: Item_glow_bracelet_Look
 ---
 Dex: Dolly's glow-stick bracelet. It means I'm with the DJ. It also means my wrist is green.
+===
+title: Item_volcano_smoothie_Look
+---
+Dex: A Volcano Smoothie. Mango, chilli and "courage". It's so orange it's almost loud. I'm not hungry, but somebody is.
+===
+title: Item_clip_on_tie_Look
+---
+Dex: Moose's clip-on necktie. Navy blue, with a tiny moose on it. Proof that I am a gentleman caller.
+===
+title: Item_pledge_beanie_Look
+---
+Dex: A blue pledge beanie that says PLEDGE across the front. In the dark, this is my whole identity.
+===
+title: Item_disco_record_Look
+---
+Dex: "Disco Volcano", on vinyl. Six minutes of bass. The sleeve still smells faintly of tea.
 ===

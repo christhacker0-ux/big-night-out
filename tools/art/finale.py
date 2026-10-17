@@ -8,7 +8,9 @@ boxes read from Assets/_Project/World/finale.json, so the art and the click area
 
 Usage:  python3 tools/art/finale.py            # paint everything
         python3 tools/art/finale.py chet icon  # only assets whose name contains these words
-Output: Assets/_Project/Art/Painted/bg_tv_studio.png, hs_chet_studwell.png, icon_<item>.png
+Output: Assets/_Project/Art/Painted/bg_tv_studio.png, bg_tv_green_room.png, bg_tv_control_booth.png,
+        hs_chet_studwell.png, hs_gloria_puff.png, hs_norma_fade.png, hs_reserved_sign.png,
+        hs_playback_deck.png, hs_empty_deck.png, icon_<item>.png
 """
 import json
 import math
@@ -19,14 +21,14 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import paint  # noqa: E402
 from paint import (OUT, W_BG, H_BG, WALL_Y, Canvas, mix, dk, lt, rot_pts, bez, poly, ell, rect, rrect,  # noqa: E402
-                   wonky, cap, eye, shoe_shape, light_pass, sparkle, icon)
+                   wonky, cap, eye, shoe_shape, light_pass, sparkle, icon, poster, door, checker_floor)
 
 WORLD = os.path.join(paint.ROOT, "Assets", "_Project", "World", "finale.json")
 
 
-def boxes():
+def boxes(room_id="tv_studio"):
     """Hotspot name -> (x0, y0, x1, y1) in background pixels, from the room JSON."""
-    room = [r for r in json.load(open(WORLD))["rooms"] if r["id"] == "tv_studio"][0]
+    room = [r for r in json.load(open(WORLD))["rooms"] if r["id"] == room_id][0]
     out = {}
     for h in room["hotspots"]:
         (fx, fy), (w, hh) = h["feet"], h["size"]
@@ -259,6 +261,47 @@ def jett(c, x, yb):
     bust(c, x, yb, (240, 200, 176), (230, 40, 60), (110, 230, 70), "none", ex, pre=pre, face="flat", lid=0.5)
 
 
+def wardrobe_rack(c, wr, rng):
+    """Chrome clothes rack with jackets, a feather boa and the MIC PACKS box, inside box wr."""
+    wx0, wy0, wx1, wy1 = wr
+    chrome = (200, 204, 216)
+    c.shadow((wx0 + wx1) / 2, wy1 - 2, (wx1 - wx0) / 2 + 6, 7, 0.5)
+    for lx in (wx0 + 8, wx1 - 8):
+        c.paint(cap([(lx, wy0 + 30), (lx, wy1 - 14)], 6), chrome, ow=2.5, hi=(-1, 0, (255, 255, 255)))
+        c.paint(ell(lx, wy1 - 8, 8, 6), (40, 40, 48), ow=2.5)
+    c.paint(cap([(wx0 + 4, wy0 + 30), (wx1 - 4, wy0 + 30)], 6), chrome, ow=2.5)
+    c.paint(cap([(wx0 + 8, wy1 - 30), (wx1 - 8, wy1 - 30)], 5), chrome, ow=2.5)
+    clothes = [((255, 200, 60), "sequin"), ((60, 200, 220), "plain"), ((240, 240, 250), "tux"), ((230, 60, 140), "sequin")]
+    cw = (wx1 - wx0 - 24) / len(clothes)
+    for i, (col, kind) in enumerate(clothes):
+        gx = wx0 + 12 + cw * (i + 0.5)
+        c.curve((gx - 6, wy0 + 30), (gx, wy0 + 18), (gx + 4, wy0 + 30), 2, (150, 150, 160))
+        jacket = poly([(gx - 15, wy0 + 40), (gx - 6, wy0 + 32), (gx + 6, wy0 + 32), (gx + 15, wy0 + 40),
+                       (gx + 16, wy0 + 140), (gx - 16, wy0 + 140)], 1)
+        pat = None
+        if kind == "sequin":
+            pat = lambda p, gx=gx, col=col: [paint.sparkle(p, gx - 12 + (k * 7) % 26, wy0 + 44 + (k * 13) % 92, 2.2,
+                                                            lt(col, 0.6)) for k in range(14)]
+        elif kind == "tux":
+            pat = lambda p, gx=gx: (p.poly([(gx - 5, wy0 + 34), (gx + 5, wy0 + 34), (gx, wy0 + 60)], (30, 30, 36)),
+                                    p.ell(gx, wy0 + 40, 4, 2, (30, 30, 36)),
+                                    [p.ell(gx, wy0 + 70 + k * 14, 1.6, 1.6, (30, 30, 36)) for k in range(4)])
+        c.paint(jacket, col, ow=2.5, shade=(3, 0, dk(col, 0.72)), pattern=pat)
+    # feather boa draped over the bar
+    for k in range(12):
+        t = k / 11
+        bx = wx0 + 10 + (wx1 - wx0 - 20) * t
+        by = wy0 + 30 + math.sin(t * math.pi) * 34
+        c.paint(ell(bx, by, 9, 7, k * 30), (255, 120, 200), ow=2, hi=(-1, -1, (255, 200, 230)))
+    # box of mic packs on the bottom shelf
+    c.paint(wonky(wx0 + 18, wy1 - 70, wx1 - 18, wy1 - 32, 1.5, rng), (200, 150, 90), shade=(-3, -3, (160, 110, 70)))
+    c.text((wx0 + wx1) / 2, wy1 - 52, "MIC PACKS", 9.5, (60, 30, 20), "Black")
+    for k in range(3):
+        c.paint(rrect(wx0 + 30 + k * 22, wy1 - 82, wx0 + 46 + k * 22, wy1 - 66, 2), (40, 40, 48), ow=2)
+        c.line([(wx0 + 34 + k * 22, wy1 - 82), (wx0 + 34 + k * 22, wy1 - 92)], 1.6)
+
+
+
 # =========================================================================== studio background
 def neon_text(c, x, y, s, size, col, glow_col, angle=0, kind="Italic"):
     c.text(x, y, s, size, col, kind, stroke=3, sc=dk(glow_col, 0.6), angle=angle)
@@ -297,10 +340,10 @@ def paint_tv_studio():
                 (40, 40, 52), shade=(-3, 0), hi=(3, 0, (90, 90, 110), 2))
 
     # --- ON AIR light over the camera
-    c.paint(rrect(870, 236, 1010, 290, 8), (60, 20, 26), shade=(-3, -3), hi=(3, 3, (120, 50, 60), 2))
-    c.paint(rrect(880, 244, 1000, 282, 5), (240, 40, 50), ow=2.5, hi=(0, 3, (255, 140, 130)))
-    c.text(940, 263, "ON AIR", 22, (255, 250, 230), "Black", stroke=1.5, sc=(140, 10, 20))
-    c.line([(940, 236), (940, 96)], 2.5, (40, 40, 50))
+    c.paint(rrect(750, 236, 890, 290, 8), (60, 20, 26), shade=(-3, -3), hi=(3, 3, (120, 50, 60), 2))
+    c.paint(rrect(760, 244, 880, 282, 5), (240, 40, 50), ow=2.5, hi=(0, 3, (255, 140, 130)))
+    c.text(820, 263, "ON AIR", 22, (255, 250, 230), "Black", stroke=1.5, sc=(140, 10, 20))
+    c.line([(820, 236), (820, 96)], 2.5, (40, 40, 50))
 
     # --- set: sequin curtain backdrop behind the riser
     cur = (176, 34, 120)
@@ -543,44 +586,9 @@ def paint_tv_studio():
     # coil of cable at the base
     c.line(bez((ccx + 40, cy1 - 6), (ccx + 120, cy1 + 4), (ccx + 160, cy1 + 10)), 4, (20, 20, 26))
 
-    # --- wardrobe rack
-    wr = B["Wardrobe rack"]
-    wx0, wy0, wx1, wy1 = wr
-    chrome = (200, 204, 216)
-    c.shadow((wx0 + wx1) / 2, wy1 - 2, (wx1 - wx0) / 2 + 6, 7, 0.5)
-    for lx in (wx0 + 8, wx1 - 8):
-        c.paint(cap([(lx, wy0 + 30), (lx, wy1 - 14)], 6), chrome, ow=2.5, hi=(-1, 0, (255, 255, 255)))
-        c.paint(ell(lx, wy1 - 8, 8, 6), (40, 40, 48), ow=2.5)
-    c.paint(cap([(wx0 + 4, wy0 + 30), (wx1 - 4, wy0 + 30)], 6), chrome, ow=2.5)
-    c.paint(cap([(wx0 + 8, wy1 - 30), (wx1 - 8, wy1 - 30)], 5), chrome, ow=2.5)
-    clothes = [((255, 200, 60), "sequin"), ((60, 200, 220), "plain"), ((240, 240, 250), "tux"), ((230, 60, 140), "sequin")]
-    cw = (wx1 - wx0 - 24) / len(clothes)
-    for i, (col, kind) in enumerate(clothes):
-        gx = wx0 + 12 + cw * (i + 0.5)
-        c.curve((gx - 6, wy0 + 30), (gx, wy0 + 18), (gx + 4, wy0 + 30), 2, (150, 150, 160))
-        jacket = poly([(gx - 15, wy0 + 40), (gx - 6, wy0 + 32), (gx + 6, wy0 + 32), (gx + 15, wy0 + 40),
-                       (gx + 16, wy0 + 140), (gx - 16, wy0 + 140)], 1)
-        pat = None
-        if kind == "sequin":
-            pat = lambda p, gx=gx, col=col: [paint.sparkle(p, gx - 12 + (k * 7) % 26, wy0 + 44 + (k * 13) % 92, 2.2,
-                                                            lt(col, 0.6)) for k in range(14)]
-        elif kind == "tux":
-            pat = lambda p, gx=gx: (p.poly([(gx - 5, wy0 + 34), (gx + 5, wy0 + 34), (gx, wy0 + 60)], (30, 30, 36)),
-                                    p.ell(gx, wy0 + 40, 4, 2, (30, 30, 36)),
-                                    [p.ell(gx, wy0 + 70 + k * 14, 1.6, 1.6, (30, 30, 36)) for k in range(4)])
-        c.paint(jacket, col, ow=2.5, shade=(3, 0, dk(col, 0.72)), pattern=pat)
-    # feather boa draped over the bar
-    for k in range(12):
-        t = k / 11
-        bx = wx0 + 10 + (wx1 - wx0 - 20) * t
-        by = wy0 + 30 + math.sin(t * math.pi) * 34
-        c.paint(ell(bx, by, 9, 7, k * 30), (255, 120, 200), ow=2, hi=(-1, -1, (255, 200, 230)))
-    # box of mic packs on the bottom shelf
-    c.paint(wonky(wx0 + 18, wy1 - 70, wx1 - 18, wy1 - 32, 1.5, rng), (200, 150, 90), shade=(-3, -3, (160, 110, 70)))
-    c.text((wx0 + wx1) / 2, wy1 - 52, "MIC PACKS", 9.5, (60, 30, 20), "Black")
-    for k in range(3):
-        c.paint(rrect(wx0 + 30 + k * 22, wy1 - 82, wx0 + 46 + k * 22, wy1 - 66, 2), (40, 40, 48), ow=2)
-        c.line([(wx0 + 34 + k * 22, wy1 - 82), (wx0 + 34 + k * 22, wy1 - 92)], 1.6)
+    # --- green room door (under the booth window) and the control booth window
+    green_room_door(c, B["Green room door"])
+    booth_window(c, B["Control booth window"])
 
     # --- light beams from the truss onto the set and the audience
     for sx, tx, tw in ((1260, 1350, 110), (1560, 1500, 140), (1840, 1640, 110)):
@@ -591,7 +599,7 @@ def paint_tv_studio():
                 opacity=0.06)
 
     lights = [(1560, 260, 700, 0.55, (255, 120, 200)), (1350, 600, 420, 0.4, (255, 230, 180)),
-              (500, 560, 520, 0.35, (255, 210, 170)), (940, 260, 260, 0.3, (255, 120, 110)),
+              (500, 560, 520, 0.35, (255, 210, 170)), (820, 260, 260, 0.3, (255, 120, 110)),
               (100, 500, 260, 0.2, (255, 120, 100)), (1640, 760, 400, 0.3, (255, 220, 160))]
     light_pass(c, 0.8, lights, vign=0.38, front=0.12)
     c.glow(1560, 250, 240, (255, 90, 180), 0.22)
@@ -763,25 +771,6 @@ def paint_icon_studio_walkie():
     icon("icon_studio_walkie.png", -10, draw)
 
 
-def paint_icon_sign_out_sheet():
-    def draw(c):
-        c.paint(wonky(18, 16, 110, 124, 1.5, random.Random(4), corner=6), (186, 130, 72), shade=(-4, -4),
-                hi=(3, 3, (220, 170, 110), 2))
-
-        def rows(p):
-            for k in range(8):
-                y = 46 + k * 9
-                p.line([(30, y), (98, y)], 1.4, (150, 170, 210))
-            p.line([(56, 38), (56, 114)], 1.4, (150, 170, 210))
-            p.line([(30, 64), (54, 62)], 2.2, (40, 60, 160))
-            p.line([(60, 64), (92, 62)], 2.2, (200, 40, 120))
-        c.paint(rect(26, 32, 102, 118), (250, 250, 244), ow=2.5, pattern=rows)
-        c.text(64, 40, "EQUIPMENT", 8, (60, 40, 120))
-        c.paint(ell(78, 63, 20, 8), (0, 0, 0, 0), ow=2.5, oc=(230, 40, 60))  # circled entry
-        c.paint(rrect(46, 8, 82, 30, 4), (170, 176, 186), hi=(0, 3, (230, 236, 240)))
-    icon("icon_sign_out_sheet.png", 6, draw)
-
-
 def cassette(c, shell, label, text1, text2, tcol, glitter=False):
     c.paint(rrect(8, 26, 120, 102, 8), shell, shade=(5, 5, dk(shell, 0.7)), hi=(-4, -4, lt(shell, 0.3), 3))
     c.paint(rrect(18, 34, 110, 78, 4), label, ow=3)
@@ -817,11 +806,924 @@ def paint_icon_floor_fillers_tape():
     icon("icon_floor_fillers_tape.png", 8, draw)
 
 
+# =========================================================================== studio additions
+def green_room_door(c, box):
+    """Plain backstage door with a paper star that says GREEN ROOM (it is not green)."""
+    x0, y0, x1, y1 = box
+    x0, x1 = x0 + 6, x1 - 6
+    y0 += 18
+    cas = (70, 66, 80)
+    c.paint(rect(x0 - 12, y0 - 12, x1 + 12, y1 + 2), cas, shade=(-4, 0, dk(cas, 0.7)))
+    dcol = (96, 120, 150)
+    c.paint(rect(x0, y0, x1, y1), ("v", lt(dcol, 0.12), dk(dcol, 0.85)), ow=3, shade=(-6, 0, dk(dcol, 0.75)))
+    for (py0, py1) in ((y0 + 22, y0 + 104), (y0 + 128, y1 - 20)):
+        c.paint(rrect(x0 + 16, py0, x1 - 16, py1, 4), dcol, ow=2.5, shade=(0, -4, dk(dcol, 0.78)),
+                hi=(0, 3, lt(dcol, 0.3)))
+    cx = (x0 + x1) / 2
+    star(c, cx, y0 + 62, 34, (255, 226, 80), ow=3)
+    c.paint(rrect(x0 + 14, y0 + 112, x1 - 14, y0 + 144, 4), (240, 236, 220), ow=2.5)
+    c.text(cx, y0 + 128, "GREEN ROOM", 10, (150, 40, 60), "Black")
+    for tx, ty in ((cx - 26, y0 + 30), (cx + 26, y0 + 30)):
+        c.paint(rect(tx - 8, ty - 5, tx + 8, ty + 5), (240, 232, 200), ow=0, opacity=0.85)
+    kx, ky = x1 - 16, y0 + (y1 - y0) * 0.55
+    c.paint(ell(kx, ky, 8, 8), (240, 196, 80), ow=3, hi=(-2, -2, (255, 245, 190)), shade=(3, 3))
+    c.paint(rrect(x0 + 18, y1 - 60, x1 - 18, y1 - 44, 3), (200, 200, 210), ow=2)  # kick plate
+    c.line([(x0 - 12, y1 + 2), (x1 + 12, y1 + 2)], 3)
+
+
+def booth_window(c, box):
+    """Dark control-booth window high on the studio wall, a director silhouette inside."""
+    x0, y0, x1, y1 = box
+    fr = (60, 60, 72)
+    c.paint(rrect(x0, y0, x1, y1, 6), fr, shade=(-4, -4, dk(fr, 0.7)), hi=(3, 3, (110, 110, 130), 2))
+
+    def inside(p):
+        p.rect(x0, y0, x1, y1, (24, 30, 52))
+        for k in range(3):  # little monitors glowing inside
+            p.rect(x0 + 18 + k * 34, y0 + 30, x0 + 44 + k * 34, y0 + 50, (90, 160, 210))
+        p.ell(x0 + 70, y1 - 46, 18, 20, (12, 14, 26))  # director's head
+        p.rect(x0 + 40, y1 - 30, x0 + 100, y1, (12, 14, 26))
+        p.line([(x0 + 52, y1 - 60), (x0 + 70, y1 - 72), (x0 + 88, y1 - 60)], 4, (12, 14, 26))  # headset band
+        p.line([(x0 + 52, y1 - 50), (x0 + 60, y1 - 38)], 3, (12, 14, 26))
+        p.poly([(x0 + 10, y0 + 10), (x0 + 40, y0 + 10), (x0 + 10, y0 + 60)], (120, 140, 190))
+    c.paint(rect(x0 + 10, y0 + 10, x1 - 10, y1 - 10), (24, 30, 52), ow=3, pattern=inside)
+    c.paint(rect(x0 + 10, y0 + 10, x1 - 10, y1 - 10), (255, 255, 255), ow=0, opacity=0.06)
+    c.paint(rrect(x0 + 20, y1 - 4, x1 - 20, y1 + 18, 3), (30, 30, 34), ow=2.5)
+    c.text((x0 + x1) / 2, y1 + 7, "CONTROL", 9, (255, 220, 120), "Black")
+
+
+# =========================================================================== green room background
+def bulb_mirror(c, x0, y0, x1, y1):
+    c.paint(rrect(x0, y0, x1, y1, 10), (236, 220, 196), shade=(-4, -4, (190, 170, 150)), hi=(3, 3, (255, 246, 230), 2))
+
+    def glass(p):
+        p.rect(x0 + 22, y0 + 22, x1 - 22, y1 - 22, (150, 186, 200))
+        p.poly([(x0 + 40, y0 + 22), (x0 + 90, y0 + 22), (x0 + 22, y0 + 110), (x0 + 22, y0 + 60)], (200, 226, 236))
+        p.poly([(x0 + 110, y0 + 22), (x0 + 128, y0 + 22), (x0 + 22, y0 + 160), (x0 + 22, y0 + 136)], (190, 220, 230))
+    c.paint(rect(x0 + 22, y0 + 22, x1 - 22, y1 - 22), (150, 186, 200), ow=3, pattern=glass)
+    n = 6
+    for k in range(n):
+        for (bx, by) in ((x0 + 11, y0 + 18 + k * (y1 - y0 - 36) / (n - 1)), (x1 - 11, y0 + 18 + k * (y1 - y0 - 36) / (n - 1))):
+            c.paint(ell(bx, by, 8, 8), (255, 246, 200), ow=2.2)
+            c.glow(bx, by, 26, (255, 230, 160), 0.45)
+    for k in range(1, n - 1):
+        bx = x0 + 11 + k * (x1 - x0 - 22) / (n - 1)
+        c.paint(ell(bx, y0 + 11, 8, 8), (255, 246, 200), ow=2.2)
+        c.glow(bx, y0 + 11, 26, (255, 230, 160), 0.45)
+
+
+def makeup_station(c, box):
+    x0, y0, x1, y1 = box
+    cx = (x0 + x1) / 2
+    # mirror on the wall
+    bulb_mirror(c, x0 + 18, y0 + 4, x1 - 18, y0 + 186)
+    # counter with makeup
+    top = y0 + 196
+    c.paint(rect(x0 - 4, top, x1 + 4, top + 16), (230, 140, 160), ow=3, hi=(0, 3, (255, 200, 210)))
+    c.paint(rect(x0 + 6, top + 16, x1 - 6, top + 110), ("v", (196, 110, 130), (150, 80, 100)), ow=3,
+            pattern=lambda p: [p.line([(x0 + 6, top + 50 + k * 30), (x1 - 6, top + 50 + k * 30)], 2.4, (110, 50, 70))
+                               for k in range(2)])
+    for k, col in enumerate(((240, 60, 90), (250, 200, 160), (130, 80, 160), (60, 160, 200), (250, 120, 160))):
+        bx = x0 + 22 + k * 30
+        c.paint(rrect(bx, top - 22 - (k % 2) * 8, bx + 12, top, 2), col, ow=2)
+    c.paint(cap([(x1 - 40, top - 2), (x1 - 34, top - 40)], 6), (250, 230, 200), ow=2)  # brush cup
+    c.paint(rrect(x1 - 52, top - 22, x1 - 22, top, 3), (120, 200, 210), ow=2.2)
+    for k in range(4):
+        c.line([(x1 - 46 + k * 7, top - 22), (x1 - 50 + k * 9, top - 46)], 2.2, (150, 100, 70))
+        c.paint(ell(x1 - 50 + k * 9, top - 48, 3, 4), (240, 200, 210), ow=1.4)
+    # big makeup chair in front
+    seat = (190, 40, 70)
+    c.shadow(cx, y1 - 4, 82, 9, 0.55)
+    c.paint(rrect(cx - 10, y1 - 70, cx + 10, y1 - 22, 3), (200, 204, 216), ow=2.5, hi=(-2, 0, (255, 255, 255)))
+    c.paint(ell(cx, y1 - 14, 56, 12), (150, 154, 170), ow=3, hi=(0, -2, (220, 224, 236)))
+    c.paint(rrect(cx - 64, y1 - 210, cx + 64, y1 - 104, 22), ("v", lt(seat, 0.15), dk(seat, 0.8)),
+            shade=(-5, -4, dk(seat, 0.65)), hi=(4, 4, lt(seat, 0.35), 2),
+            pattern=lambda p: [p.line([(cx - 60 + k * 30, y1 - 206), (cx - 60 + k * 30, y1 - 108)], 2, dk(seat, 0.7))
+                               for k in range(1, 4)])
+    c.paint(rrect(cx - 30, y1 - 236, cx + 30, y1 - 204, 12), seat, shade=(-3, -3, dk(seat, 0.7)))  # headrest
+    c.paint(rrect(cx - 84, y1 - 112, cx + 84, y1 - 70, 16), ("v", lt(seat, 0.1), dk(seat, 0.8)),
+            shade=(0, -4, dk(seat, 0.65)), hi=(0, 3, lt(seat, 0.35)))
+    for sx in (-1, 1):
+        c.paint(rrect(cx + sx * 84 - 14, y1 - 150, cx + sx * 84 + 14, y1 - 96, 7), (220, 224, 236), ow=2.5,
+                hi=(-1, -1, (255, 255, 255)))
+    c.line([(cx + 20, y1 - 60), (cx + 46, y1 - 40)], 4, (200, 204, 216))  # foot pump
+    c.paint(rrect(cx + 40, y1 - 46, cx + 66, y1 - 34, 3), (120, 124, 136), ow=2)
+
+
+def craft_table(c, box, rng):
+    x0, y0, x1, y1 = box
+    cloth = (250, 244, 232)
+    top = y0 + 78
+    c.shadow((x0 + x1) / 2, y1 - 2, (x1 - x0) / 2 + 4, 9, 0.5)
+    for lx in (x0 + 26, x1 - 26):
+        c.paint(rect(lx - 6, top + 40, lx + 6, y1 - 2), (120, 90, 70), ow=2.5)
+    c.paint(poly([(x0, top), (x1, top), (x1 + 6, top + 74), (x0 - 6, top + 74)]), cloth,
+            shade=(0, -5, (214, 206, 196)),
+            pattern=lambda p: [p.rect(x0 - 6, top + 6 + k * 20, x1 + 6, top + 14 + k * 20, (240, 120, 130))
+                               for k in range(4)])
+    c.paint(cap([(x0 - 6, top + 74), (x1 + 6, top + 74)], 6), cloth, ow=2.5)
+    # bowl of cheese puffs
+    bx = x0 + 56
+    for k in range(16):
+        c.paint(ell(bx + rng.uniform(-30, 30), top - 14 - rng.uniform(0, 14), 7, 4.5, rng.uniform(0, 180)),
+                (255, 150, 40), ow=1.6, hi=(-1, -1, (255, 210, 120)))
+    c.paint(poly([(bx - 40, top - 16), (bx + 40, top - 16), (bx + 28, top + 2), (bx - 28, top + 2)]), (90, 160, 210),
+            hi=(0, 2, (170, 210, 240)))
+    c.text(bx, top - 7, "PUFFS", 8, (255, 255, 255), "Black")
+    # cup of bendy straws
+    sx = x0 + 136
+    for k, col in enumerate(((255, 110, 170), (90, 200, 230), (255, 220, 80), (120, 220, 120), (255, 110, 170))):
+        tx = sx - 10 + k * 5
+        c.line([(tx, top - 28), (tx + (k - 2) * 3, top - 58), (tx + (k - 2) * 7, top - 64)], 3.2, OUT)
+        c.line([(tx, top - 28), (tx + (k - 2) * 3, top - 58), (tx + (k - 2) * 7, top - 64)], 1.8, col)
+    c.paint(poly([(sx - 16, top - 34), (sx + 16, top - 34), (sx + 12, top), (sx - 12, top)]), (250, 250, 250),
+            hi=(-2, 0, (255, 255, 255)), pattern=lambda p: p.rect(sx - 16, top - 22, sx + 16, top - 16, (240, 100, 140)))
+    # plate with the licked eclair + sticky note
+    ex = x1 - 58
+    c.paint(ell(ex, top - 4, 40, 9), (250, 250, 252), ow=2.5)
+    c.paint(cap([(ex - 24, top - 12), (ex + 20, top - 14)], 14), (230, 180, 110), ow=2.5)
+    c.paint(cap([(ex - 22, top - 17), (ex + 8, top - 19)], 7), (110, 60, 40), ow=0)
+    c.paint(ell(ex + 20, top - 14, 8, 8), (250, 250, 252), ow=0)  # the bite
+    c.paint(rect(ex - 6, top - 64, ex + 34, top - 30), (255, 240, 110), ow=2,
+            pattern=lambda p: [p.line([(ex - 1, top - 54 + k * 8), (ex + 28, top - 54 + k * 8)], 1.2, (200, 60, 60))
+                               for k in range(3)])
+    c.text(ex + 14, top - 56, "CHET'S", 6.5, (200, 40, 40), "Black")
+    c.line([(ex + 14, top - 30), (ex + 10, top - 16)], 1.4, (120, 120, 120))
+
+
+def booth_stairs_door(c, box):
+    x0, y0, x1, y1 = box
+    dx0, dx1 = x0 + 50, x1 - 14
+    dy0 = y0 + 26
+    cas = (60, 62, 70)
+    c.paint(rect(dx0 - 12, dy0 - 12, dx1 + 12, y1 + 2), cas, shade=(-4, 0, dk(cas, 0.7)))
+    steel = (120, 126, 140)
+    c.paint(rect(dx0, dy0, dx1, y1), ("v", lt(steel, 0.1), dk(steel, 0.8)), ow=3, shade=(-6, 0, dk(steel, 0.7)))
+
+    def stairs(p):
+        p.rect(dx0 + 30, dy0 + 40, dx1 - 30, dy0 + 150, (40, 44, 60))
+        for k in range(6):
+            yy = dy0 + 140 - k * 18
+            xx = dx0 + 34 + k * 14
+            p.rect(xx, yy, dx1 - 30, yy + 10, (90, 96, 120))
+        p.line([(dx0 + 34, dy0 + 120), (dx1 - 34, dy0 + 50)], 3, (200, 200, 210))
+    c.paint(rect(dx0 + 30, dy0 + 40, dx1 - 30, dy0 + 150), (40, 44, 60), ow=3, pattern=stairs)
+    c.paint(rect(dx0 + 30, dy0 + 40, dx1 - 30, dy0 + 150), (255, 255, 255), ow=0, opacity=0.07)
+    c.paint(rrect(dx0 + 18, dy0 + 166, dx1 - 18, dy0 + 214, 4), (250, 210, 60), ow=2.5,
+            pattern=lambda p: [p.poly([(dx0 + 18 + k * 22, dy0 + 214), (dx0 + 30 + k * 22, dy0 + 214),
+                                       (dx0 + 42 + k * 22, dy0 + 166), (dx0 + 30 + k * 22, dy0 + 166)], (40, 40, 40))
+                               for k in range(0, 7, 2)])
+    c.paint(rrect(dx0 + 26, dy0 + 172, dx1 - 26, dy0 + 208, 3), (255, 255, 255), ow=2)
+    c.text((dx0 + dx1) / 2, dy0 + 183, "CREW ONLY", 11, (200, 30, 40), "Black")
+    c.text((dx0 + dx1) / 2, dy0 + 198, "CONTROL BOOTH", 8, (40, 40, 60), "Black")
+    c.paint(cap([(dx1 - 22, dy0 + 240), (dx1 - 22, dy0 + 270)], 8), (220, 224, 236), ow=2.5)  # push bar handle
+    c.line([(dx0 - 12, y1 + 2), (dx1 + 12, y1 + 2)], 3)
+    # intercom on the wall left of the door
+    ix0, iy0 = x0 + 4, dy0 + 120
+    c.paint(rrect(ix0, iy0, ix0 + 34, iy0 + 70, 5), (200, 204, 216), shade=(-2, -2, (150, 154, 170)),
+            hi=(2, 2, (255, 255, 255), 1))
+    for k in range(4):
+        c.line([(ix0 + 8, iy0 + 10 + k * 6), (ix0 + 26, iy0 + 10 + k * 6)], 1.6, (60, 60, 70))
+    c.paint(ell(ix0 + 17, iy0 + 50, 10, 10), (230, 40, 50), ow=2.2, hi=(-2, -2, (255, 140, 140)))
+    c.text(ix0 + 17, iy0 + 64, "TALK", 6, (40, 40, 60), "Black")
+    # door camera
+    c.paint(rrect(dx1 - 4, dy0 - 40, dx1 + 22, dy0 - 24, 3), (40, 40, 48), ow=2)
+    c.paint(ell(dx1 + 22, dy0 - 32, 4, 6), (90, 140, 220), ow=1.6)
+    c.paint(ell(dx1 - 1, dy0 - 36, 2, 2), (255, 60, 60), ow=0)
+
+
+def paint_tv_green_room():
+    B = boxes("tv_green_room")
+    c = Canvas(W_BG, H_BG, ow=4, bg=(0, 0, 0))
+    rng = random.Random(707)
+    # --- wallpaper: dusty peach with cream stripes (it is NOT green)
+    wall = (226, 156, 128)
+
+    def stripes(p):
+        for x in range(-20, W_BG + 40, 80):
+            p.rect(x, 0, x + 26, WALL_Y, lt(wall, 0.16))
+            p.line([(x + 40, 0), (x + 40, WALL_Y)], 2, dk(wall, 0.88))
+        for x in range(10, W_BG, 80):
+            for y in range(60, WALL_Y, 90):
+                p.ell(x + 30, y + (x // 80 % 2) * 45, 4, 4, dk(wall, 0.85))
+    c.paint(rect(0, 0, W_BG, WALL_Y), ("vy", 0, WALL_Y, dk(wall, 0.85), wall), ow=0, pattern=stripes)
+    # chair rail + wainscot
+    c.paint(rect(-10, 560, W_BG + 10, WALL_Y), ("v", (120, 70, 90), (90, 50, 70)), ow=3,
+            pattern=lambda p: [p.rect(x, 590, x + 130, WALL_Y - 30, (106, 60, 80)) for x in range(20, W_BG, 160)])
+    for x in range(20, W_BG, 160):
+        c.paint(rect(x, 590, x + 130, WALL_Y - 30), (0, 0, 0, 0), ow=2.4, oc=(70, 36, 54))
+    c.paint(rect(-10, 548, W_BG + 10, 566), (240, 210, 170), ow=3, hi=(0, 3, (255, 240, 210)))
+    # ceiling strip with dressing-room bulbs
+    c.paint(rect(0, 0, W_BG, 60), (70, 40, 50), ow=0)
+    c.line([(0, 60), (W_BG, 60)], 4)
+    for x in range(60, W_BG, 140):
+        c.line([(x, 60), (x, 84)], 2, (40, 30, 30))
+        c.paint(ell(x, 92, 10, 12), (255, 246, 200), ow=2.2)
+        c.glow(x, 92, 34, (255, 230, 160), 0.35)
+
+    # --- posters: past seasons
+    def season_poster(p, x, y, n, col):
+        p.rect(x, y, x + 150, y + 200, col)
+        p.ell(x + 75, y + 80, 52, 48, (255, 90, 170))
+        p.ell(x + 50, y + 66, 26, 24, (255, 120, 190))
+        p.ell(x + 100, y + 66, 26, 24, (255, 120, 190))
+        p.poly([(x + 26, y + 76), (x + 124, y + 76), (x + 75, y + 128)], (255, 120, 190))
+        p.rect(x + 10, y + 150, x + 140, y + 186, (255, 236, 90))
+    for i, (px_, py_, n, col, ang) in enumerate(((210, 170, 1, (60, 30, 90), -3), (560, 150, 2, (30, 60, 100), 2))):
+        sub = poster(150, 200, col, lambda p, x, y, n=n, col=col: season_poster(p, x, y, n, col))
+        sub.text(95, 190, "SEASON %d" % n, 15, (90, 30, 60), "Black")
+        sub.text(95, 102, "SDL", 22, (255, 255, 255), "Black", stroke=2)
+        c.stamp(sub, px_ + 75, py_ + 100, ang)
+    # framed glossy of Roxy (signed)
+    fx0, fy0 = 1330, 170
+    c.paint(rect(fx0, fy0, fx0 + 170, fy0 + 210), (230, 190, 90), shade=(-4, -4, (170, 130, 50)), hi=(3, 3, (255, 236, 160), 2))
+
+    def glossy(p):
+        p.rect(fx0 + 14, fy0 + 14, fx0 + 156, fy0 + 196, (250, 180, 210))
+        p.ell(fx0 + 85, fy0 + 210, 60, 70, (232, 40, 150))
+        p.ell(fx0 + 85, fy0 + 92, 34, 40, (250, 200, 162))
+        p.ell(fx0 + 85, fy0 + 60, 44, 30, (92, 40, 60))
+        p.ell(fx0 + 112, fy0 + 92, 14, 34, (92, 40, 60))
+        p.ell(fx0 + 85, fy0 + 110, 14, 6, (150, 20, 60))
+        p.ell(fx0 + 85, fy0 + 108, 11, 2.5, (255, 255, 255))
+        for ex in (-12, 12):
+            p.ell(fx0 + 85 + ex, fy0 + 88, 6, 7, (255, 255, 255))
+            p.ell(fx0 + 85 + ex - 1, fy0 + 89, 3, 3.5, (110, 60, 200))
+        p.line([(fx0 + 24, fy0 + 170), (fx0 + 70, fy0 + 150), (fx0 + 100, fy0 + 176), (fx0 + 146, fy0 + 156)], 3,
+               (40, 30, 120))
+    c.paint(rect(fx0 + 14, fy0 + 14, fx0 + 156, fy0 + 196), (250, 180, 210), ow=3, pattern=glossy)
+    c.text(fx0 + 85, fy0 + 232, "XOXO ROXY", 13, (120, 40, 80), "Italic")
+    # wall clock
+    c.paint(ell(1140, 210, 46, 46), (250, 248, 240), ow=4, shade=(-3, -3, (200, 196, 190)))
+    for k in range(12):
+        a = math.radians(k * 30)
+        c.line([(1140 + 36 * math.cos(a), 210 + 36 * math.sin(a)), (1140 + 42 * math.cos(a), 210 + 42 * math.sin(a))], 2)
+    c.line([(1140, 210), (1140, 178)], 4)
+    c.line([(1140, 210), (1164, 220)], 3)
+    c.paint(ell(1140, 210, 4, 4), (230, 40, 50), ow=0)
+    # QUIET PLEASE sign over the booth door
+    bs = B["Booth stairs"]
+    c.paint(rrect(bs[0] + 60, bs[1] - 70, bs[2] - 20, bs[1] - 22, 6), (40, 20, 30), ow=3)
+    c.text((bs[0] + 60 + bs[2] - 20) / 2, bs[1] - 46, "QUIET PLEASE", 16, (255, 90, 80), "Black")
+    c.glow((bs[0] + 40 + bs[2]) / 2, bs[1] - 46, 90, (255, 80, 70), 0.25)
+
+    # --- floor: checker lino
+    checker_floor(c, (196, 70, 90), (246, 230, 210), vp=(960, 300), cols=120, rows=7)
+    c.paint(rect(-10, WALL_Y - 12, W_BG + 10, WALL_Y + 4), (70, 36, 54), ow=3)  # baseboard
+    # rug under the couch area
+    c.paint(ell(1440, 870, 200, 40), (110, 70, 150), ow=3,
+            pattern=lambda p: (p.ell(1440, 870, 160, 30, (140, 100, 180)), p.ell(1440, 870, 120, 22, (110, 70, 150))))
+
+    # --- studio door (left)
+    d = B["Studio door"]
+    door(c, d[0] + 6, d[1] + 10, d[2] - 6, d[3], (150, 60, 60), knob="R", casing=(80, 50, 60))
+    c.paint(rrect(d[0] + 16, d[1] - 52, d[2] - 16, d[1] - 14, 5), (30, 30, 34), ow=3)
+    c.text((d[0] + d[2]) / 2, d[1] - 33, "STUDIO", 18, (255, 236, 160), "Black")
+    c.paint(rrect(d[0] + 34, d[1] + 40, d[2] - 34, d[1] + 70, 4), (240, 40, 50), ow=2.5)
+    c.text((d[0] + d[2]) / 2, d[1] + 55, "ON AIR", 12, (255, 250, 230), "Black")
+
+    # --- couch (decor) between Gloria and the booth door
+    cx0, cx1, cy = 1352, 1536, 790
+    sofa = (90, 160, 160)
+    c.shadow((cx0 + cx1) / 2, cy, (cx1 - cx0) / 2 + 10, 10, 0.5)
+    c.paint(rrect(cx0, cy - 170, cx1, cy - 70, 22), ("v", lt(sofa, 0.15), dk(sofa, 0.85)), shade=(0, -5, dk(sofa, 0.7)),
+            hi=(0, 4, lt(sofa, 0.35), 2))
+    c.paint(rrect(cx0 - 10, cy - 100, cx1 + 10, cy - 36, 16), sofa, shade=(0, -5, dk(sofa, 0.7)), hi=(0, 3, lt(sofa, 0.3)))
+    for ax in (cx0 - 14, cx1 - 26):
+        c.paint(rrect(ax, cy - 120, ax + 40, cy - 34, 16), dk(sofa, 0.9), shade=(-3, 0, dk(sofa, 0.65)), hi=(2, 2, lt(sofa, 0.25)))
+    for lx in (cx0 + 6, cx1 - 18):
+        c.paint(rect(lx, cy - 36, lx + 12, cy - 4), (90, 60, 40), ow=2.5)
+    c.paint(rrect(cx0 + 50, cy - 140, cx0 + 110, cy - 96, 12), (255, 200, 80), ow=2.5, shade=(-2, -2, (220, 150, 50)))
+    c.paint(rrect(cx1 - 104, cy - 140, cx1 - 44, cy - 96, 12), (240, 100, 150), ow=2.5, shade=(-2, -2, (190, 60, 110)))
+
+    # --- the props inside their hotspot boxes
+    craft_table(c, B["Craft services"], rng)
+    wardrobe_rack(c, B["Wardrobe rack"], rng)
+    makeup_station(c, B["Makeup chair"])
+    booth_stairs_door(c, B["Booth stairs"])
+
+    lights = [(1000, 300, 520, 0.45, (255, 230, 180)), (300, 200, 500, 0.3, (255, 220, 170)),
+              (1500, 300, 520, 0.3, (255, 220, 190)), (960, 900, 700, 0.25, (255, 230, 200))]
+    light_pass(c, 0.86, lights, vign=0.32, front=0.1)
+    c.save("bg_tv_green_room.png")
+
+
+# =========================================================================== control booth background
+def monitor_wall(c, box):
+    x0, y0, x1, y1 = box
+    rack = (40, 42, 52)
+    c.paint(rrect(x0, y0, x1, y1, 6), rack, shade=(-4, -4, dk(rack, 0.7)), hi=(3, 3, (90, 92, 110), 2))
+    cols, rows = 4, 3
+    mw, mh = (x1 - x0 - 30) / cols, (y1 - y0 - 30) / rows
+    pics = ["stage", "audience", "teeth", "deck", "bars", "lot", "roxy", "clock", "chet", "heart", "dex", "bars"]
+    for r in range(rows):
+        for k in range(cols):
+            mx0, my0 = x0 + 15 + k * mw + 5, y0 + 15 + r * mh + 5
+            mx1, my1 = mx0 + mw - 10, my0 + mh - 10
+            kind = pics[r * cols + k]
+
+            def pic(p, kind=kind, mx0=mx0, my0=my0, mx1=mx1, my1=my1):
+                w, h = mx1 - mx0, my1 - my0
+                cx, cy = (mx0 + mx1) / 2, (my0 + my1) / 2
+                if kind == "stage":
+                    p.rect(mx0, my0, mx1, my1, (190, 40, 130))
+                    for i in range(6):
+                        p.line([(mx0 + i * w / 6 + 6, my0), (mx0 + i * w / 6 + 6, my1)], 2, (230, 90, 170))
+                    p.rect(mx0, my1 - h * 0.25, mx1, my1, (240, 196, 80))
+                elif kind == "audience":
+                    p.rect(mx0, my0, mx1, my1, (70, 44, 96))
+                    for i in range(7):
+                        for j in range(2):
+                            p.ell(mx0 + 10 + i * (w - 20) / 6, my0 + h * 0.4 + j * h * 0.3, 6, 7,
+                                  [(240, 186, 140), (160, 104, 72), (255, 214, 178)][(i + j) % 3])
+                elif kind == "teeth":
+                    p.rect(mx0, my0, mx1, my1, (240, 182, 130))
+                    p.ell(cx, cy, w * 0.38, h * 0.22, (150, 30, 50))
+                    p.rect(cx - w * 0.34, cy - h * 0.14, cx + w * 0.34, cy + h * 0.04, (255, 255, 255))
+                elif kind == "deck":
+                    p.rect(mx0, my0, mx1, my1, (30, 32, 44))
+                    p.rect(cx - w * 0.3, cy - h * 0.2, cx + w * 0.3, cy + h * 0.25, (80, 80, 96))
+                    p.rect(cx - w * 0.2, cy - h * 0.1, cx + w * 0.2, cy + h * 0.1, (240, 120, 210))
+                    p.ell(cx + w * 0.34, cy - h * 0.3, 4, 4, (255, 60, 60))
+                elif kind == "bars":
+                    cl = [(250, 250, 250), (250, 230, 60), (60, 230, 230), (60, 220, 80), (230, 60, 220), (230, 50, 50),
+                          (50, 60, 230)]
+                    for i, col in enumerate(cl):
+                        p.rect(mx0 + i * w / 7, my0, mx0 + (i + 1) * w / 7 + 1, my1, col)
+                elif kind == "lot":
+                    p.rect(mx0, my0, mx1, my1, (40, 50, 70))
+                    p.rect(mx0, cy + h * 0.1, mx1, my1, (70, 70, 80))
+                    p.rect(cx - w * 0.25, cy - h * 0.05, cx + w * 0.25, cy + h * 0.2, (230, 60, 60))
+                    p.ell(cx - w * 0.15, cy + h * 0.22, 5, 5, (20, 20, 20))
+                    p.ell(cx + w * 0.15, cy + h * 0.22, 5, 5, (20, 20, 20))
+                elif kind == "roxy":
+                    p.rect(mx0, my0, mx1, my1, (250, 170, 210))
+                    p.ell(cx, my1, w * 0.3, h * 0.35, (232, 40, 150))
+                    p.ell(cx, cy - h * 0.05, w * 0.15, h * 0.22, (250, 200, 162))
+                    p.ell(cx, cy - h * 0.22, w * 0.2, h * 0.15, (92, 40, 60))
+                elif kind == "clock":
+                    p.rect(mx0, my0, mx1, my1, (20, 10, 14))
+                elif kind == "chet":
+                    p.rect(mx0, my0, mx1, my1, (90, 160, 200))
+                    p.ell(cx, my1, w * 0.3, h * 0.35, (250, 246, 236))
+                    p.ell(cx, cy - h * 0.02, w * 0.15, h * 0.22, (240, 182, 130))
+                    p.ell(cx + w * 0.02, cy - h * 0.26, w * 0.2, h * 0.14, (255, 214, 90))
+                    p.ell(cx + w * 0.14, cy, 3, 3, (240, 220, 200))
+                elif kind == "heart":
+                    p.rect(mx0, my0, mx1, my1, (40, 10, 50))
+                    p.ell(cx - w * 0.1, cy - h * 0.08, w * 0.12, h * 0.16, (255, 90, 170))
+                    p.ell(cx + w * 0.1, cy - h * 0.08, w * 0.12, h * 0.16, (255, 90, 170))
+                    p.poly([(cx - w * 0.22, cy - h * 0.02), (cx + w * 0.22, cy - h * 0.02), (cx, cy + h * 0.3)],
+                           (255, 90, 170))
+                elif kind == "dex":
+                    p.rect(mx0, my0, mx1, my1, (120, 80, 150))
+                    p.ell(cx, my1, w * 0.3, h * 0.35, (40, 200, 200))
+                    p.ell(cx, cy - h * 0.02, w * 0.15, h * 0.22, (255, 212, 172))
+                    for i in range(5):
+                        p.poly([(cx - w * 0.18 + i * w * 0.09, cy - h * 0.16), (cx - w * 0.14 + i * w * 0.09, cy - h * 0.42),
+                                (cx - w * 0.1 + i * w * 0.09, cy - h * 0.16)], (255, 140, 40))
+                # scanlines
+                for yy in range(int(my0) + 3, int(my1), 5):
+                    p.line([(mx0, yy), (mx1, yy)], 1, (0, 0, 0))
+            c.paint(rrect(mx0 - 3, my0 - 3, mx1 + 3, my1 + 3, 3), (20, 20, 26), ow=2.5)
+            c.paint(rect(mx0, my0, mx1, my1), (30, 30, 40), ow=1.5, pattern=pic)
+            if kind == "clock":
+                c.text((mx0 + mx1) / 2, (my0 + my1) / 2, "4:00", 22, (255, 60, 60), "Black")
+            c.paint(rect(mx0, my0, mx1, my1), (180, 220, 255), ow=0, opacity=0.08)
+            c.text(mx0 + 12, my1 - 8, str(r * cols + k + 1), 7, (255, 255, 255), "Black")
+    for k in range(4):  # little tally lamps
+        c.paint(ell(x0 + 40 + k * 110, y1 - 6, 4, 4), (255, 60, 60) if k == 0 else (60, 200, 90), ow=1.6)
+
+
+def studio_view_window(c, x0, y0, x1, y1):
+    """The big booth window looking down at the studio floor."""
+    fr = (50, 52, 62)
+    c.paint(rect(x0 - 16, y0 - 16, x1 + 16, y1 + 16), fr, shade=(-4, -4, dk(fr, 0.7)), hi=(3, 3, (100, 100, 120), 2))
+
+    def view(p):
+        p.rect(x0, y0, x1, y1, (60, 30, 70))
+        # sequin curtain across the back, seen from above
+        for x in range(int(x0), int(x1), 22):
+            p.line([(x, y0), (x + 4, y0 + (y1 - y0) * 0.55)], 6, (176, 34, 120))
+            p.line([(x + 8, y0), (x + 10, y0 + (y1 - y0) * 0.55)], 2, (230, 90, 170))
+        hx, hy = x0 + (x1 - x0) * 0.6, y0 + 90
+        p.ell(hx - 30, hy - 10, 36, 32, (255, 90, 170))
+        p.ell(hx + 30, hy - 10, 36, 32, (255, 90, 170))
+        p.poly([(hx - 64, hy), (hx + 64, hy), (hx, hy + 60)], (255, 90, 170))
+        p.rect(x0, y0 + (y1 - y0) * 0.55, x1, y1, (120, 76, 136))  # studio floor
+        p.rect(x0, y0 + (y1 - y0) * 0.55, x1, y0 + (y1 - y0) * 0.55 + 14, (240, 196, 80))
+        # tiny people: Roxy at the podium, Chet, the audience edge
+        rx, ry = x0 + (x1 - x0) * 0.45, y0 + (y1 - y0) * 0.72
+        p.rect(rx + 16, ry - 10, rx + 40, ry + 22, (236, 50, 140))
+        p.ell(rx, ry - 18, 8, 9, (250, 200, 162))
+        p.ell(rx, ry - 26, 10, 7, (92, 40, 60))
+        p.rect(rx - 8, ry - 8, rx + 8, ry + 24, (232, 40, 150))
+        cx, cy = x0 + (x1 - x0) * 0.75, y0 + (y1 - y0) * 0.75
+        p.ell(cx, cy - 18, 8, 9, (240, 182, 130))
+        p.ell(cx, cy - 27, 10, 7, (255, 214, 90))
+        p.rect(cx - 8, cy - 8, cx + 8, cy + 24, (250, 246, 236))
+        for i in range(8):
+            p.ell(x0 + 24 + i * 26, y1 - 18, 9, 10, [(240, 186, 140), (160, 104, 72), (255, 214, 178)][i % 3])
+            p.rect(x0 + 15 + i * 26, y1 - 8, x0 + 33 + i * 26, y1, [(70, 120, 180), (200, 90, 60), (90, 150, 90)][i % 3])
+    c.paint(rect(x0, y0, x1, y1), (60, 30, 70), ow=3, pattern=view)
+    # glass reflections + mullions
+    for gx in (x0 + 40, x0 + (x1 - x0) * 0.55):
+        c.paint(poly([(gx, y0), (gx + 60, y0), (gx - 40, y1), (gx - 100, y1)]), (255, 255, 255), ow=0, opacity=0.07)
+    for k in (1, 2):
+        mx = x0 + (x1 - x0) * k / 3
+        c.paint(rect(mx - 6, y0, mx + 6, y1), fr, ow=2.5)
+    c.glow(x0 + (x1 - x0) * 0.6, y0 + 100, 200, (255, 80, 170), 0.18)
+
+
+def paint_tv_control_booth():
+    B = boxes("tv_control_booth")
+    c = Canvas(W_BG, H_BG, ow=4, bg=(0, 0, 0))
+    rng = random.Random(808)
+    wall_top, wall_bot = (26, 30, 46), (52, 58, 82)
+    c.paint(rect(0, 0, W_BG, WALL_Y), ("vy", 0, WALL_Y, wall_top, wall_bot), ow=0)
+    # acoustic foam wedges
+    for row, y in enumerate(range(90, 560, 64)):
+        for x in range(0 + (row % 2) * 32, W_BG, 64):
+            c.paint(poly([(x, y), (x + 56, y), (x + 28, y + 56)]), (48, 54, 76), ow=2, oc=(20, 22, 34))
+            c.paint(poly([(x + 28, y + 56), (x + 56, y), (x + 56, y + 56)]), (36, 40, 60), ow=0)
+    c.paint(rect(0, 0, W_BG, 70), (16, 18, 28), ow=0)
+    c.line([(0, 70), (W_BG, 70)], 4)
+    for x in (300, 960, 1600):  # recessed ceiling spots
+        c.paint(ell(x, 70, 40, 8), (255, 244, 210), ow=2.5)
+        c.paint(poly([(x - 36, 72), (x + 36, 72), (x + 180, 600), (x - 180, 600)]), (255, 240, 200), ow=0, opacity=0.05)
+    # big window down onto the studio
+    studio_view_window(c, 1220, 120, 1880, 470)
+    c.paint(rect(1196, 486, 1904, 504), (90, 94, 110), ow=3, hi=(0, 2, (150, 154, 170)))  # sill
+    # countdown clock
+    c.paint(rrect(820, 150, 1100, 250, 10), (20, 10, 14), ow=4, hi=(3, 3, (70, 50, 60), 2))
+    c.text(960, 200, "00:04:00", 46, (255, 50, 50), "Black", stroke=2, sc=(110, 0, 0))
+    c.glow(960, 200, 170, (255, 40, 40), 0.3)
+    c.text(960, 270, "TO AIR", 18, (255, 120, 110), "Black")
+    # ON AIR light over the stairs
+    c.paint(rrect(30, 380, 190, 430, 8), (60, 20, 26), shade=(-3, -3), hi=(3, 3, (120, 50, 60), 2))
+    c.paint(rrect(40, 388, 180, 422, 5), (110, 40, 46), ow=2.5)
+    c.text(110, 405, "ON AIR", 20, (220, 150, 140), "Black")
+
+    # floor: dark carpet tiles with cables
+    fl = (44, 46, 60)
+    c.paint(rect(0, WALL_Y, W_BG, H_BG), ("vy", WALL_Y, H_BG, (70, 72, 90), (34, 36, 48)), ow=0)
+    for x in range(-600, W_BG + 600, 150):
+        c.line([(960 + (x - 960) * 0.55, WALL_Y), (x, H_BG)], 1.6, (20, 20, 30), opacity=0.5)
+    for y in (830, 890, 970, 1060):
+        c.line([(0, y), (W_BG, y)], 1.4, (20, 20, 30), opacity=0.5)
+    c.line(bez((1000, 812), (1150, 840), (1300, 808)), 4, (16, 16, 22))
+    c.line(bez((300, 806), (480, 830), (720, 800)), 4, (16, 16, 22))
+    c.paint(rect(-10, WALL_Y - 12, W_BG + 10, WALL_Y + 4), (20, 22, 30), ow=3)
+
+    # --- long console under the monitors (decor)
+    con = (70, 72, 88)
+    c.paint(poly([(240, 640), (790, 640), (800, 676), (230, 676)]), (90, 92, 110), hi=(0, 3, (140, 144, 160)))
+    c.paint(rect(236, 674, 794, WALL_Y), ("v", con, dk(con, 0.75)), ow=3,
+            pattern=lambda p: [p.rect(250 + k * 136, 694, 360 + k * 136, 770, dk(con, 0.85)) for k in range(4)])
+    for k in range(18):
+        bx = 262 + k * 28
+        c.paint(rrect(bx, 646, bx + 18, 660, 2), [(255, 80, 80), (255, 210, 60), (90, 220, 120), (90, 160, 230)][k % 4],
+                ow=1.6)
+    # coffee counter (under the coffee maker)
+    cm = B["Coffee maker"]
+    ctop = cm[3]
+    c.paint(rect(cm[0] - 40, ctop, cm[2] + 40, ctop + 14), (150, 120, 90), ow=3, hi=(0, 2, (200, 170, 130)))
+    c.paint(rect(cm[0] - 34, ctop + 14, cm[2] + 34, WALL_Y), ("v", (120, 90, 70), (90, 64, 50)), ow=3,
+            pattern=lambda p: p.line([((cm[0] + cm[2]) / 2, ctop + 14), ((cm[0] + cm[2]) / 2, WALL_Y)], 2, (60, 40, 30)))
+    for kx in ((cm[0] + cm[2]) / 2 - 14, (cm[0] + cm[2]) / 2 + 14):
+        c.paint(ell(kx, ctop + 50, 4, 4), (230, 200, 120), ow=1.6)
+    # Norma's rolling chair (decor, between Norma and the deck)
+    chx, chy = 1222, WALL_Y + 30
+    c.shadow(chx, chy, 44, 8, 0.5)
+    for k in (-1, 0, 1):
+        c.paint(cap([(chx, chy - 30), (chx + k * 34, chy - 4)], 6), (40, 40, 48), ow=2.2)
+        c.paint(ell(chx + k * 34, chy - 2, 6, 5), (20, 20, 26), ow=2)
+    c.paint(rect(chx - 5, chy - 70, chx + 5, chy - 30), (150, 154, 170), ow=2.2)
+    c.paint(rrect(chx - 40, chy - 84, chx + 40, chy - 62, 8), (60, 50, 90), ow=3, hi=(0, 2, (110, 96, 150)))
+    c.paint(rrect(chx - 30, chy - 170, chx + 30, chy - 88, 12), (60, 50, 90), ow=3, hi=(2, 2, (110, 96, 150)))
+    c.paint(rect(chx - 4, chy - 92, chx + 4, chy - 80), (40, 40, 48), ow=2)
+    c.text(chx, chy - 130, "DIRECTOR", 8, (255, 220, 120), "Black")
+
+    # --- props inside their hotspot boxes
+    monitor_wall(c, B["Monitor wall"])
+    # stairs down (left)
+    s = B["Stairs down"]
+    sx0, sy0, sx1, sy1 = s
+    c.paint(rect(sx0, sy0 + 20, sx1, sy1), (14, 14, 20), ow=4)
+    for k in range(7):
+        yy = sy0 + 70 + k * 30
+        c.paint(rect(sx0 + 6, yy, sx1 - 6 - k * 4, yy + 14), (80, 84, 100), ow=2, hi=(0, 2, (130, 134, 150)))
+    c.paint(cap([(sx1 + 4, sy0 + 40), (sx1 + 4, sy1)], 7), (200, 204, 216), ow=2.5)
+    c.paint(cap([(sx0 + 10, sy0 + 90), (sx1 + 4, sy0 + 40)], 6), (200, 204, 216), ow=2.5)
+    c.paint(rrect(sx0 + 18, sy0 - 26, sx1 - 18, sy0 + 10, 4), (40, 160, 90), ow=3)
+    c.text((sx0 + sx1) / 2, sy0 - 8, "STAIRS", 14, (255, 255, 255), "Black")
+    # coffee maker
+    cx0, cy0, cx1, cy1 = cm
+    c.paint(rrect(cx0 + 6, cy0 + 4, cx1 - 6, cy1, 6), (40, 40, 48), shade=(-3, -3, (20, 20, 26)), hi=(2, 2, (100, 100, 120), 2))
+    c.paint(rect(cx0 + 18, cy0 + 50, cx1 - 18, cy1 - 8), (20, 20, 26), ow=2)
+    c.paint(poly([(cx0 + 22, cy0 + 62), (cx1 - 22, cy0 + 62), (cx1 - 26, cy1 - 12), (cx0 + 26, cy1 - 12)]),
+            (200, 230, 240), ow=2.5, pattern=lambda p: p.rect(cx0 + 22, cy0 + 80, cx1 - 22, cy1 - 12, (90, 50, 30)))
+    c.paint(rect(cx0 + 12, cy0 + 14, cx1 - 12, cy0 + 40), (250, 248, 236), ow=2,
+            pattern=lambda p: [p.line([(cx0 + 16, cy0 + 22 + k * 7), (cx1 - 16, cy0 + 22 + k * 7)], 1, (200, 60, 60))
+                               for k in range(3)])
+    c.text((cx0 + cx1) / 2, cy0 + 27, "NORMA'S", 8, (200, 40, 40), "Black")
+    c.paint(ell(cx1 - 14, cy0 + 50, 3, 3), (90, 230, 120), ow=1.2)
+    for k in range(3):  # steam
+        c.curve((cx0 + 30 + k * 12, cy0 + 2), (cx0 + 22 + k * 12, cy0 - 14), (cx0 + 32 + k * 12, cy0 - 30), 2,
+                (230, 230, 240), opacity=0.5)
+    c.paint(ell(cx0 - 22, ctop - 10, 12, 10), (250, 250, 250), ow=2.5)  # mug
+    c.text(cx0 - 22, ctop - 10, "#1", 7, (200, 40, 80), "Black")
+    # director's desk with talkback mic
+    t = B["Talkback mic"]
+    tx0, ty0, tx1, ty1 = t
+    desk = (80, 84, 100)
+    c.shadow((tx0 + tx1) / 2, ty1 - 2, (tx1 - tx0) / 2, 8, 0.5)
+    top = ty0 + 92
+    c.paint(poly([(tx0 + 4, top), (tx1 - 4, top), (tx1, top + 30), (tx0, top + 30)]), (110, 114, 130),
+            hi=(0, 3, (160, 164, 180)))
+    c.paint(rect(tx0 + 6, top + 30, tx1 - 6, ty1), ("v", desk, dk(desk, 0.7)), ow=3,
+            pattern=lambda p: [p.rect(tx0 + 20 + k * 74, top + 46, tx0 + 80 + k * 74, ty1 - 14, dk(desk, 0.85))
+                               for k in range(3)])
+    for k in range(14):  # faders
+        fx = tx0 + 20 + k * 15
+        c.line([(fx, top + 6), (fx + 1, top + 26)], 1.6, (20, 20, 26))
+        c.paint(rect(fx - 3, top + 8 + (k * 5) % 12, fx + 3, top + 13 + (k * 5) % 12), (230, 230, 240), ow=1.2)
+    # gooseneck mic
+    gx = tx1 - 60
+    c.paint(rrect(gx - 26, top - 16, gx + 26, top + 2, 4), (40, 40, 48), ow=2.5)
+    c.paint(rrect(gx - 18, top - 14, gx + 2, top - 4, 2), (230, 40, 50), ow=1.6)
+    c.text(gx + 14, top - 8, "TALK", 6, (255, 220, 120), "Black")
+    c.line(bez((gx + 10, top - 16), (gx + 30, top - 70), (gx - 10, top - 86)), 6, OUT)
+    c.line(bez((gx + 10, top - 16), (gx + 30, top - 70), (gx - 10, top - 86)), 3, (170, 174, 190))
+    c.paint(ell(gx - 16, top - 88, 10, 8, -30), (60, 60, 70), ow=2.5,
+            pattern=lambda p: [p.line([(gx - 26, top - 92 + k * 3), (gx - 6, top - 92 + k * 3)], 1, (120, 120, 130))
+                               for k in range(5)])
+    # stopwatch + clipboard on the desk
+    c.paint(rect(tx0 + 40, top - 10, tx0 + 96, top + 2), (186, 130, 72), ow=2.2)
+    c.paint(ell(tx0 + 130, top - 8, 12, 11), (220, 224, 236), ow=2.5, pattern=lambda p: p.line(
+        [(tx0 + 130, top - 8), (tx0 + 134, top - 15)], 1.4, (200, 40, 40)))
+
+    lights = [(1550, 300, 600, 0.45, (255, 120, 200)), (960, 200, 360, 0.35, (255, 80, 80)),
+              (530, 430, 460, 0.45, (150, 210, 255)), (300, 70, 500, 0.25, (255, 240, 200)),
+              (960, 900, 700, 0.2, (200, 210, 255))]
+    light_pass(c, 0.78, lights, vign=0.35, front=0.12)
+    c.save("bg_tv_control_booth.png")
+
+
+# =========================================================================== new characters
+def paint_gloria_puff():
+    """Makeup artist: towering platinum beehive, lavender smock full of brushes, giant powder puff."""
+    c = Canvas(110, 270, ow=3)
+    skin, skin_sh = (232, 170, 130), (196, 128, 100)
+    hair, hair_sh, hair_hi = (252, 230, 150), (214, 180, 96), (255, 250, 220)
+    smock, smock_sh = (190, 150, 230), (146, 106, 190)
+    pants, pants_sh = (60, 50, 70), (36, 30, 44)
+    shoe, shoe_sh = (230, 60, 120), (170, 30, 90)
+    # beehive behind the head
+    hive = poly([(32, 60), (26, 40), (28, 20), (38, 6), (56, 1), (74, 4), (88, 16), (92, 36), (88, 58), (78, 68),
+                 (42, 68)], 2, True)
+    c.paint(hive, hair, shade=(3, 3, hair_sh), hi=(-3, 3, hair_hi, 2),
+            pattern=lambda p: [p.line(bez((34 + k * 3, 52 - k * 9), (60, 30 - k * 9), (86 - k * 2, 50 - k * 9)), 1.6,
+                                      hair_sh) for k in range(5)])
+    c.paint(ell(78, 20, 6, 4, 30), (240, 60, 120), ow=2)  # bow
+    c.paint(ell(88, 22, 6, 4, -30), (240, 60, 120), ow=2)
+    # far arm with the powder puff raised
+    c.paint(cap([(74, 104), (92, 112), (98, 92)], 8.5), smock, shade=(3, 2, smock_sh))
+    c.paint(ell(99, 86, 6.5, 6), skin, shade=(2, 2, skin_sh))
+    c.paint(ell(100, 78, 13, 10), (255, 214, 226), ow=2.5, hi=(-2, -2, (255, 245, 250), 2))
+    c.paint(ell(100, 70, 4, 3), (240, 120, 160), ow=1.6)
+    for k in range(5):  # powder cloud
+        c.paint(ell(92 + k * 4, 62 - k * 3, 3 + k * 0.5, 3 + k * 0.5), (255, 250, 250), ow=0, opacity=0.7)
+    # legs + pink kitten heels
+    c.paint(cap([(60, 190), (64, 238)], 10.5), pants, shade=(3, 0, pants_sh))
+    c.paint(cap([(46, 190), (40, 240)], 11), pants, shade=(3, 0, pants_sh))
+    for xh, xt, yt, yb in ((72, 48, 236, 250), (50, 18, 239, 254)):
+        c.paint(shoe_shape(xh, xt, yt, yb, pointy=True), shoe, shade=(3, -2, shoe_sh), hi=(-2, 2, (255, 140, 190), 1.5))
+    # smock: wide, knee length, with a pocket full of brushes
+    body = poly([(34, 96), (54, 90), (76, 96), (82, 112), (86, 196), (24, 196), (28, 112)], 2)
+    c.paint(body, smock, shade=(5, 2, smock_sh), hi=(-3, 3, (220, 196, 250), 2),
+            pattern=lambda p: [p.ell(30 + (k * 17) % 54, 110 + (k * 23) % 80, 1.8, 1.8, (255, 230, 250)) for k in range(18)])
+    c.paint(rrect(44, 140, 74, 164, 3), smock_sh, ow=2.2)
+    for k, col in enumerate(((240, 60, 90), (90, 60, 160), (250, 200, 80), (60, 160, 200))):
+        bx = 48 + k * 7
+        c.line([(bx, 142), (bx - 1 + k, 122)], 2.6, (150, 100, 70))
+        c.paint(ell(bx - 1 + k, 120, 2.4, 4), col, ow=1.2)
+    c.paint(poly([(48, 92), (64, 92), (56, 110)]), (255, 250, 246), ow=2)
+    # measuring tape round the neck
+    c.paint(cap([(42, 94), (40, 134)], 4), (250, 220, 80), ow=1.6)
+    c.paint(cap([(70, 94), (72, 128)], 4), (250, 220, 80), ow=1.6)
+    # near arm on the hip
+    c.paint(cap([(34, 102), (22, 128), (34, 146)], 8.5), smock, shade=(3, 2, smock_sh))
+    c.paint(ell(36, 146, 6, 6), skin, shade=(2, 2, skin_sh))
+    # neck + head (3/4, facing left)
+    c.paint(cap([(56, 80), (56, 96)], 9), skin, shade=(3, 0, skin_sh))
+    head = ell(56, 60, 21, 23) + poly([(36, 62), (40, 80), (52, 88), (64, 86), (76, 72)], 2) + ell(34, 64, 4.6, 4.4)
+    c.paint(head, skin, shade=(4, 3, skin_sh), hi=(-3, 4, (250, 200, 166), 2.5))
+    c.paint(ell(76, 64, 5, 7), skin, shade=(2, 2, skin_sh))
+    c.paint(ell(77, 74, 3.4, 3.4), (120, 230, 220), ow=1.6)  # earring
+    c.curve((35, 67), (32, 68), (32, 65), 1.4)
+    c.paint(ell(52, 73, 6, 3.2), (255, 90, 130), ow=0, opacity=0.6)  # lots of blush
+    c.paint(ell(39, 72, 3.4, 2.4), (255, 90, 130), ow=0, opacity=0.5)
+    # cat-eye glasses
+    eye(c, 52, 59, 7, 8, 48.5, 60, 2.3, lid=0.25, skin=skin, lashes=1, iris=(60, 150, 120))
+    eye(c, 38, 58.5, 5, 7.6, 35.5, 59.5, 2.0, lid=0.25, skin=skin, lashes=-1, iris=(60, 150, 120))
+    c.paint(poly([(42, 52), (60, 50), (64, 46), (62, 66), (44, 66)], 1), (0, 0, 0, 0), ow=2.4, oc=(200, 40, 110))
+    c.paint(poly([(32, 53), (42, 52), (42, 65), (32, 64), (30, 50)], 1), (0, 0, 0, 0), ow=2.2, oc=(200, 40, 110))
+    c.line([(42, 56), (44, 56)], 2, (200, 40, 110))
+    # bright red lips, talking mid-sentence
+    c.paint(ell(46, 79, 7, 4), (210, 20, 50), ow=2, pattern=lambda p: p.ell(46, 80, 4, 1.6, (120, 10, 30)))
+    # front swoop of hair over the forehead
+    front = poly([(34, 52), (36, 40), (48, 34), (66, 34), (80, 40), (84, 56), (78, 54), (66, 44), (52, 44), (40, 50)], 2, True)
+    c.paint(front, hair, shade=(3, 3, hair_sh), hi=(-2, 3, hair_hi, 2))
+    c.curve((80, 44), (88, 60), (82, 72), 3.4, hair)
+    c.fit(margin=3)
+    c.save("hs_gloria_puff.png")
+
+
+def paint_norma_fade():
+    """TV director: headset, chunky glasses, mustard cardigan with pencils, stopwatch, clipboard."""
+    c = Canvas(110, 250, ow=3)
+    skin, skin_sh = (196, 140, 106), (160, 104, 80)
+    hair, hair_sh, hair_hi = (150, 150, 158), (106, 106, 116), (210, 210, 220)
+    card, card_sh = (226, 172, 60), (180, 126, 36)
+    shirt = (250, 250, 244)
+    pants, pants_sh = (50, 56, 80), (30, 34, 54)
+    shoe, shoe_sh = (60, 40, 30), (36, 22, 16)
+    # far arm holding a clipboard up, pointing at the viewer
+    c.paint(cap([(74, 100), (90, 120), (96, 104)], 8.5), card, shade=(3, 2, card_sh))
+    c.paint(rrect(84, 86, 108, 118, 2), (186, 130, 72), ow=2.2)
+    c.paint(rect(87, 92, 105, 116), (250, 250, 244), ow=1.4,
+            pattern=lambda p: [p.line([(89, 96 + k * 4), (103, 96 + k * 4)], 0.9, (150, 170, 210)) for k in range(5)])
+    c.paint(ell(94, 106, 6, 5.5), skin, shade=(2, 2, skin_sh))
+    # legs + sensible shoes
+    c.paint(cap([(62, 160), (66, 222)], 12), pants, shade=(3, 0, pants_sh))
+    c.paint(cap([(46, 160), (40, 224)], 12.5), pants, shade=(3, 0, pants_sh))
+    for xh, xt, yt, yb in ((74, 48, 220, 236), (52, 16, 223, 240)):
+        c.paint(shoe_shape(xh, xt, yt, yb), shoe, shade=(3, -2, shoe_sh), hi=(-2, 2, (120, 90, 70), 1.5))
+    # cardigan over a white shirt
+    torso = poly([(32, 96), (54, 90), (76, 96), (82, 110), (80, 166), (30, 166), (28, 110)], 2)
+    c.paint(torso, card, shade=(5, 2, card_sh), hi=(-3, 3, (250, 214, 120), 2))
+    c.paint(poly([(48, 92), (64, 92), (62, 166), (50, 166)], 1), shirt, ow=2.2)
+    for y in (110, 128, 146):
+        c.paint(ell(46, y, 2.2, 2.2), (120, 80, 30), ow=1.2)
+    for k, col in enumerate(((240, 200, 60), (230, 60, 60), (60, 120, 220))):  # pencils in pocket
+        c.line([(68 + k * 4, 128), (68 + k * 4, 114)], 2.4, col)
+    c.paint(rect(64, 124, 82, 140), card_sh, ow=2)
+    # stopwatch on a cord
+    c.curve((48, 92), (56, 118), (64, 92), 1.6, (40, 40, 48))
+    c.paint(ell(56, 124, 7, 7), (220, 224, 236), ow=2.2, pattern=lambda p: p.line([(56, 124), (59, 119)], 1.2, (200, 40, 40)))
+    # near arm, hand on headset mic
+    c.paint(cap([(34, 100), (24, 124), (30, 92)], 8.5), card, shade=(3, 2, card_sh))
+    c.paint(ell(30, 88, 6, 6), skin, shade=(2, 2, skin_sh))
+    # neck + head
+    c.paint(cap([(56, 76), (56, 94)], 10), skin, shade=(3, 0, skin_sh))
+    head = ell(56, 56, 22, 24) + poly([(34, 58), (38, 76), (50, 86), (62, 84), (76, 70)], 2) + ell(33, 61, 4.8, 4.6)
+    c.paint(head, skin, shade=(4, 3, skin_sh), hi=(-3, 4, (220, 166, 130), 2.5))
+    c.curve((34, 64), (31, 65), (31, 62), 1.4)
+    # chunky black glasses, frazzled eyes wide open
+    eye(c, 51, 56, 7.5, 8.5, 47.5, 57, 2.4, lid=0.05, skin=skin)
+    eye(c, 37, 55.5, 5.4, 8, 34.5, 56.5, 2.1, lid=0.05, skin=skin)
+    c.paint(rrect(42, 46, 62, 66, 4), (0, 0, 0, 0), ow=3.4, oc=(20, 20, 26))
+    c.paint(rrect(30, 46, 42, 65, 3), (0, 0, 0, 0), ow=3, oc=(20, 20, 26))
+    c.line([(62, 52), (74, 54)], 2.6, (20, 20, 26))
+    c.line([(43, 41), (52, 38), (61, 41)], 2.4, hair_sh)
+    c.line([(31, 42), (38, 40)], 2.2, hair_sh)
+    # tight frown
+    c.line([(38, 76), (44, 74), (50, 76)], 2)
+    # grey bob
+    bob = poly([(32, 50), (32, 36), (44, 26), (62, 24), (78, 30), (84, 46), (84, 74), (76, 76), (74, 52), (66, 40),
+                (52, 38), (40, 44), (36, 54)], 2, True)
+    c.paint(bob, hair, shade=(3, 3, hair_sh), hi=(-2, 3, hair_hi, 2))
+    c.curve((44, 30), (60, 26), (76, 34), 1.4, hair_hi)
+    # headset: band over the bob, ear cup, boom mic to the mouth
+    c.curve((40, 34), (60, 14), (80, 40), 3.2, (40, 40, 48))
+    c.paint(ell(78, 58, 8, 10), (40, 40, 48), ow=2.5, hi=(-2, -2, (100, 100, 120)))
+    c.line(bez((76, 66), (64, 84), (44, 80)), 3.4, OUT)
+    c.line(bez((76, 66), (64, 84), (44, 80)), 1.8, (90, 90, 104))
+    c.paint(ell(42, 80, 4, 3), (40, 40, 48), ow=1.8)
+    c.fit(margin=3)
+    c.save("hs_norma_fade.png")
+
+
+# =========================================================================== props that change
+def paint_reserved_sign():
+    c = Canvas(80, 120, ow=3)
+    brass, brass_sh = (230, 190, 80), (180, 130, 40)
+    c.paint(ell(40, 112, 26, 6), brass, shade=(0, -2, brass_sh), hi=(0, 2, (255, 236, 160)))
+    c.paint(cap([(40, 110), (40, 56)], 5), brass, shade=(2, 0, brass_sh), hi=(-1, 0, (255, 240, 180)))
+    c.paint(rect(6, 14, 74, 58), brass, shade=(-2, -2, brass_sh))
+    c.paint(rect(11, 18, 69, 54), (252, 250, 240), ow=2)
+    c.text(40, 28, "RESERVED", 9.5, (200, 40, 60), "Black")
+    c.text(40, 40, "C. STUDWELL", 7, (40, 40, 60), "Black")
+    c.text(40, 49, "ALL NIGHT", 6, (40, 40, 60), "Black")
+    c.fit(margin=2)
+    c.save("hs_reserved_sign.png")
+
+
+def deck_prop(name, loaded):
+    c = Canvas(200, 160, ow=3)
+    cart = (60, 62, 76)
+    # wheeled cart
+    for wx in (24, 176):
+        c.paint(ell(wx, 150, 8, 7), (20, 20, 26), ow=2.5)
+    c.paint(rect(14, 96, 186, 142), ("v", cart, dk(cart, 0.75)), ow=3, hi=(0, 3, lt(cart, 0.3)),
+            pattern=lambda p: [p.rect(24 + k * 54, 104, 70 + k * 54, 134, dk(cart, 0.85)) for k in range(3)])
+    # transmitter box with bendy antenna
+    c.paint(rrect(118, 50, 182, 96, 4), (40, 40, 48), hi=(0, 2, (100, 100, 120)))
+    for k in range(4):
+        c.line([(126, 60 + k * 7), (156, 60 + k * 7)], 2, (20, 20, 26))
+    c.paint(ell(170, 62, 5, 5), (255, 60, 60) if loaded else (90, 30, 30), ow=2)
+    if loaded:
+        c.glow(170, 62, 20, (255, 60, 60), 0.6)
+    c.line(bez((164, 50), (172, 26), (160, 6)), 4, OUT)
+    c.line(bez((164, 50), (172, 26), (160, 6)), 2, (190, 194, 206))
+    c.paint(ell(160, 6, 4, 4), (190, 194, 206), ow=2)
+    if loaded:
+        for r in (10, 16):
+            c.curve((150, 12 - r * 0.2), (160 - r, 6), (150, 0 + r * 0.1), 1.6, (255, 120, 200), opacity=0.6)
+    # tape deck
+    c.paint(rrect(16, 44, 116, 96, 5), (30, 30, 36), hi=(0, 2, (90, 90, 110)))
+    c.paint(rect(26, 52, 92, 82), (80, 84, 100), ow=2)
+    if loaded:
+        c.paint(rect(30, 56, 88, 78), (255, 140, 220), ow=2,
+                pattern=lambda p: [paint.sparkle(p, 34 + (k * 13) % 50, 59 + (k * 7) % 16, 2.2, (255, 255, 255))
+                                   for k in range(8)])
+        c.paint(rect(42, 62, 76, 72), (60, 50, 70), ow=1.6)
+        for wx in (49, 69):
+            c.paint(ell(wx, 67, 3, 3), (250, 250, 250), ow=1.2)
+    for k in range(4):
+        c.paint(rrect(96 + (k % 2) * 10, 54 + (k // 2) * 14, 104 + (k % 2) * 10, 62 + (k // 2) * 14, 1),
+                (200, 200, 210), ow=1.4)
+    # label
+    c.paint(rect(18, 26, 114, 46), (255, 240, 110), ow=2)
+    c.text(66, 31.5, "CH. CHET", 6.5, (200, 40, 40), "Black")
+    c.text(66, 40, "DO NOT TOUCH", 5.5, (200, 40, 40), "Black")
+    c.fit(margin=2)
+    c.save(name)
+
+
+def paint_playback_deck():
+    deck_prop("hs_playback_deck.png", True)
+
+
+def paint_empty_deck():
+    deck_prop("hs_empty_deck.png", False)
+
+
+# =========================================================================== new inventory icons
+def paint_icon_reserved_card():
+    def draw(c):
+        c.paint(rect(14, 34, 114, 96), (252, 250, 240), shade=(4, 4, (210, 206, 196)), hi=(-3, -3, (255, 255, 255), 2))
+        c.paint(rect(22, 42, 106, 88), (0, 0, 0, 0), ow=2, oc=(230, 190, 80))
+        c.text(64, 56, "RESERVED", 14, (200, 40, 60), "Black")
+        c.text(64, 74, "C. STUDWELL", 10, (40, 40, 60), "Black")
+        star(c, 104, 34, 10, (255, 226, 80), ow=3)
+    icon("icon_reserved_card.png", 8, draw)
+
+
+def paint_icon_scandal_lipstick():
+    def draw(c):
+        c.paint(rrect(42, 70, 86, 122, 5), (230, 190, 80), shade=(4, 0, (180, 130, 40)), hi=(-3, 0, (255, 236, 160), 2))
+        c.paint(rect(46, 58, 82, 72), (200, 204, 216), hi=(-2, 0, (255, 255, 255)))
+        c.paint(poly([(50, 58), (78, 58), (78, 30), (62, 12), (50, 22)], 1), (220, 20, 50), shade=(3, 0, (160, 10, 30)),
+                hi=(-2, 0, (255, 110, 120), 2))
+        c.text(64, 98, "SR", 16, (120, 70, 20), "Black")
+    icon("icon_scandal_lipstick.png", -18, draw)
+
+
+def paint_icon_chet_protest_sign():
+    def draw(c):
+        c.paint(rect(12, 22, 116, 92), (252, 250, 240), shade=(4, 4, (210, 206, 196)))
+        c.text(64, 42, "CHET IS", 17, (220, 20, 50), "Black")
+        c.text(64, 64, "A CHEAT", 17, (220, 20, 50), "Black")
+        c.paint(rrect(42, 74, 86, 88, 4), (255, 255, 255), ow=2)
+        for k in range(4):
+            c.line([(48 + k * 10, 74), (48 + k * 10, 88)], 1.2, (180, 180, 200))
+    icon("icon_chet_protest_sign.png", -6, draw)
+
+
+def paint_icon_runner_lanyard():
+    def draw(c):
+        c.line(bez((30, 10), (64, 90), (98, 10)), 9, OUT)
+        c.line(bez((30, 10), (64, 90), (98, 10)), 6, (40, 110, 220))
+        c.paint(rrect(40, 64, 88, 122, 5), (250, 250, 252), shade=(3, 3, (200, 204, 216)))
+        c.paint(rect(40, 64, 88, 80), (40, 110, 220), ow=0)
+        c.text(64, 72, "CREW", 10, (255, 255, 255), "Black")
+        c.text(64, 94, "KEVIN", 11, (40, 40, 60), "Black")
+        c.text(64, 108, "ALL ACCESS", 6, (200, 40, 60), "Black")
+        c.paint(rect(58, 56, 70, 66), (200, 204, 216), ow=2)
+    icon("icon_runner_lanyard.png", 6, draw)
+
+
+def headphones(c, col=(60, 220, 230), straw=False):
+    c.line(bez((24, 70), (64, -6), (104, 70)), 12, OUT)
+    c.line(bez((24, 70), (64, -6), (104, 70)), 7, (40, 40, 46))
+    for x in (22, 106):
+        c.paint(ell(x, 82, 18, 24), col, shade=(3, 3, dk(col, 0.7)), hi=(-3, -3, lt(col, 0.4), 2))
+        c.paint(ell(x, 82, 8, 13), (40, 40, 46), ow=2)
+    if straw:
+        c.line([(30, 96), (46, 116), (80, 118)], 7, OUT)
+        c.line([(30, 96), (46, 116), (80, 118)], 4, (255, 110, 170))
+        for k in range(3):
+            c.line([(44 + k * 3, 110 + k * 2), (49 + k * 3, 116)], 1, (200, 60, 120))
+        c.paint(ell(84, 118, 5, 5), (255, 110, 170), ow=2.5)
+
+
+def paint_icon_dolly_headphones():
+    icon("icon_dolly_headphones.png", -6, lambda c: headphones(c))
+
+
+def paint_icon_crew_headset():
+    icon("icon_crew_headset.png", -6, lambda c: headphones(c, straw=True))
+
+
+def paint_icon_runner_disguise():
+    def draw(c):
+        headphones(c, straw=True)
+        c.line(bez((40, 96), (64, 130), (88, 96)), 5, (40, 110, 220))
+        c.paint(rrect(50, 100, 78, 126, 3), (250, 250, 252), ow=2.5, pattern=lambda p: p.rect(50, 100, 78, 108, (40, 110, 220)))
+        c.text(64, 117, "KEV", 7, (40, 40, 60), "Black")
+    icon("icon_runner_disguise.png", 0, draw)
+
+
+def paint_icon_bendy_straw():
+    def draw(c):
+        c.line([(30, 120), (52, 40), (62, 30), (100, 14)], 16, OUT)
+        c.line([(30, 120), (52, 40), (62, 30), (100, 14)], 10, (255, 250, 250))
+        for k in range(6):
+            y = 112 - k * 14
+            x = 30 + (52 - 30) * (120 - y) / 80
+            c.line([(x - 5, y), (x + 5, y - 3)], 3.5, (255, 110, 170))
+        for k in range(4):
+            c.line([(50 + k * 3, 42 - k * 3), (56 + k * 3, 46 - k * 3)], 1.4, (180, 180, 190))
+    icon("icon_bendy_straw.png", 0, draw)
+
+
+def paint_icon_studio_cheese_puff():
+    def draw(c):
+        puff = poly([(20, 70), (30, 46), (52, 38), (66, 50), (86, 36), (108, 52), (112, 78), (96, 96), (70, 90),
+                     (48, 102), (26, 92)], 2, True)
+        c.paint(puff, (255, 150, 40), shade=(4, 4, (220, 100, 20)), hi=(-3, -3, (255, 210, 120), 3),
+                pattern=lambda p: [p.ell(30 + (k * 19) % 76, 50 + (k * 13) % 44, 2.4, 2.4, (255, 200, 90)) for k in range(14)])
+    icon("icon_studio_cheese_puff.png", 10, draw)
+
+
+def paint_icon_nibbles_on_loan():
+    def draw(c):
+        cup = poly([(26, 64), (102, 64), (92, 122), (36, 122)], 1)
+        fur, fur_sh = (230, 170, 100), (190, 130, 70)
+        c.paint(ell(64, 54, 30, 26), fur, shade=(3, 3, fur_sh), hi=(-3, -3, (250, 210, 160), 2))
+        for ex in (44, 84):
+            c.paint(ell(ex, 32, 9, 9), fur, shade=(2, 2, fur_sh), pattern=lambda p, ex=ex: p.ell(ex, 33, 5, 5, (255, 180, 190)))
+        c.paint(ell(54, 50, 4.5, 5), (24, 16, 14), ow=0)
+        c.paint(ell(74, 50, 4.5, 5), (24, 16, 14), ow=0)
+        c.paint(ell(53, 48, 1.6, 1.6), (255, 255, 255), ow=0)
+        c.paint(ell(73, 48, 1.6, 1.6), (255, 255, 255), ow=0)
+        c.paint(ell(64, 60, 4, 3), (255, 140, 150), ow=1.6)
+        for s in (-1, 1):
+            c.line([(64 + s * 8, 62), (64 + s * 22, 58)], 1.2)
+        c.paint(ell(92, 70, 9, 6, 20), (255, 150, 40), ow=2)  # his cheese puff
+        c.paint(cup, (250, 250, 250), shade=(4, 0, (210, 214, 226)),
+                pattern=lambda p: [p.rect(26 + k * 18, 64, 34 + k * 18, 122, (240, 90, 120)) for k in range(5)])
+        c.text(64, 100, "ON LOAN", 9, (40, 40, 60), "Black")
+    icon("icon_nibbles_on_loan.png", 0, draw)
+
+
+def paint_icon_chet_cheat_tape():
+    def draw(c):
+        cassette(c, (40, 40, 48), (255, 140, 220), "CHET'S", "COMEBACKS", (90, 20, 70), glitter=True)
+        star(c, 108, 30, 12, (255, 236, 90), ow=3)
+    icon("icon_chet_cheat_tape.png", 8, draw)
+
+
+def paint_icon_bun_pencil():
+    def draw(c):
+        c.paint(poly([(18, 112), (30, 96), (100, 26), (112, 38), (42, 108)], 1), (250, 200, 50), shade=(3, 3, (210, 150, 30)),
+                hi=(-2, -2, (255, 236, 140), 2))
+        c.paint(poly([(18, 112), (30, 96), (42, 108)], 1), (240, 210, 170), ow=3)
+        c.paint(poly([(18, 112), (22, 106), (24, 110)], 1), (40, 40, 40), ow=0)
+        c.paint(poly([(96, 30), (104, 22), (116, 34), (108, 42)], 1), (200, 204, 216), ow=3)
+        c.paint(poly([(104, 22), (110, 16), (122, 28), (116, 34)], 1), (240, 130, 150), ow=3)
+        c.line([(36, 98), (98, 36)], 1.4, (200, 140, 30))
+    icon("icon_bun_pencil.png", 0, draw)
+
+
+
 ASSETS = {"bg_tv_studio": paint_tv_studio, "hs_chet_studwell": paint_chet_studwell,
+          "bg_tv_green_room": paint_tv_green_room, "bg_tv_control_booth": paint_tv_control_booth,
+          "hs_gloria_puff": paint_gloria_puff, "hs_norma_fade": paint_norma_fade,
+          "hs_reserved_sign": paint_reserved_sign, "hs_playback_deck": paint_playback_deck,
+          "hs_empty_deck": paint_empty_deck,
           "icon_lapel_mic": paint_icon_lapel_mic, "icon_nine_volt": paint_icon_nine_volt,
           "icon_soda_water": paint_icon_soda_water, "icon_cocktail_napkin": paint_icon_cocktail_napkin,
-          "icon_studio_walkie": paint_icon_studio_walkie, "icon_sign_out_sheet": paint_icon_sign_out_sheet,
-          "icon_chet_mixtape": paint_icon_chet_mixtape, "icon_floor_fillers_tape": paint_icon_floor_fillers_tape}
+          "icon_studio_walkie": paint_icon_studio_walkie,
+          "icon_chet_mixtape": paint_icon_chet_mixtape, "icon_floor_fillers_tape": paint_icon_floor_fillers_tape,
+          "icon_reserved_card": paint_icon_reserved_card, "icon_scandal_lipstick": paint_icon_scandal_lipstick,
+          "icon_chet_protest_sign": paint_icon_chet_protest_sign, "icon_runner_lanyard": paint_icon_runner_lanyard,
+          "icon_dolly_headphones": paint_icon_dolly_headphones, "icon_bendy_straw": paint_icon_bendy_straw,
+          "icon_crew_headset": paint_icon_crew_headset, "icon_runner_disguise": paint_icon_runner_disguise,
+          "icon_studio_cheese_puff": paint_icon_studio_cheese_puff, "icon_nibbles_on_loan": paint_icon_nibbles_on_loan,
+          "icon_chet_cheat_tape": paint_icon_chet_cheat_tape, "icon_bun_pencil": paint_icon_bun_pencil}
 
 
 def main(argv):

@@ -10,6 +10,7 @@ title: F_Enter
     Dex: He shakes my hand with the hand that's holding a giant grape soda. Splash. All down my shirt.
     Chet Studwell: Whoopsie! Purple's a great colour on you. For a loser.
     Dex: A purple blob, right in the middle of my hibiscus. On live TV. Great.
+    Dex: Roxy's waving me over to her podium. Probably to talk about the blob.
     <<flag f_intro>>
     <<flag f_shirt_stained>>
 <<endif>>
@@ -29,6 +30,37 @@ title: F_Exit_Use
         <<go campus from_map>>
     -> Stay
         Dex: Right. Showtime. Probably.
+<<endif>>
+===
+
+title: F_GreenDoor_Look
+---
+Dex: A door with a paper star taped to it: GREEN ROOM. It's not green. Television lies to us all.
+===
+title: F_GreenDoor_Use
+---
+<<go tv_green_room from_studio>>
+===
+
+title: F_BoothWindow_Look
+---
+<<if flagged("finale_won")>>
+    Dex: The control booth window. Norma's up there with her feet on the desk, eating a cheese puff. Victory looks good on everybody.
+<<elseif flagged("f_tape_swapped")>>
+    Dex: The control booth window. Norma's back at her desk. She has no idea Kevin is down here. Kevin is everywhere.
+<<else>>
+    Dex: A dark window high above the green room door: the control booth. Someone up there in a headset is glaring at a clock like it owes her money.
+    <<flag f_saw_booth>>
+<<endif>>
+===
+title: F_BoothWindow_Use
+---
+<<if flagged("f_booth_ok")>>
+    Dex: I wave up at the booth. Norma waves back without looking. "Not now, Kevin," she mouths.
+<<else>>
+    Dex: I wave at the booth. The woman up there points at her headset, then at me, then draws a finger across her throat. I think that means "not now".
+    Dex: There's no ladder. The way up must be through the green room.
+    <<flag f_saw_booth>>
 <<endif>>
 ===
 
@@ -53,20 +85,113 @@ title: F_Roxy_Talk
     Roxy Vale: Then clear your name, lover boy. This is a clean show. Mostly.
     <<flag f_met_roxy>>
 <<elseif flagged("f_miked") and flagged("f_shirt_clean") and flagged("f_track_ready") and flagged("f_chet_busted")>>
-    <<jump F_Show>>
+    Roxy Vale: Mic on, shirt clean, music loaded, name spotless. Lover boy, you are READY. Just say the word.
+<<elseif flagged("f_chet_busted")>>
+    Roxy Vale: My favourite honest contestant! Almost there, sweetie. The cameras are getting restless.
+<<elseif flagged("f_tape_swapped")>>
+    Roxy Vale: Have you seen Chet? He keeps slapping his ear like it owes him money. Did you do something, lover boy?
 <<else>>
-    Roxy Vale: Tick tock, lover boy. Here's what's still missing:
-    <<jump F_Hints>>
+    Roxy Vale: Tick tock, lover boy. The network's breathing down my neck. It has bad breath.
 <<endif>>
+<<jump F_Roxy_Menu>>
+===
+title: F_Roxy_Menu
+---
+-> We're ready. Let's go live! <<if flagged("f_miked") and flagged("f_shirt_clean") and flagged("f_track_ready") and flagged("f_chet_busted")>>
+    <<jump F_Show>>
+-> What do I still need? <<if not (flagged("f_miked") and flagged("f_shirt_clean") and flagged("f_track_ready") and flagged("f_chet_busted"))>>
+    Roxy Vale: Here's what's still missing:
+    <<jump F_Hints>>
+-> Tell me about this Trash-Talk Teaser. <<if flagged("f_duel_known") and not flagged("f_chet_busted")>>
+    Roxy Vale: Before every finale, the two finalists trade insults for the cameras. Chet throws one, you throw one back. Fumble one and it's over.
+    Roxy Vale: Chet has never lost. He has a comeback for everything. Even comebacks for his comebacks. Very fast. Suspiciously fast.
+    Roxy Vale: Cut off whoever's whispering in his ear and he'll have nothing. Then find yourself some material. Half the women in that audience have survived a Chet.
+    <<jump F_Roxy_Menu>>
+-> Where would I find wardrobe around here? <<if not flagged("f_gr_intro")>>
+    Roxy Vale: Green room, sweetie. Door under the booth window. Gloria does hair, makeup and wardrobe, and she does NOT do patience.
+    <<jump F_Roxy_Menu>>
+-> How did you get into hosting? <<if not flagged("f_roxy_lore1")>>
+    Roxy Vale: I hosted a pie-eating contest at fourteen. Live, on the county fair stage. A man choked on a cherry, the tent caught fire, and I never stopped smiling.
+    Roxy Vale: The producers said I had "unkillable energy". I put it on my business card.
+    <<flag f_roxy_lore1>>
+    <<jump F_Roxy_Menu>>
+-> What do I get if I win? <<if not flagged("f_roxy_lore2")>>
+    Roxy Vale: A dream date with anyone you choose, a heart-shaped trophy, and a lifetime of being recognised at the grocery store.
+    Dex: That last one sounds terrifying.
+    Roxy Vale: It is. Bring sunglasses.
+    <<flag f_roxy_lore2>>
+    <<jump F_Roxy_Menu>>
+-> What's the deal with Chet? <<if not flagged("f_roxy_lore3") and not flagged("f_chet_busted")>>
+    Roxy Vale: Chet's won every round this season. Every quiz, every dare, every date. His dad owns the network, but that's just a coincidence. A very well-funded coincidence.
+    Roxy Vale: Between you and me, lover boy? I'd love to see him lose. Fair and square. Mostly square.
+    <<flag f_roxy_lore3>>
+    <<jump F_Roxy_Menu>>
+-> I'll be back.
+    Roxy Vale: Don't keep the cameras waiting, sweetie. They get moody.
 ===
 title: F_Hints
 ---
 <<if not flagged("f_chet_busted")>>
-    <<if flagged("f_roxy_saw_walkie")>>
-        Roxy Vale: Your name's still muddy. That walkie says CHET on it, but Chet says it's a common name.
-        Dex: I need proof the walkie is his. Someone around here must keep track of the equipment. Someone with a clipboard.
-    <<elseif has("studio_walkie")>>
-        Dex: Wait. I've got Chet's walkie-talkie right here. I should show Roxy.
+    <<if flagged("f_tape_swapped") and flagged("f_roxy_saw_walkie")>>
+        Dex: Chet's earpiece is dead air now. Time to beat him at the Trash-Talk Teaser. I just have to call him out.
+        <<if not flagged("f_cb_lacey")>>
+            Dex: Lacey Rae grew up around loudmouths like Chet. She must have a comeback.
+        <<endif>>
+        <<if not flagged("f_cb_lou")>>
+            Dex: Lou deals with rude customers all day. She'll have a line ready. A flat one.
+        <<endif>>
+        <<if not flagged("f_cb_ivy")>>
+            Dex: Ivy notices everything. She's been watching Chet all night.
+        <<endif>>
+        <<if not flagged("f_cb_tess")>>
+            Dex: Tess organised this whole audience. She knows something about Chet he doesn't.
+        <<endif>>
+        <<if not flagged("f_cb_jett")>>
+            Dex: Jett finds everybody boring. She must have a way of saying so to a guy like Chet.
+        <<endif>>
+        <<if flagged("f_cb_lacey") and flagged("f_cb_lou") and flagged("f_cb_ivy") and flagged("f_cb_tess") and flagged("f_cb_jett")>>
+            Dex: I've got five good comebacks. Each one fits exactly one insult. Listen to what Chet says, then answer that.
+        <<endif>>
+    <<elseif flagged("f_tape_swapped")>>
+        <<if has("studio_walkie")>>
+            Dex: Chet's feed is cut. Now I need Roxy watching him. I should show her that walkie from behind the camera.
+        <<else>>
+            Dex: Chet's feed is cut. Now I need Roxy watching him. There was something odd taped behind Camera One...
+        <<endif>>
+    <<elseif flagged("f_norma_on_chair")>>
+        Dex: Norma's up on her chair with her eyes shut. I should grab Chet's tape out of the playback deck. Now!
+    <<elseif has("nibbles_on_loan")>>
+        Dex: Professor Nibbles is ready for his close-up. I should let him loose on Norma up in the booth.
+    <<elseif flagged("f_norma_guards")>>
+        Dex: Norma guards that playback deck like a dragon guards gold. I need her distracted.
+        <<if flagged("f_asked_norma")>>
+            Dex: Gloria said Norma's only scared of rodents. And I know a rodent. A very professional one, in Mina's pocket.
+        <<else>>
+            Dex: Gloria's worked with Norma for years. She'd know what rattles her.
+        <<endif>>
+    <<elseif flagged("f_booth_ok")>>
+        Dex: I'm in the booth as Kevin. Somewhere up there is whatever's feeding Chet his lines. I should poke around the equipment.
+    <<elseif has("runner_disguise")>>
+        Dex: I've got the Kevin Kit. Up the booth stairs in the green room, press TALK and be Kevin.
+    <<elseif flagged("f_booth_refused")>>
+        Dex: Norma only lets crew into the booth: a headset and a lanyard. And she's expecting a runner called Kevin she's never met.
+        <<if has("crew_headset") and has("runner_lanyard")>>
+            Dex: I've got a headset and a lanyard. I should put them together.
+        <<else>>
+            <<if not has("runner_lanyard")>>
+                Dex: A lanyard... Tess took charge of the studio's equipment log. Maybe Kevin's stuff is clipped to it.
+            <<endif>>
+            <<if has("dolly_headphones")>>
+                Dex: Dolly's headphones need a little microphone arm sticking out. Something thin and bendy.
+            <<elseif not has("crew_headset")>>
+                Dex: A headset... Dolly wears headphones round her neck. Add a little microphone arm and that's a headset.
+            <<endif>>
+        <<endif>>
+    <<elseif flagged("f_roxy_saw_walkie") or flagged("f_took_walkie")>>
+        Dex: That walkie behind the camera is only a relay. The signal comes from upstairs, the control booth. The way up must be through the green room.
+        <<if has("studio_walkie")>>
+            Dex: And Roxy should see this walkie.
+        <<endif>>
     <<else>>
         Roxy Vale: Chet still says you've got secret help.
         Dex: Funny, Chet keeps touching his ear and saying "copy that". Somebody is feeding HIM lines. From where, though?
@@ -76,17 +201,44 @@ title: F_Hints
     <<if has("lapel_mic") and has("nine_volt")>>
         Dex: I've got the mic pack and a battery. I should snap them together.
     <<elseif has("lapel_mic")>>
-        Roxy Vale: That mic pack's as dead as my last relationship. It needs a battery.
-        Dex: Mina's a scientist. Scientists always have batteries. Or know who does.
+        <<if has("chet_protest_sign")>>
+            Dex: Sky wanted a protest sign for her battery. I've got a beauty. I should give it to her.
+        <<elseif flagged("f_sky_wants_sign")>>
+            Dex: Sky will trade her battery for a protest sign. Something to write on, something red to write with.
+            <<if has("reserved_card") and has("scandal_lipstick")>>
+                Dex: Chet's card has a blank back, and I've got Scandal Red. Put them together.
+            <<elseif not has("reserved_card") and not flagged("f_took_card")>>
+                Dex: Something to write on... that RESERVED card in the green room has a blank back.
+            <<elseif not has("scandal_lipstick")>>
+                Dex: Something red... Gloria wears more lipstick than anyone I've ever met.
+            <<endif>>
+        <<elseif flagged("f_mina_tip")>>
+            Dex: Mina said Sky has her spare nine-volt, in the megaphone. I should ask Sky.
+        <<else>>
+            Roxy Vale: That mic pack's as dead as my last relationship. It needs a battery.
+            Dex: Mina's a scientist. Scientists always have batteries. Or know who does.
+        <<endif>>
+    <<elseif flagged("f_made_up")>>
+        Dex: Gloria says I'm talent now. The mic packs are on her wardrobe rack.
+    <<elseif flagged("f_took_card")>>
+        Dex: The makeup chair's free. If I let Gloria powder me, she'll let me near the mic packs.
+    <<elseif flagged("f_gr_intro")>>
+        Dex: Gloria won't let me near the mic packs until I've been through her makeup chair. And Chet's "reserved" it with a little sign. Little signs go missing all the time.
     <<else>>
-        Roxy Vale: No mic, no show. Wardrobe keeps the spare mics on the rack.
+        Roxy Vale: No mic, no show. Wardrobe keeps the mic packs in the green room, through the door under the booth window.
     <<endif>>
 <<endif>>
 <<if not flagged("f_shirt_clean")>>
-    <<if has("soda_water") and has("cocktail_napkin")>>
+    <<if flagged("f_shirt_wet")>>
+        <<if flagged("f_asked_gloria_stain")>>
+            Dex: The stain's gone, but I'm soaking wet. Gloria said her Turbo-Puff 3000 would dry it in no time.
+        <<else>>
+            Dex: The stain's gone, but I'm soaking wet. Somebody in the green room must own a hair dryer. Makeup people always do.
+        <<endif>>
+    <<elseif has("soda_water") and has("cocktail_napkin")>>
         Dex: Club soda and a napkin. Blot, don't rub. I just have to put them together.
     <<elseif flagged("f_bree_tip")>>
-        Dex: Bree said club soda and a napkin. Blot, don't rub. I need both.
+        Dex: Bree said club soda and a napkin. Blot, don't rub. Lou brought the drinks.
     <<else>>
         Roxy Vale: That purple stain is still screaming at my cameras.
         Dex: Who'd know how to fix a spill? Somebody who deals with spills all day. Like a waitress.
@@ -96,9 +248,23 @@ title: F_Hints
     <<if has("floor_fillers_tape")>>
         Dex: Dolly's mix is ready. It goes in the sound board.
     <<elseif has("chet_mixtape")>>
-        Dex: I've got Chet's tape. A DJ could record over it. I know a DJ.
+        <<if not flagged("f_tape_wound")>>
+            <<if flagged("f_knows_rewind")>>
+                Dex: Dolly said to wind the tape back in with a pencil. Bree always keeps one stuck in her bun.
+            <<else>>
+                Dex: I've got Chet's tape. A DJ could record over it. I know a DJ.
+            <<endif>>
+        <<elseif flagged("f_lent_cans") and not flagged("f_cans_back")>>
+            <<if flagged("f_tape_swapped")>>
+                Dex: Dolly needs her headphones back to mix, and they're part of my Kevin Kit. I'm done being Kevin. I should give it back to her.
+            <<else>>
+                Dex: Dolly can't mix without her headphones, and I still need them to be Kevin. Booth first, then I give them back.
+            <<endif>>
+        <<else>>
+            Dex: The tape's wound up again. Dolly can record over it now.
+        <<endif>>
     <<elseif flagged("f_saw_decks")>>
-        Dex: Both dance-off decks are loaded with Chet's tape. I should eject it.
+        Dex: Dolly's working on my track. I should check in with her.
     <<else>>
         Roxy Vale: And your dance-off track goes in the sound board. Go check it, sweetie.
     <<endif>>
@@ -107,31 +273,28 @@ title: F_Hints
 title: F_Roxy_Walkie
 ---
 <<if flagged("f_roxy_saw_walkie")>>
-    Roxy Vale: I've seen it, lover boy. I need proof it's his.
+    Roxy Vale: I've seen it, lover boy. I need him to slip up, live.
 <<else>>
     Roxy Vale: A walkie-talkie. Taped behind camera one. Labelled CHET. Set to channel CHET.
     Roxy Vale: (into it) Testing.
     Chet Studwell: (clutching his ear) OW! Who said that?
-    Roxy Vale: Interesting. But my lawyers say "Chet" is a common name. Bring me proof it's his and he's toast.
-    Dex: Proof. Who keeps track of every walkie in a building? Someone organised. Someone who runs everything...
+    Roxy Vale: Interesting. But my lawyers say "Chet" is a common name. I need him to slip up, live, where everybody can see it.
+    Roxy Vale: Tell you what. Before every finale we shoot a Trash-Talk Teaser. Chet throws insults, you throw them back. He's never lost one. Not once. Suspicious, no?
+    Roxy Vale: Cut off whoever's whispering in his ear, then beat him at it. If he's a fake, he'll crack.
+    Dex: Cut off the whisperer. This walkie is only a relay: its little screen says RECEIVING FROM: BOOTH. So the voice comes from upstairs.
+    Dex: And then I need comebacks. Good ones. Lots of people in that audience have dealt with a Chet.
     <<take studio_walkie>>
     <<flag f_roxy_saw_walkie>>
+    <<flag f_duel_known>>
 <<endif>>
 ===
-title: F_Roxy_Sheet
+title: F_Roxy_CheatTape
 ---
-<<if not flagged("f_roxy_saw_walkie")>>
-    Roxy Vale: An equipment sign-out sheet. "Walkie number two: C. Studwell." So? Where's walkie number two?
-    Dex: Right. I need to find the actual walkie first.
+<<if flagged("f_roxy_saw_walkie")>>
+    Roxy Vale: "CHET'S COMEBACKS. PLAY ON LOOP." Ha! Hang on to that, lover boy. He'll just say it's a podcast.
+    Roxy Vale: Beat him at the Trash-Talk Teaser without it. When he cracks, THEN you show me.
 <<else>>
-    Roxy Vale: "Walkie number two. Signed out by C. Studwell. Reason: winning." In his own handwriting.
-    Roxy Vale: Chet Studwell! Hand over that earpiece. Now.
-    Chet Studwell: This is an outrage! My dad owns the network!
-    Roxy Vale: And I own this microphone. Earpiece. Hand. Now.
-    Dex: He drops a tiny earpiece into her palm. The audience boos him. Tess salutes me with her clipboard.
-    Roxy Vale: Your name is clear, lover boy. Sorry I doubted you. A little.
-    <<take sign_out_sheet>>
-    <<flag f_chet_busted>>
+    Roxy Vale: A tape with Chet's name on it? Lover boy, everything here has Chet's name on it. Show me how it reaches him.
 <<endif>>
 ===
 title: F_Roxy_Token
@@ -157,6 +320,10 @@ title: F_Roxy_PostCredits
     Roxy Vale: You know what I'll remember? Not the dance. You, running around all night bringing everybody exactly what they needed.
     Roxy Vale: ...Also the dance. Mostly the dance.
     <<flag f_post3>>
+<<elseif not flagged("f_post4")>>
+    Roxy Vale: Norma says there was a runner called Kevin on the crew tonight. Best runner she ever had. Then he vanished.
+    Roxy Vale: (winks) Funny. He had your exact shirt.
+    <<flag f_post4>>
 <<else>>
     Roxy Vale: Go home, lover boy. Get some sleep. Your fan club's waiting outside, and they've made signs.
 <<endif>>
@@ -168,6 +335,8 @@ title: F_Chet_Look
     Dex: Chet Studwell, sitting on the floor, still slightly sticky with his own grape soda. His teeth have lost their sparkle.
 <<elseif flagged("f_chet_busted")>>
     Dex: Chet, earpiece-free and sulking. Without someone feeding him lines, he keeps opening his mouth and nothing comes out.
+<<elseif flagged("f_tape_swapped")>>
+    Dex: Chet is slapping the side of his head like a ketchup bottle. Nothing's coming out of his earpiece. Nothing's coming out of him, either.
 <<else>>
     Dex: Chet Studwell. Teeth like a toothpaste ad. He keeps touching his ear and muttering "copy that". To who?
     <<flag f_saw_earpiece>>
@@ -187,23 +356,237 @@ title: F_Chet_Talk
 <<elseif not flagged("f_talked_chet")>>
     Chet Studwell: Listen, kid. I've won every round of this show without breaking a sweat. Or learning a single name.
     Chet Studwell: (touches his ear) What? Yes. Copy that. (to Dex) Your shirt looks like a fruit salad that lost a fight.
-    Dex: Who are you talking to?
-    Chet Studwell: Nobody! My... ear. I talk to my ear. Champions do that.
+    Dex: That was quick. Like somebody handed it to him.
     <<flag f_talked_chet>>
     <<flag f_saw_earpiece>>
+    <<jump F_Chet_Menu>>
+<<elseif flagged("f_tape_swapped")>>
+    Chet Studwell: (tapping his ear) Hello? Copy that? ...Copy ANYTHING? (to Dex) What do YOU want, Dorkus?
+    <<jump F_Chet_Menu>>
 <<else>>
     Chet Studwell: (touches his ear) Copy that. (to Dex) Run along, loser. Grown-ups are winning.
-    Dex: Somebody's feeding him lines through that earpiece. There must be a radio around here somewhere.
+    <<jump F_Chet_Menu>>
 <<endif>>
+===
+title: F_Chet_Menu
+---
+-> Who do you keep talking to? <<if not flagged("f_chet_ask_ear")>>
+    Chet Studwell: Nobody! My... ear. I talk to my ear. Champions do that. It's called "self-talk". Look it up.
+    Dex: Somebody's feeding him lines through that earpiece. There must be a radio around here somewhere.
+    <<flag f_chet_ask_ear>>
+    <<jump F_Chet_Menu>>
+-> Trash talk. You and me. Right now. <<if flagged("f_duel_known")>>
+    <<jump F_Duel_Start>>
+-> What does your dad do? <<if not flagged("f_chet_dad")>>
+    Chet Studwell: He owns the network. And this building. And a smaller backup network, in case this one's mean to me.
+    <<flag f_chet_dad>>
+    <<jump F_Chet_Menu>>
+-> Nice teeth. <<if not flagged("f_chet_teeth")>>
+    Chet Studwell: I know. They're so white they've got their own lighting crew.
+    Dex: That sounded rehearsed. I bet he says it a lot.
+    <<flag f_chet_teeth>>
+    <<jump F_Chet_Menu>>
+-> Did you really spill that soda on purpose? <<if not flagged("f_chet_soda")>>
+    Chet Studwell: Spill? I don't spill. I make contributions. You're welcome.
+    <<flag f_chet_soda>>
+    <<jump F_Chet_Menu>>
+-> Later, Chet.
+    Chet Studwell: Later, loser. Copy that. I mean... later.
 ===
 title: F_Chet_Walkie
 ---
 Chet Studwell: Never seen that walkie-talkie in my life. And I definitely didn't write CHET on it in glitter pen.
 Dex: He wrote CHET on it in glitter pen.
 ===
+title: F_Chet_CheatTape
+---
+Chet Studwell: Never seen it. Give it here. I mean, never seen it. Give it here anyway.
+Dex: Nice try, Chet.
+===
+title: F_Chet_Card
+---
+Chet Studwell: My reserved card! ...Keep it. I've got forty. I reserve things recreationally.
+===
+title: F_Chet_Sign
+---
+Chet Studwell: CHET IS A... hey! That's slander! Slander with excellent penmanship, but slander!
+===
 title: F_Chet_Item
 ---
 Chet Studwell: I don't take handouts, loser. Unless they're trophies.
+===
+
+title: F_Duel_Start
+---
+<<if flagged("f_chet_busted")>>
+    Dex: I already won that one.
+<<elseif not flagged("f_roxy_saw_walkie")>>
+    Dex: Trash-talk Chet with Roxy not paying attention? He'd just deny everything. I need her watching him first.
+<<elseif not flagged("f_tape_swapped")>>
+    <<jump F_Duel_Rigged>>
+<<else>>
+    Roxy Vale: Ooh! Are we doing the Trash-Talk Teaser? Camera two, get in close!
+    Roxy Vale: Gentlemen: five insults. Chet throws, Dex catches. One fumble and it's over.
+    Chet Studwell: (tapping his ear) Fine. I don't need help. I'm a natural. ...Hello? Is this thing on?
+    <<jump F_Duel_1>>
+<<endif>>
+===
+title: F_Duel_Rigged
+---
+Roxy Vale: Trash-Talk Teaser! Places, boys!
+Chet Studwell: You dance like a folding chair falling down the stairs.
+-> "A folding chair still holds folks up. When's the last time you did that?" <<if flagged("f_cb_lacey")>>
+    <<jump F_Duel_Topped>>
+-> "Oh yeah? Well... your face!"
+    <<jump F_Duel_Topped>>
+-> "I know you are, but what am I?"
+    <<jump F_Duel_Topped>>
+===
+title: F_Duel_Topped
+---
+Chet Studwell: (touches his ear, listens, nods) Copy that.
+Chet Studwell: Ahem. Nice try, Dooley. But I've got a comeback for your comeback, and a comeback for THAT comeback. Point, Studwell.
+Roxy Vale: Ooh, he's quick tonight. Suspiciously quick.
+Dex: Every time I say something, the voice in his ear hands him an answer. While that feed is running, I can't win.
+===
+
+title: F_Duel_1
+---
+Chet Studwell: Round one. You dance like a folding chair falling down the stairs.
+-> "A folding chair still holds folks up. When's the last time you did that?" <<if flagged("f_cb_lacey")>>
+    Lacey Rae: (from the audience) YEEHAW! That's my freshman!
+    Chet Studwell: I... hold things. I hold trophies.
+    <<jump F_Duel_2>>
+-> "Nice teeth. Shame nothing smart ever comes out between them." <<if flagged("f_cb_lou")>>
+    <<jump F_Duel_Lose>>
+-> "Must be quiet in there. The trophies are the only ones who'll listen to you." <<if flagged("f_cb_ivy")>>
+    <<jump F_Duel_Lose>>
+-> "Funny. Tess made the seating chart, and you're listed under Fire Exit." <<if flagged("f_cb_tess")>>
+    <<jump F_Duel_Lose>>
+-> "Sorry, what was your name again? Chad? Chip? Chuck?" <<if flagged("f_cb_jett")>>
+    <<jump F_Duel_Lose>>
+-> "Your roots are showing." <<if flagged("f_cb_gloria")>>
+    <<jump F_Duel_Roots>>
+-> "Oh yeah? Well... your face!"
+    <<jump F_Duel_Lose>>
+-> "I know you are, but what am I?"
+    <<jump F_Duel_Lose>>
+===
+title: F_Duel_2
+---
+Chet Studwell: My teeth are so white they've got their own lighting crew.
+-> "A folding chair still holds folks up. When's the last time you did that?" <<if flagged("f_cb_lacey")>>
+    <<jump F_Duel_Lose>>
+-> "Nice teeth. Shame nothing smart ever comes out between them." <<if flagged("f_cb_lou")>>
+    Lou: (from the audience) Heh.
+    Dex: Lou laughed. One syllable. The whole audience gasps.
+    <<jump F_Duel_3>>
+-> "Must be quiet in there. The trophies are the only ones who'll listen to you." <<if flagged("f_cb_ivy")>>
+    <<jump F_Duel_Lose>>
+-> "Funny. Tess made the seating chart, and you're listed under Fire Exit." <<if flagged("f_cb_tess")>>
+    <<jump F_Duel_Lose>>
+-> "Sorry, what was your name again? Chad? Chip? Chuck?" <<if flagged("f_cb_jett")>>
+    <<jump F_Duel_Lose>>
+-> "Your roots are showing." <<if flagged("f_cb_gloria")>>
+    <<jump F_Duel_Roots>>
+-> "Oh yeah? Well... your face!"
+    <<jump F_Duel_Lose>>
+-> "I know you are, but what am I?"
+    <<jump F_Duel_Lose>>
+===
+title: F_Duel_3
+---
+Chet Studwell: I've got a trophy cabinet bigger than your whole dorm room.
+-> "A folding chair still holds folks up. When's the last time you did that?" <<if flagged("f_cb_lacey")>>
+    <<jump F_Duel_Lose>>
+-> "Nice teeth. Shame nothing smart ever comes out between them." <<if flagged("f_cb_lou")>>
+    <<jump F_Duel_Lose>>
+-> "Must be quiet in there. The trophies are the only ones who'll listen to you." <<if flagged("f_cb_ivy")>>
+    Ivy: (from the audience, loud and clear) BURN.
+    Dex: Ivy said that. Out loud. Somebody check on Ms. Hush.
+    <<jump F_Duel_4>>
+-> "Funny. Tess made the seating chart, and you're listed under Fire Exit." <<if flagged("f_cb_tess")>>
+    <<jump F_Duel_Lose>>
+-> "Sorry, what was your name again? Chad? Chip? Chuck?" <<if flagged("f_cb_jett")>>
+    <<jump F_Duel_Lose>>
+-> "Your roots are showing." <<if flagged("f_cb_gloria")>>
+    <<jump F_Duel_Roots>>
+-> "Oh yeah? Well... your face!"
+    <<jump F_Duel_Lose>>
+-> "I know you are, but what am I?"
+    <<jump F_Duel_Lose>>
+===
+title: F_Duel_4
+---
+Chet Studwell: Everybody in this studio came here to see ME.
+-> "A folding chair still holds folks up. When's the last time you did that?" <<if flagged("f_cb_lacey")>>
+    <<jump F_Duel_Lose>>
+-> "Nice teeth. Shame nothing smart ever comes out between them." <<if flagged("f_cb_lou")>>
+    <<jump F_Duel_Lose>>
+-> "Must be quiet in there. The trophies are the only ones who'll listen to you." <<if flagged("f_cb_ivy")>>
+    <<jump F_Duel_Lose>>
+-> "Funny. Tess made the seating chart, and you're listed under Fire Exit." <<if flagged("f_cb_tess")>>
+    Tess Calloway: (holding up the seating chart) It's laminated, Chet.
+    Chet Studwell: ...Is that why my seat was in the parking lot?
+    <<jump F_Duel_5>>
+-> "Sorry, what was your name again? Chad? Chip? Chuck?" <<if flagged("f_cb_jett")>>
+    <<jump F_Duel_Lose>>
+-> "Your roots are showing." <<if flagged("f_cb_gloria")>>
+    <<jump F_Duel_Roots>>
+-> "Oh yeah? Well... your face!"
+    <<jump F_Duel_Lose>>
+-> "I know you are, but what am I?"
+    <<jump F_Duel_Lose>>
+===
+title: F_Duel_5
+---
+Chet Studwell: Nobody's going to remember your name after tonight.
+-> "A folding chair still holds folks up. When's the last time you did that?" <<if flagged("f_cb_lacey")>>
+    <<jump F_Duel_Lose>>
+-> "Nice teeth. Shame nothing smart ever comes out between them." <<if flagged("f_cb_lou")>>
+    <<jump F_Duel_Lose>>
+-> "Must be quiet in there. The trophies are the only ones who'll listen to you." <<if flagged("f_cb_ivy")>>
+    <<jump F_Duel_Lose>>
+-> "Funny. Tess made the seating chart, and you're listed under Fire Exit." <<if flagged("f_cb_tess")>>
+    <<jump F_Duel_Lose>>
+-> "Sorry, what was your name again? Chad? Chip? Chuck?" <<if flagged("f_cb_jett")>>
+    Jett Vex: (from the audience) Ha! ...Okay, that was NOT boring.
+    Chet Studwell: It's CHET! C-H-E... (taps his ear) Help? HELLO?
+    <<jump F_Duel_Win>>
+-> "Your roots are showing." <<if flagged("f_cb_gloria")>>
+    <<jump F_Duel_Roots>>
+-> "Oh yeah? Well... your face!"
+    <<jump F_Duel_Lose>>
+-> "I know you are, but what am I?"
+    <<jump F_Duel_Lose>>
+===
+
+title: F_Duel_Roots
+---
+Chet Studwell: My roots are natural. Like my talent. And my tan. Point, Studwell!
+Dex: Gloria's comeback doesn't fit anything Chet actually said. I'll save it for a guy with roots.
+<<jump F_Duel_Lose>>
+===
+title: F_Duel_Lose
+---
+Chet Studwell: Ha! Weak. I've heard better comebacks from a vending machine. And it only says "exact change".
+Roxy Vale: Ooh. That one goes to Chet, lover boy. Find better material and try again.
+Dex: Each insult needs the comeback that answers it. Every woman in that audience has handled a guy like Chet. I should ask around.
+===
+title: F_Duel_Win
+---
+Roxy Vale: Five for five! Chet, sweetie, you look a little pale. Paler. Under the tan.
+Chet Studwell: I... you... (slaps his ear) Come ON! My tape ALWAYS has the next line!
+Roxy Vale: Your TAPE, Chet?
+Chet Studwell: My... tapeworm. I have a very smart tapeworm.
+Dex: You mean this tape? "CHET'S COMEBACKS. PLAY ON LOOP. CHANNEL CHET." In glitter pen. It was playing up in the booth, beamed to a walkie behind Camera One, beamed into your ear.
+Roxy Vale: Chet Studwell! Hand over that earpiece. Now.
+Chet Studwell: This is an outrage! My dad owns the network!
+Roxy Vale: And I own this microphone. Earpiece. Hand. Now.
+Dex: He drops a tiny earpiece into her palm. The audience boos him. Tess salutes me with her clipboard.
+Roxy Vale: Your name is clear, lover boy. Sorry I doubted you. A little.
+<<take chet_cheat_tape>>
+<<flag f_chet_busted>>
 ===
 
 title: F_Audience_Look
@@ -248,146 +631,464 @@ title: F_Audience_Talk
         Dex: I'll just wave. They all wave back. I might cry.
 <<endif>>
 ===
+
 title: F_Lacey
 ---
-Lacey Rae: Freshman! You wore the hat all the way to TV. I'm so proud I could yodel.
-<<if not flagged("f_shirt_clean")>>
-    Lacey Rae: But honey, that purple splotch. Ask a waitress. They've seen every stain known to man.
+<<if flagged("f_chet_busted")>>
+    Lacey Rae: Freshman! You put that varmint in his place! I'm so proud I could yodel. I might yodel.
+<<elseif not flagged("f_shirt_clean")>>
+    Lacey Rae: Freshman! You wore the hat all the way to TV. But honey, that purple splotch...
 <<else>>
-    Lacey Rae: When you dance tonight, remember: boots heavy, heart light. Scoot like you mean it.
+    Lacey Rae: Freshman! You wore the hat all the way to TV. I'm so proud I could yodel.
 <<endif>>
+<<jump F_Lacey_Menu>>
 ===
+title: F_Lacey_Menu
+---
+-> What do I do about this stain? <<if not flagged("f_shirt_clean") and not flagged("f_lacey_stain")>>
+    Lacey Rae: Ask a waitress, honey. They've seen every stain known to man. And a few known only to truckers.
+    <<flag f_lacey_stain>>
+    <<jump F_Lacey_Menu>>
+-> Chet's going to trash-talk me. Got anything? <<if flagged("f_duel_known") and not flagged("f_cb_lacey")>>
+    Lacey Rae: Oh, I know his type. Back home we had a fella like that at every barn dance. Always making fun of how other folks moved.
+    Lacey Rae: If he says you dance like a folding chair, or a fence post, or anything that falls over, you tell him:
+    Lacey Rae: "A folding chair still holds folks up. When's the last time you did that?"
+    Dex: A folding chair holds folks up. Got it. That's for when he makes fun of my dancing.
+    <<flag f_cb_lacey>>
+    <<jump F_Lacey_Menu>>
+-> Tell me that comeback again? <<if flagged("f_cb_lacey") and not flagged("f_chet_busted")>>
+    Lacey Rae: When he knocks your dancing: "A folding chair still holds folks up. When's the last time you did that?"
+    <<jump F_Lacey_Menu>>
+-> Any tips for the dance-off?
+    Lacey Rae: Boots heavy, heart light. Heel, toe, scoot, and tip the hat. Do that, and nobody can touch you.
+    <<jump F_Lacey_Menu>>
+-> Still listening to Hank Hollister? <<if not flagged("f_lacey_hank")>>
+    Lacey Rae: Every day. I brought his album tonight. I bring it everywhere. It's basically a support animal.
+    <<flag f_lacey_hank>>
+    <<jump F_Lacey_Menu>>
+-> Talk to someone else
+    <<jump F_Audience_Talk>>
+-> See you later
+    Lacey Rae: Go get 'em, freshman!
+===
+
 title: F_Ivy
 ---
 Ivy: (whispering) Hi. It's loud in here. I'm wearing the sunglasses again.
-<<if not flagged("f_chet_busted") and flagged("f_saw_earpiece")>>
-    Ivy: (whispering) I've been watching Chet. Quiet people notice things. He's getting lines from somewhere. Wireless ones.
-    Ivy: (whispering) Before you came in, he stood behind that camera for a long time. Way too long for a guy who isn't a camera.
-<<else>>
-    Ivy: (whispering) Whatever happens, you got me to read a poem in public. That's already a miracle.
-<<endif>>
+<<jump F_Ivy_Menu>>
 ===
+title: F_Ivy_Menu
+---
+-> Have you noticed anything about Chet? <<if not flagged("f_chet_busted")>>
+    <<if flagged("f_tape_swapped")>>
+        Ivy: (whispering) He's just tapping his ear now. Nothing comes back. Without the voice, he's empty. Make him talk.
+    <<elseif flagged("f_took_walkie")>>
+        Ivy: (whispering) That walkie was just the middle. He keeps glancing up at that dark window over the green room door. Like a puppy waiting for its owner.
+    <<else>>
+        Ivy: (whispering) Quiet people notice things. He's getting lines from somewhere. Wireless ones.
+        Ivy: (whispering) Before you came in, he stood behind that camera for a long time. Way too long for a guy who isn't a camera.
+    <<endif>>
+    <<jump F_Ivy_Menu>>
+-> Chet's going to trash-talk me. Any ideas? <<if flagged("f_duel_known") and not flagged("f_cb_ivy")>>
+    Ivy: (whispering) People who brag about their trophies never have anybody listening to them. That's why they brag.
+    Ivy: (whispering) If he brags about his trophies, tell him: "Must be quiet in there. The trophies are the only ones who'll listen to you."
+    Dex: Trophies are the only ones who'll listen. For when he brags about his trophies. Ivy, that's brutal.
+    Ivy: (whispering) Poets are brutal. We just say it quietly.
+    <<flag f_cb_ivy>>
+    <<jump F_Ivy_Menu>>
+-> Tell me that comeback again? <<if flagged("f_cb_ivy") and not flagged("f_chet_busted")>>
+    Ivy: (whispering) When he brags about trophies: "Must be quiet in there. The trophies are the only ones who'll listen to you."
+    <<jump F_Ivy_Menu>>
+-> Writing anything new? <<if not flagged("f_ivy_poem")>>
+    Ivy: (whispering) A new poem. "Ode to the Boy in the Loud Shirt Who Was Kind to Everybody." It's a working title.
+    Dex: That's... nice. Who's it about?
+    Ivy: (whispering) ...You're very bad at poems.
+    <<flag f_ivy_poem>>
+    <<jump F_Ivy_Menu>>
+-> Talk to someone else
+    <<jump F_Audience_Talk>>
+-> See you later
+    Ivy: (whispering) Whatever happens, you got me to read a poem in public. That's already a miracle.
+===
+
 title: F_Tess
 ---
-<<if flagged("f_tess_helped")>>
+<<if flagged("f_chet_busted")>>
     Tess Calloway: I've drawn up a cheering schedule. Row two goes "Dex!", row three goes "Dooley!". Efficiency.
-<<elseif flagged("f_roxy_saw_walkie") or has("studio_walkie")>>
-    Tess Calloway: A walkie-talkie and no proof? Amateur hour. Luckily, I don't do amateur hour.
-    Tess Calloway: When I got here I found the studio's equipment sign-out sheet lying around. So naturally I took charge of it.
-    Tess Calloway: (flips pages) Walkie number two. Signed out by C. Studwell. Reason: "winning." Here. Take it to the host.
-    <<give sign_out_sheet>>
-    <<flag f_tess_helped>>
 <<else>>
-    Tess Calloway: Dex! I organised the whole audience. Seating chart, banners, a backup banner.
-    Tess Calloway: I also confiscated this studio's equipment log. Someone has to keep order around here. If you need anything checked, I'm your girl.
+    Tess Calloway: Dex! I organised the whole audience. Seating chart, banners, a backup banner. And a backup for the backup.
 <<endif>>
+<<jump F_Tess_Menu>>
 ===
+title: F_Tess_Menu
+---
+-> What's in the big folder? <<if not flagged("f_tess_log")>>
+    Tess Calloway: The studio's equipment log. It was lying around. Unsupervised. So naturally I took charge of it, and everything clipped to it.
+    Tess Calloway: If you need anything checked, signed or confiscated, I'm your girl.
+    <<flag f_tess_log>>
+    <<jump F_Tess_Menu>>
+-> Does the log say anything about this walkie? <<if (has("studio_walkie") or flagged("f_roxy_saw_walkie")) and not flagged("f_tess_walkie")>>
+    Tess Calloway: (flips pages) Walkie number two. Signed out by C. Studwell. Reason: "winning".
+    Tess Calloway: And on the same line: one tape deck and transmitter, CONTROL BOOTH. Same signature. Same glitter pen. Amateur hour.
+    Dex: So whatever's feeding him lines is up in the control booth.
+    <<flag f_tess_walkie>>
+    <<jump F_Tess_Menu>>
+-> Is there anything in there for a runner called Kevin? <<if flagged("f_booth_refused") and not flagged("f_got_lanyard")>>
+    Tess Calloway: Kevin... Kevin... here. "Runner: Kevin. Crew lanyard: NOT COLLECTED. Status: no-show." Unacceptable.
+    Tess Calloway: His lanyard's still clipped to the log. You want it? Of course you want it. I'll make a note. "Kevin: replaced by Dex."
+    Dex: She hands me a blue lanyard that says CREW: KEVIN. ALL ACCESS. I've never been all access. I've barely been some access.
+    <<give runner_lanyard>>
+    <<flag f_got_lanyard>>
+    <<jump F_Tess_Menu>>
+-> Chet's going to trash-talk me. Got anything? <<if flagged("f_duel_known") and not flagged("f_cb_tess")>>
+    Tess Calloway: Chet's going to say everybody came to see him. He said it to me at the door. Twice. He tried to sign my clipboard.
+    Tess Calloway: When he does, tell him: "Funny. Tess made the seating chart, and you're listed under Fire Exit."
+    Tess Calloway: It's true, by the way. I put him there. It's on the chart. The chart is laminated.
+    <<flag f_cb_tess>>
+    <<jump F_Tess_Menu>>
+-> Tell me that comeback again? <<if flagged("f_cb_tess") and not flagged("f_chet_busted")>>
+    Tess Calloway: When he says everybody came to see him: "Funny. Tess made the seating chart, and you're listed under Fire Exit."
+    <<jump F_Tess_Menu>>
+-> How's Fernanda? <<if not flagged("f_tess_fernanda")>>
+    Tess Calloway: Back on the porch, fully inflated, under twenty-four-hour guard. The guard is also a flamingo. Smaller. Inflatable. Very loyal.
+    <<flag f_tess_fernanda>>
+    <<jump F_Tess_Menu>>
+-> Talk to someone else
+    <<jump F_Audience_Talk>>
+-> See you later
+    Tess Calloway: Don't be late for your cue. I will know.
+===
+
 title: F_Dolly
 ---
 <<if flagged("f_track_ready")>>
     Dolly Spark: That mix is gonna blow the roof off. Not the fuse, though. I've learned my lesson.
 <<elseif flagged("f_dolly_helped")>>
     Dolly Spark: Your tape's ready, babe. Pop it in the sound board.
-<<elseif has("chet_mixtape")>>
-    Dolly Spark: Is that a tape? Hand it here and I'll mix you something on it.
-<<elseif flagged("f_saw_decks")>>
+<<else>>
+    Dolly Spark: Dex! Glow sticks for everybody!
+<<endif>>
+<<jump F_Dolly_Menu>>
+===
+title: F_Dolly_Menu
+---
+-> Seen the sound board? <<if not flagged("f_saw_decks")>>
+    Dolly Spark: Have YOU? I don't trust a dance-off I didn't DJ. Go check what's loaded in those decks.
+    <<jump F_Dolly_Menu>>
+-> Chet jammed his own tape in my deck! <<if flagged("f_saw_decks") and not flagged("f_dolly_helped") and not flagged("f_dolly_crime")>>
     Dolly Spark: Chet loaded his own tape in BOTH dance-off decks? That's not DJing, that's a crime.
     Dolly Spark: Bring me any tape. Even a terrible one. I'll record right over it with a mix that'll make you dance like nobody's grading.
-<<else>>
-    Dolly Spark: Dex! Glow sticks for everybody! Hey, have you checked the sound board? I don't trust a dance-off I didn't DJ.
-<<endif>>
+    <<flag f_dolly_crime>>
+    <<jump F_Dolly_Menu>>
+-> Could you mix me a track on this? <<if has("chet_mixtape")>>
+    <<jump F_Audience_Mixtape>>
+-> Can I borrow your headphones? <<if flagged("f_booth_refused") and not flagged("f_lent_cans")>>
+    Dolly Spark: My cans? For a DISGUISE? Babe, that's the most rock and roll thing anyone's ever asked me.
+    Dolly Spark: Bring 'em back, though. I can't mix without them. A DJ without cans is just a girl pointing at buttons.
+    <<give dolly_headphones>>
+    <<flag f_lent_cans>>
+    <<jump F_Dolly_Menu>>
+-> Here are your headphones back. <<if has("runner_disguise") and flagged("f_tape_swapped") and not flagged("f_cans_back")>>
+    <<jump F_Audience_Cans>>
+-> How's the Fuse Box? <<if not flagged("f_dolly_fuse")>>
+    Dolly Spark: Brand-new fuse, brand-new amp, and a sign over the decks: DROP THE BASS GENTLY. Nobody reads it. Least of all me.
+    <<flag f_dolly_fuse>>
+    <<jump F_Dolly_Menu>>
+-> Talk to someone else
+    <<jump F_Audience_Talk>>
+-> See you later
+    Dolly Spark: Later, babe! Keep it funky!
 ===
+
 title: F_Mina
 ---
 <<if flagged("f_miked")>>
     Dr. Mina Volt: Your mic is reading strong. I can hear your heart rate from here. It's... elevated.
-<<elseif flagged("f_mina_tip")>>
-    Dr. Mina Volt: Nine-volt, remember? Sky has my spare. Go ask the girl with the megaphone.
-<<elseif has("lapel_mic")>>
-    Dr. Mina Volt: Let me see that mic pack. Hmm. Standard nine-volt clip, empty. Classic.
-    Dr. Mina Volt: I always carry spares, but I gave my last one to Sky for her megaphone. She owes me. Ask her.
-    <<flag f_mina_tip>>
 <<else>>
     Dr. Mina Volt: Professor Nibbles says hello. He's in my coat pocket. He's not technically allowed in here.
-    Dr. Mina Volt: Fun fact: TV studios eat batteries. If anything electronic dies on you, come find me.
 <<endif>>
+<<jump F_Mina_Menu>>
 ===
+title: F_Mina_Menu
+---
+-> This mic pack's dead. Got a battery? <<if has("lapel_mic") and not flagged("f_mina_tip")>>
+    Dr. Mina Volt: Let me see. Hmm. Standard nine-volt clip, empty. Classic.
+    Dr. Mina Volt: I always carry spares, but I gave my last one to Sky for her megaphone. She owes me. Ask her.
+    <<flag f_mina_tip>>
+    <<jump F_Mina_Menu>>
+-> Could Professor Nibbles help me with something? <<if flagged("f_norma_guards") and not flagged("f_tape_swapped") and not has("nibbles_on_loan")>>
+    Dr. Mina Volt: A mission? He'd love that. He's been so bored since retirement. He's taken up knitting. Badly.
+    Dr. Mina Volt: But he's a professional, Dex. He doesn't leave this pocket for less than one cheese puff. Union rules.
+    Dex: Somewhere in this building there must be a snack table.
+    <<flag f_mina_offer>>
+    <<jump F_Mina_Menu>>
+-> Here, a cheese puff. <<if has("studio_cheese_puff")>>
+    <<jump F_Audience_CheesePuff>>
+-> Any science tips for live TV? <<if not flagged("f_mina_science")>>
+    Dr. Mina Volt: Fun fact: TV studios eat batteries. And the lights run so hot that you lose a whole glass of sweat per hour. Hydrate.
+    Dex: I did not need to know that.
+    Dr. Mina Volt: Nobody does. That's what makes it science.
+    <<flag f_mina_science>>
+    <<jump F_Mina_Menu>>
+-> How's the Professor's retirement? <<if not flagged("f_mina_nibbles")>>
+    Dr. Mina Volt: Wonderful. He has a little desk now, with a little nameplate. He mostly sleeps on it. Like a real professor.
+    <<flag f_mina_nibbles>>
+    <<jump F_Mina_Menu>>
+-> Talk to someone else
+    <<jump F_Audience_Talk>>
+-> See you later
+    Dr. Mina Volt: Good luck! Statistically, you need it!
+===
+
 title: F_Sky
 ---
 <<if flagged("f_sky_helped")>>
-    Sky Rivera: (megaphone) WHAT DO WE WANT? DEX TO WIN! WHEN DO WE WANT IT? AFTER THE COMMERCIAL BREAK!
-<<elseif flagged("f_mina_tip")>>
-    Sky Rivera: Mina's battery? For your mic? Say no more.
-    Sky Rivera: Power to the people. And to the people's microphones.
-    Dex: She pops it out of her megaphone and hands it over.
-    <<give nine_volt>>
-    <<flag f_sky_helped>>
+    Sky Rivera: (holding up her sign) WHAT DO WE WANT? DEX TO WIN! WHEN DO WE WANT IT? AFTER THE COMMERCIAL BREAK!
 <<else>>
     Sky Rivera: I'm here to support you. And to protest Chet. Mostly to protest Chet.
-    Sky Rivera: My megaphone's fully charged tonight, thanks to Mina's spare battery. I could scream for hours.
 <<endif>>
+<<jump F_Sky_Menu>>
 ===
+title: F_Sky_Menu
+---
+-> Mina says you've got her spare battery. <<if flagged("f_mina_tip") and not flagged("f_sky_helped") and not flagged("f_sky_wants_sign")>>
+    Sky Rivera: The nine-volt in my megaphone? Dex, man, this megaphone is my VOICE. Tonight I'm protesting Chet. Loudly.
+    Sky Rivera: ...Unless. Unless I had a sign. A sign is a voice you don't have to charge. Mimi says silent protests hit the hardest.
+    Sky Rivera: Bring me a protest sign. Big letters. Something about Chet. And then the battery's yours.
+    <<flag f_sky_wants_sign>>
+    <<jump F_Sky_Menu>>
+-> What kind of sign do you want? <<if flagged("f_sky_wants_sign") and not flagged("f_sky_helped") and not has("chet_protest_sign")>>
+    Sky Rivera: Something to write on and something bold to write with. Red's the colour of revolution. And of lipstick, I guess.
+    <<jump F_Sky_Menu>>
+-> Here's your protest sign. <<if has("chet_protest_sign")>>
+    <<jump F_Audience_Sign>>
+-> What else are you protesting tonight? <<if not flagged("f_sky_lore")>>
+    Sky Rivera: Six-dollar studio water. Chet's teeth, which are an environmental hazard. And the APPLAUSE sign. Applause should be FREE.
+    <<flag f_sky_lore>>
+    <<jump F_Sky_Menu>>
+-> Talk to someone else
+    <<jump F_Audience_Talk>>
+-> See you later
+    Sky Rivera: Power to the people, Dex!
+===
+
 title: F_Bree
 ---
 <<if flagged("f_shirt_clean")>>
     Bree Marlowe: Look at you, camera-ready! Now hit your mark and find your light. Actor stuff.
-<<elseif flagged("f_bree_tip")>>
-    Bree Marlowe: Club soda on a napkin. Blot, don't rub. Lou's got a whole bag of drinks from the store.
 <<else>>
-    Bree Marlowe: Oh, honey, that's grape soda. I've had worse dumped on me by the lunch rush.
+    Bree Marlowe: Oh, honey. Is that grape soda? I've had worse dumped on me by the lunch rush.
+<<endif>>
+<<jump F_Bree_Menu>>
+===
+title: F_Bree_Menu
+---
+-> Can you help me with this stain? <<if not flagged("f_bree_tip") and not flagged("f_shirt_clean")>>
     Bree Marlowe: Club soda on a napkin. Blot, don't rub. Here, I never go anywhere without napkins in my apron.
     Bree Marlowe: As for club soda, Lou brought a whole bag of drinks from the store. Studio prices offend her.
     <<give cocktail_napkin>>
     <<flag f_bree_tip>>
-<<endif>>
+    <<jump F_Bree_Menu>>
+-> Where do I get club soda again? <<if flagged("f_bree_tip") and not flagged("f_lou_helped")>>
+    Bree Marlowe: Lou. Bag of drinks. Ask nicely, and only once.
+    <<jump F_Bree_Menu>>
+-> Can I borrow that pencil in your bun? <<if flagged("f_knows_rewind") and not flagged("f_got_pencil")>>
+    Bree Marlowe: My order pencil? That pencil has taken ten thousand orders. It's seen things.
+    Bree Marlowe: For you, sure. (she pulls it out and her whole bun falls down) ...Worth it. Go.
+    <<give bun_pencil>>
+    <<flag f_got_pencil>>
+    <<jump F_Bree_Menu>>
+-> How did the audition go? <<if not flagged("f_bree_lore")>>
+    Bree Marlowe: It's tomorrow! But the casting lady saw my headshots and said, quote, "Who is your photographer?" I said, quote, "A freshman."
+    <<flag f_bree_lore>>
+    <<jump F_Bree_Menu>>
+-> Talk to someone else
+    <<jump F_Audience_Talk>>
+-> See you later
+    Bree Marlowe: Break a leg! Not literally, we're short a waitress.
 ===
+
 title: F_Lou
 ---
 <<if flagged("f_lou_helped")>>
     Lou: I'm not smiling. My face is just tired from not smiling.
-<<elseif flagged("f_bree_tip")>>
+<<else>>
+    Lou: I brought my own drinks. The studio charges six bucks a water. Criminals.
+<<endif>>
+<<jump F_Lou_Menu>>
+===
+title: F_Lou_Menu
+---
+-> Could I have a club soda? For the stain. <<if flagged("f_bree_tip") and not flagged("f_lou_helped")>>
     Lou: Club soda. For the stain. Fine.
     Lou: You finished my crossword. I owe you one. This is the one. Don't make it weird.
     Dex: She hands me a bottle of club soda. Her mouth twitches. Was that... no. Couldn't be.
     <<give soda_water>>
     <<flag f_lou_helped>>
-<<else>>
-    Lou: I brought my own drinks. The studio charges six bucks a water. Criminals.
+    <<jump F_Lou_Menu>>
+-> Chet's going to trash-talk me. Any advice? <<if flagged("f_duel_known") and not flagged("f_cb_lou")>>
+    Lou: He flashed his teeth at me in the lobby. Said they're so white they've got their own lighting crew.
+    Lou: If he says it to you: "Nice teeth. Shame nothing smart ever comes out between them."
+    Lou: Don't smile when you say it. Smiling's for amateurs.
+    <<flag f_cb_lou>>
+    <<jump F_Lou_Menu>>
+-> Tell me that comeback again? <<if flagged("f_cb_lou") and not flagged("f_chet_busted")>>
+    Lou: Teeth. "Nice teeth. Shame nothing smart ever comes out between them." Don't ask a third time.
+    <<jump F_Lou_Menu>>
+-> Started a new crossword? <<if not flagged("f_lou_lore")>>
+    Lou: Yes. Seven down: "Contestant who will lose tonight." Five letters. Starts with C.
+    Dex: ...Chet's only four letters.
+    Lou: I write big.
+    <<flag f_lou_lore>>
+    <<jump F_Lou_Menu>>
+-> Talk to someone else
+    <<jump F_Audience_Talk>>
+-> See you later
     Lou: If you need something, ask. Don't ask twice.
-<<endif>>
 ===
+
 title: F_Mimi
 ---
-<<if not flagged("f_chet_busted")>>
-    Dex: Mimi points at Chet. Then at her ear. Then she mimes cranking an old-timey radio and pretends to tape it to something big with a lens.
-    Dex: She's saying... Chet has a radio taped to... a camera? Or an elephant. I really hope it's a camera.
-<<else>>
-    Dex: Mimi mimes a giant trophy. Then mimes handing it to me. Then mimes crying with joy. She's a lot.
-<<endif>>
+Dex: Mimi waves at me. Then she waves at an invisible person next to me. Then she makes the invisible person wave back.
+<<jump F_Mimi_Menu>>
 ===
+title: F_Mimi_Menu
+---
+-> What's Chet up to? <<if not flagged("f_chet_busted")>>
+    <<if flagged("f_tape_swapped")>>
+        Dex: Mimi mimes Chet slapping his ear. Then mimes an empty speech bubble. Then pops it. She's having the time of her life.
+    <<elseif flagged("f_took_walkie")>>
+        Dex: Mimi points up at the dark window over the green room door. She mimes headphones, then pressing PLAY, then a little tape going round and round.
+        Dex: Somebody up in the booth is playing a tape. For Chet. Got it.
+    <<else>>
+        Dex: Mimi points at Chet. Then at her ear. Then she mimes cranking an old-timey radio and pretends to tape it to something big with a lens.
+        Dex: She's saying... Chet has a radio taped to... a camera? Or an elephant. I really hope it's a camera.
+    <<endif>>
+    <<jump F_Mimi_Menu>>
+-> Got any comebacks for Chet? <<if flagged("f_duel_known") and not flagged("f_chet_busted")>>
+    Dex: Mimi zips her lips and throws away the key. Then she picks the key back up, unlocks her lips, and points firmly at Jett.
+    Dex: So: mimes don't do comebacks. Punk rockers do. Ask Jett.
+    <<jump F_Mimi_Menu>>
+-> How's the invisible box? <<if not flagged("f_mimi_box")>>
+    Dex: Mimi mimes unlocking the box with a key, stepping out, and then, very slowly, building a small invisible porch onto it.
+    Dex: She's renovating. Good for her.
+    <<flag f_mimi_box>>
+    <<jump F_Mimi_Menu>>
+-> Talk to someone else
+    <<jump F_Audience_Talk>>
+-> See you later
+    Dex: Mimi mimes a giant trophy. Then mimes handing it to me. Then mimes crying with joy. She's a lot.
+===
+
 title: F_Jett
 ---
-<<if has("chet_mixtape")>>
-    Jett Vex: Is that Chet's mixtape? "Pump-Up Jams Volume 9: Songs About Chet." Wow. That's so bad it's almost punk.
-    Jett Vex: Almost. Give it to Dolly. Let her record over it before it hurts somebody.
+<<if flagged("f_chet_busted")>>
+    Jett Vex: You took down Chet. On live TV. That was almost punk.
 <<else>>
     Jett Vex: Bored. ...Okay, a little less bored than usual. Don't let it go to your head.
-    Jett Vex: If that dance-off gets lame, I'm leaving. So don't let it get lame.
 <<endif>>
+<<jump F_Jett_Menu>>
 ===
+title: F_Jett_Menu
+---
+-> Chet's going to trash-talk me. Help? <<if flagged("f_duel_known") and not flagged("f_cb_jett")>>
+    Jett Vex: Guys like Chet always end the same way. "Nobody's going to remember your name." Yawn.
+    Jett Vex: So forget HIS name right back. "Sorry, what was your name again? Chad? Chip? Chuck?"
+    Jett Vex: Nothing hurts a Chet more than not being remembered. It's like stepping on a guitar pedal that's off.
+    <<flag f_cb_jett>>
+    <<jump F_Jett_Menu>>
+-> Tell me that comeback again? <<if flagged("f_cb_jett") and not flagged("f_chet_busted")>>
+    Jett Vex: When he says nobody will remember you: "Sorry, what was your name again? Chad? Chip? Chuck?" Deadpan. No smile.
+    <<jump F_Jett_Menu>>
+-> Check out Chet's mixtape. <<if has("chet_mixtape")>>
+    Jett Vex: "Pump-Up Jams Volume 9: Songs About Chet." Wow. That's so bad it's almost punk.
+    Jett Vex: Almost. Give it to Dolly. Let her record over it before it hurts somebody.
+    <<jump F_Jett_Menu>>
+-> Will you dance tonight? <<if not flagged("f_jett_lore")>>
+    Jett Vex: If that dance-off gets lame, I'm leaving. So don't let it get lame.
+    Dex: No pressure.
+    Jett Vex: All the pressure. That's what makes it fun.
+    <<flag f_jett_lore>>
+    <<jump F_Jett_Menu>>
+-> Talk to someone else
+    <<jump F_Audience_Talk>>
+-> See you later
+    Jett Vex: Whatever. ...Good luck. Ugh.
+===
+
 title: F_Audience_Mixtape
 ---
 <<if flagged("f_dolly_helped")>>
     Dolly Spark: I already made you a tape, babe.
+<<elseif not flagged("f_tape_wound")>>
+    Dolly Spark: Babe, half this tape is hanging out like spaghetti. Chet must've yanked it. I can't record on spaghetti.
+    Dolly Spark: Old DJ trick: stick a pencil in the little hole and twirl it back in. Twirl, twirl, twirl.
+    Dex: A pencil. Who brings a pencil to a TV show? Somebody who takes orders all day... Bree keeps one stuck in her bun!
+    <<flag f_knows_rewind>>
+<<elseif flagged("f_lent_cans") and not flagged("f_cans_back")>>
+    Dolly Spark: Love the tape. But I can't mix without my headphones, and right now they're busy being Kevin.
+    Dolly Spark: Finish your sneaky business, then bring 'em back.
 <<else>>
     Dolly Spark: Chet's tape? Perfect. Recording over it is the nicest thing anyone could do for it.
-    Dolly Spark: (slams it into a tiny boombox) One... two... and DROP!
+    Dolly Spark: (slams it into a tiny boombox, slides her headphones on) One... two... and DROP!
     Jett Vex: Ugh. That's actually good. I hate it. Turn it up.
     Dolly Spark: Done. "Dolly's Floor-Fillers, Dex Edition." Track one: Disco Volcano. Obviously. Put it in the sound board and dance like the fuse can't blow.
     <<take chet_mixtape>>
     <<give floor_fillers_tape>>
     <<flag f_dolly_helped>>
 <<endif>>
+===
+title: F_Audience_Cans
+---
+<<if flagged("f_cans_back")>>
+    Dolly Spark: I've already got my cans back, babe.
+<<elseif not flagged("f_tape_swapped")>>
+    Dolly Spark: My cans! On your head, with a straw! You look like a very confused pilot. Keep 'em till you're done sneaking around, babe.
+<<else>>
+    Dolly Spark: My cans! I'll take those. You can keep the straw. And the lanyard. Hi, Kevin.
+    Dex: I'm not Kevin any more. Kevin had a good run. Kevin is at peace.
+    <<take runner_disguise>>
+    <<flag f_cans_back>>
+<<endif>>
+===
+title: F_Audience_CansEarly
+---
+Dolly Spark: My headphones? Keep 'em till you've done your sneaky thing, babe. Just don't sit on them.
+===
+title: F_Audience_CheesePuff
+---
+<<if has("nibbles_on_loan")>>
+    Dr. Mina Volt: The Professor's already with you, Dex. Mission first, snacks after.
+<<elseif flagged("f_tape_swapped")>>
+    Dr. Mina Volt: For me? Thanks! (crunch) Nibbles is asleep. He did a big mission tonight. He won't tell me what.
+    <<take studio_cheese_puff>>
+<<elseif flagged("f_norma_guards") or flagged("f_mina_offer")>>
+    Dr. Mina Volt: A cheese puff! Professor Nibbles' one true weakness. He's out of my pocket already. Look at him go.
+    Dr. Mina Volt: Where he goes, he'll do his job and come straight back to me. He always does. He's very professional.
+    Dex: Professor Nibbles, on loan, in a paper cup. He's chewing the cheese puff and looking at me like a tiny action hero.
+    <<take studio_cheese_puff>>
+    <<give nibbles_on_loan>>
+<<else>>
+    Dr. Mina Volt: For me? Thanks! (crunch) Nibbles is jealous. He'd do anything for one of those, you know. Anything.
+    <<take studio_cheese_puff>>
+<<endif>>
+===
+title: F_Audience_Nibbles
+---
+Dr. Mina Volt: Professor! Not yet, he's on a mission. Go, go! He'll come back to me when the job's done.
+===
+title: F_Audience_Sign
+---
+Sky Rivera: A protest sign! In Scandal Red! "CHET IS A CHEAT"! It's beautiful. It's silent. It's devastating.
+Sky Rivera: Mimi was right. The quiet ones hit the hardest. Here: one nine-volt, liberated from the megaphone.
+Dex: She pops the battery out and holds the sign up high. Chet sees it and pretends he can't read. Which, honestly, might be true.
+<<take chet_protest_sign>>
+<<give nine_volt>>
+<<flag f_sky_helped>>
+===
+title: F_Audience_CheatTape
+---
+Dolly Spark: Record over Chet's cheat tape? Tempting, babe. But that's evidence. Roxy'll want it.
 ===
 title: F_Audience_Walkie
 ---
@@ -402,21 +1103,6 @@ title: F_Audience_Item
 Dex: They cheer at it politely. They'd cheer at anything I held up right now. It's nice.
 ===
 
-title: F_Rack_Look
----
-Dex: The wardrobe rack. Sequin jackets, feather boas, and a T-shirt with a tuxedo printed on it. There's a box of mic packs on the bottom.
-===
-title: F_Rack_Use
----
-<<if flagged("f_took_mic") or flagged("f_miked")>>
-    Dex: I tried on a feather boa. It tried on me back. I'm leaving it.
-<<else>>
-    Dex: A box marked "MIC PACKS". All of them are dead. Of course they are. I'll take one anyway.
-    <<give lapel_mic>>
-    <<flag f_took_mic>>
-<<endif>>
-===
-
 title: F_Camera_Look
 ---
 Dex: Camera One. It's pointed at the stage, and it's bigger than my whole dorm room.
@@ -428,7 +1114,8 @@ title: F_Camera_Use
 <<else>>
     Dex: On the back of the camera, hidden under a pile of cables: a walkie-talkie, taped down. CHET is written on it in glitter pen.
     Walkie-talkie: (crackle) ...Chet, it's you. From earlier. Remember: smile, lie, repeat. Over.
-    Dex: He recorded his own cheat sheet. He's feeding himself lines through the earpiece!
+    Dex: That's Chet's voice. A recording of Chet, feeding Chet his lines. Through the earpiece!
+    Dex: The walkie's little screen says RECEIVING FROM: BOOTH. So it's just a relay. The tape must be playing somewhere upstairs.
     <<give studio_walkie>>
     <<flag f_took_walkie>>
 <<endif>>
@@ -445,8 +1132,9 @@ title: F_Board_Use
 <<elseif flagged("f_ejected")>>
     Dex: Deck two is empty. I need my own dance-off track to put in it.
 <<else>>
-    Dex: Deck one: "Chet's Pump-Up Jams, Volume 9". Deck two: ALSO "Chet's Pump-Up Jams, Volume 9". He loaded his tape in my deck!
-    Dex: (click) I eject the one in my deck. Now it's empty. I'll need something to put in it.
+    Dex: Deck one: "Chet's Pump-Up Jams, Volume 9". Deck two: ALSO "Chet's Pump-Up Jams, Volume 9", jammed in sideways. He loaded his tape in my deck!
+    Dex: (yank) It comes out trailing a mile of brown tape, like spaghetti. Sabotage!
+    Dex: Now my deck's empty. I'll need something to put in it.
     <<give chet_mixtape>>
     <<flag f_ejected>>
     <<flag f_saw_decks>>
@@ -461,6 +1149,10 @@ Dex: Dolly's mix, into deck two. Click. It even sounds good just sitting there.
 title: F_Board_ChetTape
 ---
 Dex: Put Chet's tape back in my deck? No thank you. "Songs About Chet" is not a dance-off strategy.
+===
+title: F_Board_CheatTape
+---
+Dex: Chet's Comebacks as my dance-off music? Track one: an insult. Track two: the same insult, slower. Pass.
 ===
 
 title: F_Applause_Look
@@ -494,7 +1186,7 @@ title: F_Mark_Use
 <<elseif not flagged("f_met_roxy")>>
     Dex: I should check in with the host before I start standing on things.
 <<else>>
-    Dex: I step on the mark. Nothing happens. I'm not ready yet. Roxy said so.
+    Dex: I step on the mark. Nothing happens. I'm not ready yet. Let me think...
     <<jump F_Hints>>
 <<endif>>
 ===
@@ -510,10 +1202,463 @@ Dr. Mina Volt: (from the audience) Science!
 title: F_Combine_Blot
 ---
 Dex: Club soda on the napkin. Blot. Don't rub. Blot. Blot...
-Dex: The purple fades away. My hibiscus are back! Bree gives me a thumbs up from row two.
+Dex: The purple fades away. My hibiscus are back! ...And now there's a huge soggy patch right in the middle. I look like I lost a water-balloon fight.
+Dex: Roxy is not going to allow "damp" on her show. I need to dry this. Fast.
 <<take soda_water>>
 <<take cocktail_napkin>>
+<<unflag f_shirt_stained>>
+<<flag f_shirt_wet>>
+===
+title: F_Combine_Sign
+---
+Dex: I flip Chet's RESERVED card over. Blank on the back. Perfect.
+Dex: In big Scandal Red letters: CHET IS A CHEAT. I add a little drawing of his teeth. They look terrifying. Accurate.
+<<take reserved_card>>
+<<take scandal_lipstick>>
+<<give chet_protest_sign>>
+===
+title: F_Combine_Headset
+---
+Dex: Dolly's headphones on my head. Bendy straw tucked into the left earcup, bent round in front of my mouth. A microphone arm!
+Dex: It's a crew headset. A crew headset that smells faintly of strawberry milk.
+<<take dolly_headphones>>
+<<take bendy_straw>>
+<<give crew_headset>>
+<<flag f_made_headset>>
+===
+title: F_Combine_Disguise
+---
+Dex: Headset on. Lanyard round my neck: CREW: KEVIN. ALL ACCESS. I tuck my hibiscus collar in and try to look tired and underpaid.
+Dex: I am Kevin. Kevin is me. Together, we are The Kevin Kit.
+<<take crew_headset>>
+<<take runner_lanyard>>
+<<give runner_disguise>>
+===
+title: F_Combine_Rewind
+---
+Dex: Pencil in the little hole. Twirl. Twirl. Twirl, twirl, twirl...
+Dex: The brown spaghetti slurps back into the cassette. Good as new. Well, bad as new. It's still "Songs About Chet".
+Dex: Bree's pencil is now permanently bent. I'll buy her a new one. A whole box. With a bow.
+<<take bun_pencil>>
+<<flag f_tape_wound>>
+===
+
+title: F_GR_Enter
+---
+<<if not flagged("f_gr_intro")>>
+    Dex: The green room. A couch, a mirror with about a hundred light bulbs, a snack table, and a rack of clothes that sparkles at me threateningly.
+    Gloria Puff: Well, look at you. A walking fruit basket. I'm Gloria Puff, sugar. Hair, makeup, wardrobe and emotional support.
+    Gloria Puff: Nobody goes on camera without passing through my chair first. Nobody.
+    Dex: At the back, a narrow door: CREW ONLY. CONTROL BOOTH. There's an intercom next to it with a big red TALK button.
+    <<flag f_gr_intro>>
+<<endif>>
+===
+
+title: F_GR_Exit_Look
+---
+Dex: The door back out to the studio. I can hear Tess organising the audience through it.
+===
+title: F_GR_Exit_Use
+---
+<<go tv_studio from_green_room>>
+===
+
+title: F_GR_Craft_Look
+---
+Dex: Craft services. A bowl of cheese puffs, a cup of bendy straws, and one eclair with a bite out of it.
+Dex: The eclair has a sticky note: CHET'S. DO NOT TOUCH. LICKED.
+===
+title: F_GR_Craft_Use
+---
+Dex: What should I grab?
+-> A cheese puff <<if not has("studio_cheese_puff")>>
+    Dex: One cheese puff. Neon orange. It leaves a mark on my fingers that will outlive me.
+    <<give studio_cheese_puff>>
+-> A bendy straw <<if not has("bendy_straw") and not flagged("f_made_headset")>>
+    Dex: A pink bendy straw. Bendy straws make every drink a party. I don't have a drink. I'll find a use for it.
+    <<give bendy_straw>>
+-> Chet's eclair
+    Dex: The note says LICKED. I'm going to trust the note.
+-> Nothing
+    Dex: I'm too nervous to eat. That's a first.
+===
+title: F_GR_Craft_Item
+---
+Dex: I put it back. Then I take it again. Snack tables are a one-way street.
+===
+
+title: F_Rack_Look
+---
+Dex: The wardrobe rack. Sequin jackets, feather boas, and a T-shirt with a tuxedo printed on it. There's a box of mic packs on the bottom.
+===
+title: F_Rack_Use
+---
+<<if flagged("f_took_mic") or flagged("f_miked")>>
+    Dex: I tried on a feather boa. It tried on me back. I'm leaving it.
+<<elseif not flagged("f_made_up")>>
+    Gloria Puff: Ah-ah-ah! Hands off my rack, sugar. Wardrobe is for talent, and talent goes through my chair first.
+    Dex: Even the mic packs?
+    Gloria Puff: ESPECIALLY the mic packs. Nobody gets wired up looking like a glazed ham.
+<<else>>
+    Gloria Puff: Go on, sugar. You're powdered. You've earned it.
+    Dex: A box marked "MIC PACKS". All of them are dead. Of course they are. I'll take one anyway.
+    <<give lapel_mic>>
+    <<flag f_took_mic>>
+<<endif>>
+===
+
+title: F_GR_Sign_Look
+---
+Dex: A little brass stand with a card in it: RESERVED: C. STUDWELL. ALL NIGHT. He's not even here. He's out there winking at a camera.
+===
+title: F_GR_Sign_Use
+---
+Dex: I slide the card out of the little stand. Whoops. It must have fallen. Into my pocket.
+Gloria Puff: (not looking up) I didn't see that. I see nothing. I'm a makeup artist, not a witness.
+Dex: The back of the card is completely blank. Chet doesn't even use both sides of things.
+<<give reserved_card>>
+<<flag f_took_card>>
+===
+
+title: F_GR_Chair_Look
+---
+<<if flagged("f_took_card")>>
+    Dex: A big leather makeup chair facing a mirror ringed with light bulbs. It's free. It's waiting for me. It looks hungry.
+<<else>>
+    Dex: A big leather makeup chair facing a mirror ringed with light bulbs. Next to it, a little sign: RESERVED: C. STUDWELL.
+<<endif>>
+===
+title: F_GR_Chair_Use
+---
+<<if flagged("f_shirt_wet")>>
+    <<jump F_GR_Dry>>
+<<elseif flagged("f_made_up")>>
+    Gloria Puff: Sit any longer, sugar, and I'll start on your eyebrows. Nobody wants that. Least of all your eyebrows.
+<<elseif not flagged("f_took_card")>>
+    Gloria Puff: That chair is reserved, sugar. Mister Studwell booked it for the whole night. Nobody sits while that little sign's up. House rules.
+    Dex: The chair's empty, though. He's not coming back. He's busy being Chet.
+    Gloria Puff: If that sign went missing, it'd be first come, first powdered. I'm just saying. I'm saying nothing. I'm saying it loudly.
+<<else>>
+    <<jump F_GR_Makeup>>
+<<endif>>
+===
+title: F_GR_Chair_Card
+---
+Dex: Put Chet's card back? That's the opposite of progress.
+===
+title: F_GR_Makeup
+---
+Gloria Puff: The sign's gone? Then sit, sugar. First come, first powdered.
+Dex: I sit. She attacks. Powder. Brushes. Something cold. Something that smells like a cupcake. Something that I'm pretty sure was a tiny sponge.
+Gloria Puff: Hold still. Chin up. Chin down. Stop blinking. Who taught you to blink like that?
+Dex: She spins the chair around to the mirror. I look... good? I look like me, but I slept eight hours and drink water.
+Gloria Puff: There. Now you're talent. Wardrobe's open to you, mic packs included.
+<<if flagged("f_shirt_stained")>>
+    Gloria Puff: That purple blob, though? Not my department. I do faces. Stains are wet work. Get it wet and my Turbo-Puff 3000 will dry it before the commercial.
+    <<flag f_asked_gloria_stain>>
+<<endif>>
+<<flag f_made_up>>
+===
+title: F_GR_Dry
+---
+Gloria Puff: Sugar, you're DRIPPING on my floor. Arms up! Turbo-Puff 3000, full blast!
+Dex: WHOOOOOSH. It's like standing behind a jet engine that loves me.
+Dex: Ten seconds later my shirt is dry, warm and somehow fluffier than when I bought it. The hibiscus are back and they're thriving.
+Gloria Puff: Camera-ready. Go knock 'em dead. Not literally, we don't have the insurance.
+<<unflag f_shirt_wet>>
 <<flag f_shirt_clean>>
+===
+
+title: F_GR_Gloria_Look
+---
+Dex: Gloria Puff. A platinum beehive tall enough to have its own weather, a smock full of brushes, and a powder puff the size of a cat.
+===
+title: F_GR_Gloria_Talk
+---
+<<if flagged("finale_won")>>
+    Gloria Puff: Sugar, you were glowing out there. That was my powder. Also you. Mostly my powder.
+<<elseif flagged("f_shirt_wet")>>
+    Gloria Puff: Sugar, why are you wet? Never mind. Don't tell me. Come here.
+<<elseif flagged("f_made_up")>>
+    Gloria Puff: There's my handsome canvas. Don't touch your face. I can feel you thinking about touching your face.
+<<else>>
+    Gloria Puff: Back again, sugar? You're still shiny. I can see my reflection in your forehead.
+<<endif>>
+<<if not flagged("finale_won")>>
+    <<jump F_GR_Gloria_Menu>>
+<<endif>>
+===
+title: F_GR_Gloria_Menu
+---
+-> Can I sit in your chair? <<if not flagged("f_made_up")>>
+    <<jump F_GR_Chair_Use>>
+-> Can you dry my shirt? <<if flagged("f_shirt_wet")>>
+    <<jump F_GR_Dry>>
+-> Could I borrow a lipstick? <<if flagged("f_sky_wants_sign") and not flagged("f_got_lipstick")>>
+    Gloria Puff: A lipstick? For a protest sign? Against CHET? Sugar, I have been waiting for this day my whole career.
+    Gloria Puff: Scandal Red. Discontinued for being too scandalous. Write big.
+    <<give scandal_lipstick>>
+    <<flag f_got_lipstick>>
+    <<jump F_GR_Gloria_Menu>>
+-> Can you do anything about this purple stain? <<if not flagged("f_shirt_clean") and not flagged("f_shirt_wet") and not flagged("f_asked_gloria_stain")>>
+    Gloria Puff: Grape soda? Not my department, sugar. I do faces. Stains are wet work.
+    Gloria Puff: But you get that shirt wet, and my Turbo-Puff 3000 will have it bone dry before the commercial.
+    <<flag f_asked_gloria_stain>>
+    <<jump F_GR_Gloria_Menu>>
+-> What's the director like? <<if not flagged("f_asked_norma")>>
+    Gloria Puff: Norma Fade. Up in the booth. Thirty years of live TV. Tough as a two-dollar steak.
+    Gloria Puff: She's scared of exactly one thing in this world: rodents. A mouse ran across the set once and she directed a whole episode standing on her chair.
+    Gloria Puff: Won the award that year, too. Best Live Direction, From a Chair.
+    <<flag f_asked_norma>>
+    <<jump F_GR_Gloria_Menu>>
+-> What's Chet like back here? <<if not flagged("f_asked_gloria_chet")>>
+    Gloria Puff: He asked me to contour his TEETH, sugar. And he's been running up and down those booth stairs all night, for a man who isn't crew.
+    <<flag f_asked_gloria_chet>>
+    <<jump F_GR_Gloria_Menu>>
+-> Any good comebacks for Chet? <<if flagged("f_duel_known") and not flagged("f_cb_gloria")>>
+    Gloria Puff: Oh, I've got one. Tell him his roots are showing. It works on everybody. Everybody has roots, sugar.
+    Dex: "Your roots are showing." I'll keep it in my pocket. Though I don't remember Chet ever mentioning his hair.
+    <<flag f_cb_gloria>>
+    <<jump F_GR_Gloria_Menu>>
+-> How do you get into the booth? <<if not flagged("f_booth_ok") and not flagged("f_gr_ask_booth")>>
+    Gloria Puff: You don't. Crew only. Norma wants a headset, a lanyard and a face she's too busy to look at.
+    Gloria Puff: She's been screaming for her new runner all night. Kevin. Nobody's ever seen Kevin. Kevin might be a myth.
+    <<flag f_gr_ask_booth>>
+    <<jump F_GR_Gloria_Menu>>
+-> Bye for now.
+    Gloria Puff: Go get 'em, sugar. And don't sweat. Sweat is the enemy.
+===
+title: F_GR_Gloria_Card
+---
+Gloria Puff: Mister Studwell's reserved card? Never seen it. Just like I never saw you take it.
+===
+title: F_GR_Gloria_Sign
+---
+Gloria Puff: CHET IS A CHEAT. In my Scandal Red! Sugar, I'm framing that in my heart.
+===
+title: F_GR_Gloria_Puff
+---
+Gloria Puff: Not near my brushes, sugar. Cheese dust is forever.
+===
+title: F_GR_Gloria_Nibbles
+---
+Gloria Puff: Is that a HAMSTER? Cute. Not my fear, sugar. Norma's, though. Ooh. Norma's.
+===
+
+title: F_GR_Booth_Look
+---
+Dex: A narrow door: CREW ONLY. CONTROL BOOTH. Through the little window I can see stairs going up. Next to it, an intercom with a big red TALK button.
+===
+title: F_GR_Booth_Use
+---
+<<if flagged("f_booth_ok")>>
+    <<go tv_control_booth from_green_room>>
+<<elseif has("runner_disguise")>>
+    Dex: Headset on. Lanyard on. I press TALK and do my best tired-crew voice.
+    Dex: Hey. It's, uh... Kevin. The runner.
+    Norma Fade: (intercom) KEVIN! Three hours late! Get up here, I need hands!
+    Dex: The door buzzes open. I'm Kevin now. Kevin has had a very long night.
+    <<flag f_booth_ok>>
+    <<go tv_control_booth from_green_room>>
+<<elseif flagged("f_booth_refused")>>
+    Norma Fade: (intercom) Still not crew. Still not Kevin. Still wearing a fruit salad. Goodbye.
+    Dex: Crew wear a headset and a lanyard. And apparently they're called Kevin.
+<<else>>
+    Dex: I press TALK. "Hello? Can I come up?"
+    Norma Fade: (intercom, crackling) Who is this? Are you crew? You're not crew. Crew have a HEADSET. Crew have a LANYARD. I can see you on the door camera. You have a SHIRT.
+    Norma Fade: And crew show up on time, unlike my new runner Kevin, who I have never met and already hate. CREW ONLY!
+    Dex: A headset and a lanyard. If I had both, I'd be crew. I could even be Kevin. She's never seen Kevin.
+    <<flag f_booth_refused>>
+<<endif>>
+===
+title: F_GR_Booth_Half
+---
+<<if has("crew_headset") and has("runner_lanyard")>>
+    Dex: I've got the headset and the lanyard. I should put them on together before I press TALK. Half a Kevin won't fool anybody.
+<<else>>
+    Dex: Half a disguise makes me half a Kevin. Norma wants a headset AND a lanyard.
+<<endif>>
+===
+
+title: F_BO_Enter
+---
+<<if not flagged("f_booth_intro")>>
+    Dex: The control booth. A wall of TV monitors, a big window looking down on the studio, about a thousand buttons, and a coffee machine that's seen things.
+    Norma Fade: Kevin. FINALLY. Norma Fade, director. Rule one: don't touch anything. Rule two: don't touch ANYTHING. Rule three: coffee.
+    Dex: She hasn't looked at me once. She's watching a giant countdown clock. Kevin is safe.
+    <<flag f_booth_intro>>
+<<endif>>
+===
+
+title: F_BO_Exit_Look
+---
+Dex: The stairs back down to the green room. Very steep. Very Kevin-unfriendly.
+===
+title: F_BO_Exit_Use
+---
+<<if flagged("f_norma_on_chair")>>
+    Norma Fade: KEVIN! DON'T YOU LEAVE ME UP HERE WITH IT!
+    Dex: Be right back, boss! Getting... rodent supplies!
+<<endif>>
+<<go tv_green_room from_booth>>
+===
+
+title: F_BO_Monitors_Look
+---
+Dex: Twelve monitors. Camera one, camera two, the audience, the parking lot, and one that's just a close-up of Chet's teeth.
+===
+title: F_BO_Monitors_Use
+---
+<<if flagged("finale_won")>>
+    Dex: Every monitor shows a replay of my air-guitar solo. On a loop. Norma's crying a little. I think in a good way.
+<<elseif flagged("f_chet_busted")>>
+    Dex: On monitor four, Chet is sulking. On monitor five, Roxy is fixing her lipstick. On monitor six, Lou is not smiling. A classic.
+<<elseif flagged("f_tape_swapped")>>
+    Dex: Monitor four: Chet, slapping his ear and shouting "HELLO?" at nobody. Norma has turned the volume up. She's laughing. Norma laughs!
+<<else>>
+    Dex: Monitor four: Chet, touching his ear and nodding. Monitor nine: the little tape deck in the corner of this very booth, red light blinking, labelled CH. CHET.
+    Norma Fade: Kevin. Don't touch my monitors. Look at them with less breathing.
+<<endif>>
+===
+
+title: F_BO_Coffee_Look
+---
+Dex: A coffee maker with a handwritten sign: NORMA'S. TOUCH IT AND DIE. Under that, smaller: unless you're making me one.
+===
+title: F_BO_Coffee_Use
+---
+<<if flagged("f_made_coffee")>>
+    Dex: The pot's empty. Norma drank it all in one go, like a dragon drinking a lake.
+<<else>>
+    Dex: I pour Norma a coffee. Black. Like her soul. I put it on her desk.
+    Norma Fade: (without looking) Kevin. I could kiss you. I won't. But I could.
+    <<flag f_made_coffee>>
+<<endif>>
+===
+
+title: F_BO_Norma_Look
+---
+<<if flagged("f_norma_on_chair")>>
+    Dex: Norma Fade, standing on her chair, eyes squeezed shut, holding her clipboard like a sword.
+<<else>>
+    Dex: Norma Fade, the director. Headset, chunky glasses, a cardigan with a pencil in every pocket, and a stopwatch round her neck she checks every four seconds.
+<<endif>>
+===
+title: F_BO_Norma_Talk
+---
+<<if flagged("f_norma_on_chair")>>
+    Norma Fade: KEVIN! GET! THE! RODENT! I'm not coming down until it's gone, and the show is in FOUR MINUTES!
+<<elseif flagged("finale_won")>>
+    Norma Fade: Kevin. Best show I've directed in thirty years. And I directed the llama episode.
+<<else>>
+    <<if flagged("f_made_coffee")>>
+        Norma Fade: (sipping) What, Kevin? Talk fast. You've got the coffee privileges, so you've got ten seconds.
+    <<else>>
+        Norma Fade: What, Kevin? Talk fast. Faster. That's too fast.
+    <<endif>>
+    <<jump F_BO_Norma_Menu>>
+<<endif>>
+===
+title: F_BO_Norma_Menu
+---
+-> What's that little tape deck in the corner? <<if not flagged("f_norma_guards") and not flagged("f_tape_swapped")>>
+    Norma Fade: That's Mister Studwell's vocal warm-up tape. Plays on a loop, on his own private channel. He says it "helps him stay in the zone".
+    Norma Fade: He gave me a fruit basket. With a pineapple, Kevin. Nobody touches that deck.
+    <<flag f_norma_guards>>
+    <<jump F_BO_Norma_Menu>>
+-> Do you ever leave your desk? <<if flagged("f_norma_guards") and not flagged("f_tape_swapped") and not flagged("f_norma_desk")>>
+    Norma Fade: Leave my desk? Kevin, I've directed live TV through a blackout, a flood and a llama. I fear nothing. I leave for nothing.
+    Norma Fade: (a speck of dust drifts past) WAS THAT A MOUSE? ...No. No, it was dust. Carry on. I fear nothing.
+    <<flag f_norma_desk>>
+    <<jump F_BO_Norma_Menu>>
+-> Want me to get you a coffee? <<if not flagged("f_made_coffee")>>
+    Norma Fade: Kevin, that's the first smart thing you've said. The machine's right there. Black.
+    <<jump F_BO_Norma_Menu>>
+-> Have you noticed Chet acting weird? <<if flagged("f_tape_swapped") and not flagged("f_chet_busted")>>
+    Norma Fade: He keeps slapping his ear and looking up here like a lost puppy. Must be nerves. Not my department. Coffee is my department.
+    <<jump F_BO_Norma_Menu>>
+-> What's the worst thing that ever happened live? <<if not flagged("f_norma_lore")>>
+    Norma Fade: The llama. Don't ask about the llama. Nobody asks about the llama.
+    Dex: What about the llama?
+    Norma Fade: KEVIN.
+    <<flag f_norma_lore>>
+    <<jump F_BO_Norma_Menu>>
+-> Getting back to work, boss.
+    Norma Fade: Good. Be useful. Be quiet. Be Kevin.
+===
+
+title: F_BO_Deck_Look
+---
+<<if flagged("f_tape_swapped")>>
+    Dex: The little tape deck, empty now. Its transmitter light is off. Somewhere downstairs, Chet's earpiece is playing the sweet sound of nothing.
+<<else>>
+    Dex: A little tape deck wired to a transmitter with a bendy antenna. A sticky label: CH. CHET. DO NOT TOUCH. The tape inside is covered in glitter pen.
+<<endif>>
+===
+title: F_BO_Deck_Use
+---
+<<if flagged("f_tape_swapped")>>
+    Dex: Empty. No more whispers for Chet.
+<<elseif flagged("f_norma_on_chair")>>
+    Dex: Click. I pop Chet's tape out of the deck. The little red light goes dark. The label says: CHET'S COMEBACKS. PLAY ON LOOP.
+    Dex: Down in the studio, faintly, I hear Chet yell: "Hello? HELLO? Copy that? ...Copy ANYTHING?"
+    Dex: Professor Nibbles hops off the clipboard, gives me a tiny salute, and scampers down the stairs, straight back to Mina's pocket. A true professional.
+    Norma Fade: (climbing down) Is it gone? It's gone. Thank you, Kevin. You're promoted. To Kevin.
+    <<give chet_cheat_tape>>
+    <<take nibbles_on_loan>>
+    <<unflag f_norma_on_chair>>
+    <<flag f_tape_swapped>>
+<<else>>
+    Norma Fade: (without turning around) Kevin. Hand. Off. The deck. That's Mister Studwell's private tape and he gave me a FRUIT BASKET.
+    Dex: A recording of Chet, playing on a loop, beamed to the walkie behind Camera One, beamed into his ear. I need that tape. But not with Norma watching like a hawk.
+    <<flag f_norma_guards>>
+<<endif>>
+===
+title: F_BO_Deck_PutBack
+---
+Dex: Put Chet's whispers back in? Absolutely not. That tape's going straight to Roxy. Eventually.
+===
+title: F_BO_Nibbles
+---
+<<if flagged("f_norma_on_chair")>>
+    Dex: Nibbles is already doing his job. Beautifully.
+<<else>>
+    Dex: I set Professor Nibbles on the desk and give him a little nudge toward the director. Go, Professor. For science.
+    Dex: Nibbles scurries across the mixing desk. Over the faders. Up Norma's clipboard. He sits on top of it and cleans his whiskers.
+    Norma Fade: Is that... IS THAT A RODENT? KEVIN! KEVIN, THERE IS A RODENT ON MY CLIPBOARD!
+    Dex: She's up on her chair in one jump, eyes squeezed shut. Thirty years in live TV, and this is the most alive I've ever seen anybody.
+    Norma Fade: GET IT, KEVIN! DON'T JUST STAND THERE!
+    Dex: On it, boss! Chasing the rodent. Totally. Near the tape deck. For no reason.
+    <<flag f_norma_on_chair>>
+<<endif>>
+===
+title: F_BO_Norma_Puff
+---
+Norma Fade: A cheese puff? Kevin, I'm on a diet. A coffee diet. Get that orange thing away from my buttons.
+===
+title: F_BO_Norma_Tape
+---
+Norma Fade: Music cues go in the sound board on the studio floor, Kevin. Downstairs. Where the music is. Think.
+===
+title: F_BO_Norma_Item
+---
+Norma Fade: Kevin, I don't have hands for that. I have hands for BUTTONS.
+===
+
+title: F_BO_Talkback_Look
+---
+Dex: The director's desk. A gooseneck microphone with a button: TALKBACK, STUDIO FLOOR. Press it and your voice comes out of every speaker downstairs.
+===
+title: F_BO_Talkback_Use
+---
+<<if flagged("finale_won")>>
+    Dex: I press TALKBACK. "Goodnight, everybody." Downstairs, the whole audience says goodnight back. Lou says it last.
+<<elseif flagged("f_tape_swapped") and not flagged("f_chet_busted")>>
+    Dex: I could whisper lines into the studio myself... No. Feeding people lines is Chet's thing. I'll win with my own. Well, with borrowed ones. Freely given. It's different.
+<<else>>
+    Dex: I press TALKBACK and lean in. "Testing." Downstairs, everyone in the studio looks up at the ceiling. Lou looks at it like it owes her money.
+    Norma Fade: KEVIN.
+<<endif>>
 ===
 
 title: F_Show
@@ -715,6 +1860,7 @@ Dex: THE END.
 Dex: (Thanks for playing Big Night Out! Stick around: the studio is still open, and Roxy has a few more things to say.)
 ===
 
+
 title: Item_lapel_mic_Look
 ---
 <<if has("nine_volt")>>
@@ -737,17 +1883,65 @@ Dex: A napkin from Bree's apron. "Blot, don't rub," she said. Bree knows things.
 ===
 title: Item_studio_walkie_Look
 ---
-Dex: A walkie-talkie with CHET on it in glitter pen, set to channel CHET. Subtle, Chet.
-===
-title: Item_sign_out_sheet_Look
----
-Dex: The studio equipment sign-out sheet. "Walkie number two. C. Studwell. Reason: winning."
+Dex: A walkie-talkie with CHET on it in glitter pen, set to channel CHET. Its little screen says RECEIVING FROM: BOOTH. Subtle, Chet.
 ===
 title: Item_chet_mixtape_Look
 ---
-Dex: "Chet's Pump-Up Jams, Volume 9: Songs About Chet." Track one: "Chet". Track two: "Also Chet".
+<<if flagged("f_tape_wound")>>
+    Dex: "Chet's Pump-Up Jams, Volume 9: Songs About Chet." Wound back in and ready to be recorded over. Please.
+<<else>>
+    Dex: "Chet's Pump-Up Jams, Volume 9: Songs About Chet." Half the tape is hanging out of it like brown spaghetti.
+<<endif>>
 ===
 title: Item_floor_fillers_tape_Look
 ---
 Dex: "Dolly's Floor-Fillers, Dex Edition." Written over Chet's label in glitter. Chet's own glitter pen, probably.
+===
+title: Item_reserved_card_Look
+---
+Dex: A stiff white card: RESERVED: C. STUDWELL. ALL NIGHT. The back is totally blank. Perfect for writing on.
+===
+title: Item_scandal_lipstick_Look
+---
+Dex: Gloria's Scandal Red lipstick. Discontinued for being too scandalous. It's a very bold red. It could write a very bold sentence.
+===
+title: Item_chet_protest_sign_Look
+---
+Dex: CHET IS A CHEAT, in big Scandal Red letters on the back of his own RESERVED card. With a drawing of his teeth. Art.
+===
+title: Item_runner_lanyard_Look
+---
+Dex: A blue crew lanyard: CREW: KEVIN. ALL ACCESS. Kevin never picked it up. Kevin, wherever you are, I'm sorry. And thank you.
+===
+title: Item_dolly_headphones_Look
+---
+Dex: Dolly's big turquoise DJ headphones. Real crew headsets have a little microphone arm in front of your mouth, though. These need something thin and bendy.
+===
+title: Item_bendy_straw_Look
+---
+Dex: A pink bendy straw. Bendy straws make everything a party. And they bend into very convincing shapes.
+===
+title: Item_crew_headset_Look
+---
+Dex: Dolly's headphones with a bendy straw for a microphone arm. From a distance, I'm crew. From up close, I'm a guy with a straw on his face.
+===
+title: Item_runner_disguise_Look
+---
+Dex: The Kevin Kit: homemade headset plus Kevin's lanyard. Wearing it, I feel underpaid and slightly tired. Very convincing.
+===
+title: Item_studio_cheese_puff_Look
+---
+Dex: One neon-orange cheese puff. No natural food is this colour. Hamsters go wild for it, apparently.
+===
+title: Item_nibbles_on_loan_Look
+---
+Dex: Professor Nibbles, in a paper cup, on loan from Mina. He's wearing a look of total professional focus. Also cheese dust.
+===
+title: Item_chet_cheat_tape_Look
+---
+Dex: "CHET'S COMEBACKS. PLAY ON LOOP. CHANNEL CHET." In glitter pen. The proof Chet's been cheating all season.
+===
+title: Item_bun_pencil_Look
+---
+Dex: Bree's order pencil, still warm from her bun. Ten thousand orders taken. Its eraser is just a memory. It would fit perfectly in a cassette's little hole.
 ===

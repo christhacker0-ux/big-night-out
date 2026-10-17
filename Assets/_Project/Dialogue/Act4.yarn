@@ -26,9 +26,8 @@ title: A4_Diner_Use
 ---
 <<if flagged("a4_won_bree")>>
     Dex: Through the window the cook waves a spatula at me. Word travels fast in a diner.
-<<else>>
-    Dex: It's packed in there. The only waitress I want to talk to is out here on her break anyway.
 <<endif>>
+<<go starlite_diner from_downtown>>
 ===
 
 title: A4_Fountain_Look
@@ -89,11 +88,10 @@ Dex: The Bijou Theatre. The marquee says "MIDNIGHT CLASSICS: OLD MOVIES, NEW POP
 ===
 title: A4_Bijou_Use
 ---
-<<if flagged("a4_knows_bijou")>>
-    Dex: Bree sneaks in here on her breaks to watch the old movies. The perfect place for a date. If I ever get one.
-<<else>>
-    Dex: The box office is closed till the midnight show. A sticker on the glass says "COUPLES GET THE FRONT ROW SOFA".
+<<if not flagged("a4_bijou_intro")>>
+    Dex: The box office is closed till the midnight show, but the lobby doors are propped open with a fire extinguisher. That has to be against some kind of rule.
 <<endif>>
+<<go bijou_lobby from_downtown>>
 ===
 
 title: A4_Bree_Look
@@ -119,31 +117,63 @@ title: A4_Bree_Talk
     <<flag a4_met_bree>>
 <<elseif flagged("a4_won_bree")>>
     Bree Marlowe: My leading man! Well, my leading photographer.
-    <<jump A4_Bree_Chat>>
-<<elseif flagged("a4_photos_taken") and not has("headshots")>>
+<<elseif has("headshots")>>
+    Bree Marlowe: Is that an envelope from the 1-Hour Photo? Dex. Dex! Hand it over before I faint dramatically!
+<<elseif flagged("a4_photos_taken")>>
     Bree Marlowe: Did you get them developed? The Quickmart does one-hour photo. Well, Lou does. When she feels like it.
+<<elseif flagged("a4_bree_has_hat")>>
+    Bree Marlowe: (saluting) Captain Coral, ready for her close-up! Any luck with a camera?
 <<else>>
-    <<jump A4_Bree_Chat>>
+    Bree Marlowe: My favourite customer who never orders anything! What's the news?
 <<endif>>
+<<jump A4_Bree_Chat>>
 ===
 title: A4_Bree_Chat
 ---
 -> How's the headshot hunt going? <<if not flagged("a4_won_bree")>>
     <<jump A4_Bree_Status>>
--> Ask about the diner
+-> Ask about her tips <<if not flagged("a4_got_coupon")>>
+    Bree Marlowe: Tonight's haul: one button, and one coupon for a free slice of the Starlite's famous Mystery Pie.
+    Bree Marlowe: Staff can't use them. Sal's rules. And the coupon slices aren't the one in the case, he has to fetch them fresh from the walk-in freezer himself. He's very weird about it.
+    Bree Marlowe: Here. You have it. You look like a man who needs pie.
+    <<give pie_coupon>>
+    <<flag a4_got_coupon>>
+    Bree Marlowe: Keep the button too. No? Fine. I'll sew it on something dramatic.
+    <<jump A4_Bree_Chat>>
+-> Ask about the diner <<if not flagged("a4_knows_roses")>>
     Bree Marlowe: Sixteen-hour double. My feet have stopped speaking to me. They just send angry letters now.
     Bree Marlowe: And the manager put roses on every table. I'm allergic. Achoo! See? Just talking about them.
     Dex: Noted. Feet bad. Roses worse.
     <<flag a4_knows_feet>>
     <<flag a4_knows_roses>>
--> Ask about the theatre across the street
+    <<jump A4_Bree_Chat>>
+-> Ask about Sal the cook <<if flagged("a4_knows_roses") and not flagged("a4_knows_pie")>>
+    Bree Marlowe: Sal? A big sweetheart with a spatula. He guards his Mystery Pie recipe like it's the crown jewels.
+    Bree Marlowe: It's in a red tin above the grill, and he never takes his eyes off it. Unless somebody makes him go to the walk-in.
+    <<jump A4_Bree_Chat>>
+-> Ask about the theatre across the street <<if not flagged("a4_knows_bijou")>>
     Bree Marlowe: The Bijou? I sneak in on my breaks for the midnight classics. Front row, with my shoes off.
     Bree Marlowe: Someday I'll be up on that screen. Until then I'm happy just looking up at it.
+    Bree Marlowe: Mortimer the usher lets me in for free. Fifty years, and he's never lost a heckle. Never. Not once.
     <<flag a4_knows_bijou>>
--> Wish her good luck for tomorrow
+    <<jump A4_Bree_Chat>>
+-> Ask how she handles hecklers <<if (flagged("a4_knows_bijou") or flagged("a4_met_mortimer")) and not flagged("a4_cb_backrow")>>
+    Bree Marlowe: My first show ever, I was a singing tree. Some guy yells, "Too loud, the tree's too LOUD!"
+    Bree Marlowe: So I turned to the audience and said: "Then the back row finally gets their money's worth!"
+    Bree Marlowe: Standing ovation. From the back row.
+    Dex: "Then the back row finally gets their money's worth." I'm writing that on my hand.
+    <<flag a4_cb_backrow>>
+    <<jump A4_Bree_Chat>>
+-> Ask about the musical <<if flagged("a4_knows_leg") and not flagged("a4_bree_musical")>>
+    Bree Marlowe: "Shipwrecked in Love". A sea captain falls for the lighthouse keeper who keeps wrecking her ship. There's a tap number on a sinking deck.
+    Bree Marlowe: The big song is "Starboard, My Heart". It rhymes "starboard" with "hard, Lord". It's art.
+    <<flag a4_bree_musical>>
+    <<jump A4_Bree_Chat>>
+-> Wish her good luck for tomorrow <<if not flagged("a4_knows_leg")>>
     Bree Marlowe: No no no! Never say good luck to an actor. It's bad luck.
     Bree Marlowe: You say "break a leg". Theatre people are weird. I love it.
     <<flag a4_knows_leg>>
+    <<jump A4_Bree_Chat>>
 -> See you later
     Bree Marlowe: Exit, stage left!
 ===
@@ -157,7 +187,11 @@ title: A4_Bree_Status
     Bree Marlowe: You've got a camera and I've got a hat. What are we waiting for? Point it at me!
 <<elseif flagged("a4_bree_has_hat")>>
     Bree Marlowe: I've got the hat. Now I need someone with a camera. Do you know anybody who owns a camera that isn't a phone with a cracked screen?
-    Dex: Somebody downtown must have one lying around.
+    Dex: Lou at the Quickmart mentioned a lost and found. She just needs a reason to like me.
+<<elseif has("captains_hat")>>
+    Bree Marlowe: Is that... a real captain's hat? In your hand? Not on my head?
+<<elseif flagged("a4_gus_bald")>>
+    Bree Marlowe: Gus won't lend his hat because of a bald spot? Men. Get him something else to wear on his head. A theatre would have something. Theatres have everything.
 <<elseif has("disposable_camera")>>
     Bree Marlowe: A camera! But I can't do Captain Coral in an apron. I need a captain's hat.
     Dex: A real captain's hat... where do sailors hang out around here?
@@ -165,6 +199,7 @@ title: A4_Bree_Status
     Bree Marlowe: Still no camera, still no hat. My audition is in eleven hours. I'm totally fine. I'm SO fine.
     Dex: Camera and a captain's hat. There's a quickmart and a sailors' bar on this street. That's a start.
 <<endif>>
+<<jump A4_Bree_Chat>>
 ===
 title: A4_Bree_Camera
 ---
@@ -226,6 +261,19 @@ title: A4_Bree_ShowCrossword
 ---
 Bree Marlowe: You got Lou to finish her crossword? She's been stuck for a week! The whole street could hear her sighing.
 ===
+title: A4_Bree_Coupon
+---
+Bree Marlowe: That's yours now! Give it to Sal, not me. If I eat one more slice of that pie on shift I legally become pie.
+===
+title: A4_Bree_Pie
+---
+Bree Marlowe: Mystery Pie! I know what's in it. Everyone who works there knows. We're sworn to secrecy. Sal makes us pinky-promise on a spatula.
+===
+title: A4_Bree_Wig
+---
+Bree Marlowe: (tries it on) Hmm. Captain Coral is a salty sea captain, not a powdered judge. Love it, though. Very "Act Two twist".
+Dex: She hands it back. It's for a balder head than hers.
+===
 
 title: A4_Roxy_Look
 ---
@@ -243,11 +291,33 @@ title: A4_Roxy_Talk
     Dex: So, two keepsakes from two women who don't know me yet. No pressure.
     <<flag a4_met_roxy>>
 <<elseif has("diner_name_tag") and has("finished_crossword")>>
-    <<jump A4_DateRound>>
+    Roxy Vale: A name tag AND a finished crossword? Lover boy! Benny, warm up the camera!
 <<else>>
     Roxy Vale: Two tokens, lover boy. The camera doesn't wait forever, and neither does my hairspray.
-    <<jump A4_Hint>>
 <<endif>>
+<<jump A4_Roxy_Chat>>
+===
+title: A4_Roxy_Chat
+---
+-> I'm ready for the Date Round! <<if has("diner_name_tag") and has("finished_crossword") and not flagged("act4_done")>>
+    <<jump A4_DateRound>>
+-> How does the Date Round work again? <<if not flagged("act4_done")>>
+    Roxy Vale: Two tokens from two downtown ladies. Then you plan a date for one of them, live: the place, the gift, the opening line.
+    Roxy Vale: And our judge has to smile. That's the tricky part, lover boy. I've seen this judge. She does not smile.
+    <<jump A4_Roxy_Chat>>
+-> I'm stuck. Any tips? <<if not flagged("act4_done")>>
+    Roxy Vale: Tips? I'm the host, lover boy, not the producer. But you've got that "thinking" look. Think out loud for the camera.
+    <<jump A4_Hint>>
+-> Ask about the camera crew <<if not flagged("a4_roxy_crew")>>
+    Roxy Vale: That's Benny on camera. He's filmed two volcanoes, one royal wedding and a hostage negotiation with a goose.
+    Roxy Vale: He says this is the scariest job he's ever had. He's met you.
+    <<flag a4_roxy_crew>>
+    <<jump A4_Roxy_Chat>>
+-> Ask her about downtown
+    Roxy Vale: Downtown's got everything, lover boy. A diner with a secret, a theatre with a heckler, and a bar with a parrot who's seen the show.
+    <<jump A4_Roxy_Chat>>
+-> See you later
+    Roxy Vale: Don't keep me waiting, lover boy!
 ===
 title: A4_Roxy_Token
 ---
@@ -277,14 +347,58 @@ title: A4_Hint
     <<else>>
         Dex: Gus wants his song, and the jukebox needs a quarter. The fountain out here is full of them, if I had something to scoop with.
     <<endif>>
-<<elseif not flagged("a4_won_lou") and not has("gus_coaster")>>
+<<elseif not flagged("a4_got_coaster")>>
     Dex: Gus is in a good mood now. I should ask him about Lou's crossword clue.
-<<elseif not flagged("a4_won_lou")>>
+<<elseif not flagged("a4_lou_head")>>
     Dex: I've got Gus's coaster with the answer. Lou needs to see it.
-<<elseif not flagged("a4_bree_has_hat") and not has("captains_hat")>>
-    Dex: Bree's still missing a captain's hat. Gus has a captain's hat. Gus also has a captain's head, but I only need the hat.
-<<elseif not flagged("a4_bree_has_hat")>>
+<<elseif not flagged("a4_knows_pie")>>
+    <<if flagged("a4_sal_away")>>
+        Dex: Sal's in the walk-in, singing to the pies. His recipe tin is completely unguarded. I'm just saying.
+    <<elseif has("pie_coupon")>>
+        Dex: Bree's coupon says "present to the cook". Coupon slices come from the walk-in, and the walk-in is nowhere near the recipe tin.
+    <<elseif not flagged("a4_met_sal")>>
+        Dex: Lou's other clue is the Starlite's Mystery Pie. The cook inside the diner must know the secret.
+    <<else>>
+        Dex: Sal never leaves that grill. But Bree said her tips tonight were a button and a coupon for the diner. A coupon might get him moving.
+    <<endif>>
+<<elseif not flagged("a4_lou_apple")>>
+    Dex: Lou's still staring at 19 Down. She needs to hear the big secret. Five letters. Starts with A.
+<<elseif not flagged("a4_gus_bald") and not flagged("a4_got_hat")>>
+    Dex: Bree still needs a captain's hat. Gus has a captain's hat. Gus also has a captain's head, but I only need the hat.
+<<elseif not flagged("a4_got_hat")>>
+    <<if has("commodore_wig")>>
+        Dex: One commodore's wig, for one bald old sailor. Gus is going to look magnificent.
+    <<elseif flagged("a4_won_duel")>>
+        Dex: The costume trunk at the Bijou is all mine now. Something in there would cover a bald spot shaped like an island.
+    <<elseif not flagged("a4_met_mortimer")>>
+        Dex: Gus won't take his hat off without something else to cover his bald spot. Theatres keep costumes. The Bijou used to do stage shows.
+    <<elseif not flagged("a4_mortimer_fed")>>
+        <<if has("mystery_pie")>>
+            Dex: Mortimer hasn't had Starlite pie in thirty years. I happen to have a slice in my pocket. Don't ask how.
+        <<else>>
+            Dex: Mortimer won't heckle on an empty stomach. He wants a slice of Starlite pie, and he's banned from the diner.
+        <<endif>>
+    <<elseif not flagged("a4_cb_backrow") or not flagged("a4_cb_boot") or not flagged("a4_cb_pie") or not flagged("a4_cb_cry")>>
+        Dex: To beat Mortimer's Heckle I need road-tested comebacks. Everybody downtown has taken a run at him.
+        <<if not flagged("a4_cb_backrow")>>
+            Dex: Bree's an actress. Actresses have hecklers. She must have a line.
+        <<endif>>
+        <<if not flagged("a4_cb_boot")>>
+            Dex: Gus has been insulted in every port in the world. He'll have a comeback.
+        <<endif>>
+        <<if not flagged("a4_cb_pie")>>
+            Dex: Sal deals with grumpy customers all night. I bet he has a zinger.
+        <<endif>>
+        <<if not flagged("a4_cb_cry")>>
+            Dex: Lou has seen everything and hated most of it. She must have a killer line for rude customers.
+        <<endif>>
+    <<else>>
+        Dex: I've got all four comebacks. Time to take on Mortimer. Each line fits exactly one of his heckles.
+    <<endif>>
+<<elseif not flagged("a4_bree_has_hat") and has("captains_hat")>>
     Dex: Bree needs this hat for her headshots.
+<<elseif not flagged("a4_won_lou")>>
+    Dex: Lou has both answers now. She should be finishing that crossword any second.
 <<elseif not flagged("a4_photos_taken")>>
     Dex: Bree's got the hat and I've got Lou's camera. Time for a photo shoot.
 <<elseif not flagged("a4_won_bree") and has("full_camera")>>
@@ -328,6 +442,12 @@ Roxy Vale: First question! Where are you taking her?
     Lou: Hm.
     Roxy Vale: Lou said "hm"! That's practically a standing ovation! Next question!
     <<jump A4_Date_Gift>>
+-> A heckling night with Mortimer
+    Dex: Front row at the Bijou, but we spend the whole movie heckling it with Mortimer!
+    Bree Marlowe: I want to WATCH the movie, Dex. Some of us want to be in movies. Heckled by Mortimer is how I'd die.
+    Lou: Zero. And he'd heckle the date.
+    Roxy Vale: Even the camera guy said "boo"! Again!
+    <<jump A4_Date_Place>>
 -> Karaoke with Captain Gus at the Rusty Anchor
     Dex: The Rusty Anchor! Captain Gus will play the Barnacle Waltz forty times and explain every word of it.
     Bree Marlowe: I love Gus. But not "four hours of the Barnacle Waltz" love.
@@ -347,7 +467,7 @@ Roxy Vale: Second question! What gift do you bring?
 -> A gift card to the Starlite Diner
     Dex: A gift card to the Starlite Diner! Fifty dollars of pie!
     Bree Marlowe: I get pie for free. It's the only good part of the job. Apart from the drama.
-    Lou: Zero.
+    Lou: Zero. And I know what's in that pie now. It's apple.
     Roxy Vale: Ooh, so close and yet so pie. Again!
     <<jump A4_Date_Gift>>
 -> The fluffiest slippers in town
@@ -381,6 +501,11 @@ Roxy Vale: Final question! The opening line. Look into her eyes, lover boy, and 
     Dex: I remember everything you said tonight. Except the name of the musical. "Shipwrecked in... Love Boat"?
     Bree Marlowe: Close enough.
     <<jump A4_Date_Win>>
+-> "Then the back row finally gets their money's worth!"
+    Bree Marlowe: That's MY heckler line! You can't use my heckler line on me! Nobody's even heckling!
+    Lou: Zero. Mortimer would've had you for that.
+    Roxy Vale: Wrong room, lover boy! Again!
+    <<jump A4_Date_Line>>
 -> "Ahoy, matey. Wanna see my anchor?"
     Bree Marlowe: Is that a line from my musical? Because I'm reporting it to the director.
     Lou: Gus taught you that, didn't he. Zero.
@@ -455,7 +580,7 @@ title: A4_Counter_Look
 <<if flagged("a4_won_lou")>>
     Dex: The counter. A gum display, a bell, a till, and a finished crossword in a little frame Lou made out of popsicle sticks.
 <<else>>
-    Dex: The counter. A gum display, a bell, and a newspaper crossword with one empty row and a lot of angry eraser marks.
+    Dex: The counter. A gum display, a bell, and a newspaper crossword with two crossing empty rows and a lot of angry eraser marks.
 <<endif>>
 ===
 title: A4_Counter_Use
@@ -463,8 +588,18 @@ title: A4_Counter_Use
 <<if flagged("a4_won_lou")>>
     Dex: I ding the bell. Lou dings it back. That's basically a hug.
 <<else>>
-    Dex: I lean over to read the crossword. "17 Across. Sailor's word for the bathroom. Four letters."
-    Dex: She's tried "LOOO" and "POTY". Both crossed out so hard the paper tore.
+    <<if not flagged("a4_lou_head")>>
+        Dex: I lean over to read the crossword. "17 Across. Sailor's word for the bathroom. Four letters."
+        Dex: She's tried "LOOO" and "POTY". Both crossed out so hard the paper tore.
+    <<else>>
+        Dex: 17 Across says HEAD, in pen, pressed so hard it's practically engraved.
+    <<endif>>
+    <<if not flagged("a4_lou_apple")>>
+        Dex: "19 Down. The Starlite Diner's famous Mystery Pie. Five letters." It crosses 17 Across on the third letter.
+        Dex: In the margin, Lou has written "NOT APPLE. NOBODY WOULD KEEP APPLE A SECRET."
+    <<else>>
+        Dex: 19 Down says APPLE. Next to it, in tiny letters: "Sal, you fraud."
+    <<endif>>
     <<flag a4_lou_clue>>
 <<endif>>
 ===
@@ -497,55 +632,120 @@ title: A4_Lou_Talk
 <<if not flagged("a4_met_lou")>>
     Dex: Hi! I'm Dex. Do you sell cameras?
     Lou: Lou. We sell gum, batteries, and slushies nobody should drink. Anything else, no.
-    Lou: (taps the newspaper with her pencil) Seventeen Across. "Sailor's word for the bathroom." Four letters.
+    Lou: (taps the newspaper with her pencil) Two holes left. Seventeen Across. "Sailor's word for the bathroom." Four letters.
+    Lou: And Nineteen Down, crossing it. "The Starlite Diner's famous Mystery Pie." Five letters. Nobody on this street knows. Sal won't tell.
     Lou: I've been stuck on it for a week. I can't think about anything else. I can't sleep. I can't smile.
     Dex: Do you smile when you're NOT stuck?
     Lou: Finish it and find out.
     <<flag a4_met_lou>>
     <<flag a4_lou_clue>>
 <<elseif flagged("a4_won_lou")>>
-    <<jump A4_Lou_Chat>>
-<<elseif has("gus_coaster")>>
+    Lou: Mm. You again. (it's almost friendly)
+<<elseif has("gus_coaster") and not flagged("a4_lou_head")>>
     Lou: Is that a coaster from the Rusty Anchor? There's writing on it. Give it here.
+<<elseif flagged("a4_lou_head")>>
+    Lou: Seventeen Across, done. Nineteen Down, still a mystery pie. Still not smiling. Half a crossword isn't a crossword.
+<<elseif flagged("a4_lou_apple")>>
+    Lou: Nineteen Down, done. Seventeen Across, still blank. Sailor word. Bathroom. Still not smiling.
 <<else>>
-    Lou: Four letters. Sailor word. Bathroom. Still stuck. Still not smiling.
-    Dex: A sailor word... I bet somebody at the Rusty Anchor knows. That place is wall-to-wall sailor.
+    Lou: Four letters. Sailor word. Bathroom. And a pie nobody can name. Still stuck. Still not smiling.
 <<endif>>
+<<jump A4_Lou_Chat>>
 ===
 title: A4_Lou_Chat
 ---
--> Ask about the camera
+-> Ask about the crossword <<if not flagged("a4_won_lou")>>
+    <<if not flagged("a4_lou_head")>>
+        Lou: Seventeen Across. A sailor would know. I don't know any sailors. I know a parrot that thinks it's one.
+        Dex: A sailor word... I bet somebody at the Rusty Anchor knows. That place is wall-to-wall sailor.
+    <<endif>>
+    <<if not flagged("a4_lou_apple")>>
+        Lou: Nineteen Down. The Starlite's Mystery Pie. Everyone on this street has tasted it. Nobody can name it. Sal keeps the recipe in a tin and guards it like a dragon.
+        Lou: It's not apple. Before you say apple. Nobody would keep APPLE a secret for thirty years.
+    <<endif>>
+    <<jump A4_Lou_Chat>>
+-> Nineteen Down is APPLE. <<if flagged("a4_knows_pie") and not flagged("a4_lou_apple")>>
+    <<jump A4_Lou_Apple>>
+-> Ask if she has a camera <<if not flagged("a4_won_lou")>>
+    Lou: There's one in the lost and found. Lost and found is for friends. I don't have friends. I have a crossword.
+    Dex: So if I help with the crossword...
+    Lou: Then I'd have a friend AND a crossword. Terrifying.
+    <<jump A4_Lou_Chat>>
+-> Ask about the camera <<if flagged("a4_won_lou")>>
     Lou: Lost and found. Some guy left it here after a first date went bad. You'll do better.
--> Ask about developing photos <<if not flagged("a4_photos_developed")>>
+    <<jump A4_Lou_Chat>>
+-> Ask about developing photos <<if flagged("a4_won_lou") and not flagged("a4_photos_developed")>>
     Lou: Bring me a full camera and I'll run it through the machine. For you, one minute instead of an hour. Don't tell anyone.
--> Ask her to smile again
+    <<jump A4_Lou_Chat>>
+-> Ask how she deals with rude customers <<if not flagged("a4_cb_cry")>>
+    Lou: Last week a guy tries to take a free slushie. He goes, "Come on. Nobody's watching."
+    Lou: I say: "Good. Then nobody'll see you cry."
+    Dex: What happened?
+    Lou: He paid. And then he cried a little. Nobody watched.
+    Dex: "Good. Then nobody'll see you cry." Can I borrow that?
+    Lou: It's a free country. The slushies aren't.
+    <<flag a4_cb_cry>>
+    <<jump A4_Lou_Chat>>
+-> Ask about Mortimer <<if flagged("a4_met_mortimer") and not flagged("a4_lou_mortimer")>>
+    Lou: The old usher? He came in here once and heckled the slushie machine. The machine has never recovered. Neither have I.
+    <<flag a4_lou_mortimer>>
+    <<jump A4_Lou_Chat>>
+-> Ask her to smile <<if flagged("a4_won_lou")>>
     Lou: Don't push it.
--> Ask what's next in the paper
+    <<jump A4_Lou_Chat>>
+-> Ask what's next in the paper <<if flagged("a4_won_lou")>>
     Lou: Tomorrow's crossword. I'm saving it. Like a dessert.
+    <<jump A4_Lou_Chat>>
 -> Bye, Lou
     Lou: Mm.
 ===
 title: A4_Lou_Coaster
 ---
-<<if flagged("a4_won_lou")>>
+<<if flagged("a4_lou_head")>>
     Lou: I know, I know. HEAD. It's in pen now. It's permanent.
 <<else>>
     Lou: (reads the coaster) "The answer is HEAD. Fair winds. Gus." With a little drawing of an anchor.
     Lou: H. E. A. D. (writes it in) It fits. It FITS.
-    Dex: Lou smiles. It's small, and a little rusty, like a door that hasn't been opened in years. But it's a smile.
-    Lou: Don't tell anybody about this.
-    Lou: Here. The crossword. First one I've finished all year. Keep it, so I don't get cocky.
     <<take gus_coaster>>
-    <<give finished_crossword>>
-    <<flag a4_won_lou>>
-    <<if flagged("a4_met_bree")>>
-        Lou: And you were asking about a camera. (rummages under the counter) Lost and found. Disposable, still has film.
+    <<flag a4_lou_head>>
+    <<if flagged("a4_lou_apple")>>
+        <<jump A4_Lou_Win>>
     <<else>>
-        Lou: And here, a disposable camera from the lost and found. You look like a guy who'll need one.
+        Lou: Which means Nineteen Down starts with A. A-something-something-something-something pie.
+        Lou: Almond? Too short. Apricot? Too long. And it's NOT apple. Nobody keeps apple a secret.
+        Lou: Half a crossword. Half a smile is not a smile, Dex. It's a twitch.
     <<endif>>
-    Lou: When it's full, bring it back. I'll develop it in a minute instead of an hour. Because I like you. A little.
-    <<give disposable_camera>>
 <<endif>>
+===
+title: A4_Lou_Apple
+---
+Dex: Nineteen Down. The great Starlite Mystery Pie. It's APPLE.
+Lou: ...
+Lou: No. No, it isn't. Nobody would keep apple a secret for thirty years.
+Dex: "Step one: make an apple pie. Step two: add a pinch of nutmeg so nobody can tell it's apple. Step three: tell no one." It's on the card in Sal's tin.
+Lou: (writes it in very slowly) A. P. P. L. E. ...It fits. Sal, you magnificent fraud.
+<<flag a4_lou_apple>>
+<<if flagged("a4_lou_head")>>
+    <<jump A4_Lou_Win>>
+<<else>>
+    Lou: Seventeen Across is still empty, though. Sailor word for the bathroom. Find me a sailor.
+<<endif>>
+===
+title: A4_Lou_Win
+---
+Lou: (fills in the last square and stares at the grid)
+Dex: Lou smiles. It's small, and a little rusty, like a door that hasn't been opened in years. But it's a smile.
+Lou: Don't tell anybody about this.
+Lou: Here. The crossword. First one I've finished all year. Keep it, so I don't get cocky.
+<<give finished_crossword>>
+<<flag a4_won_lou>>
+<<if flagged("a4_met_bree")>>
+    Lou: And you were asking about a camera. (rummages under the counter) Lost and found. Disposable, still has film.
+<<else>>
+    Lou: And here, a disposable camera from the lost and found. You look like a guy who'll need one.
+<<endif>>
+Lou: When it's full, bring it back. I'll develop it in a minute instead of an hour. Because I like you. A little.
+<<give disposable_camera>>
 ===
 title: A4_Lou_Develop
 ---
@@ -571,12 +771,26 @@ title: A4_Lou_Quarter
 <<if flagged("a4_won_lou")>>
     Lou: Keep it. Nothing in here costs a quarter. Except my advice, and that's free.
 <<else>>
-    Lou: A wet quarter. From the fountain, I bet. I don't want your wishes, kid. I want four letters.
+    Lou: A wet quarter. From the fountain, I bet. I don't want your wishes, kid. I want nine letters in two directions.
 <<endif>>
 ===
 title: A4_Lou_ShowHeadshots
 ---
 Lou: The one with the dog clapping. Bree should frame that one. Tell her I said so. Don't tell her I said so.
+===
+title: A4_Lou_Pie
+---
+Lou: Starlite pie. I've eaten forty slices of that pie trying to name it. Sal puts nutmeg in it to throw us off. I'm not tasting my way to the answer, Dex. I need the recipe.
+===
+title: A4_Lou_Coupon
+---
+Lou: That's a diner coupon. This is a Quickmart. Read the sign, kid. Read any sign.
+===
+title: A4_Lou_Wig
+---
+Lou: No.
+Dex: I didn't even say anything.
+Lou: You were going to say "try it on". No.
 ===
 
 title: A4_Anchor_Enter
@@ -681,12 +895,40 @@ title: A4_Parrot_Use
     Admiral: SQUAWK! LOVER BOY! LOVER BOY!
     Dex: Has EVERYONE been watching the show?
 <<endif>>
+<<jump A4_Parrot_Chat>>
+===
+title: A4_Parrot_Chat
+---
+-> "Pretty bird?"
+    Admiral: PRETTY BIRD! PAY THE PARROT! PAY THE PARROT!
+    Dex: I don't think that's how compliments work.
+    <<jump A4_Parrot_Chat>>
+-> Ask it about the Mystery Pie <<if flagged("a4_lou_clue") and not flagged("a4_knows_pie")>>
+    Admiral: NUTMEG! NUTMEG! SQUAWK!
+    Captain Gus: Don't listen to him, lad. He only knows what Sal shouts about through the wall. Nutmeg's six letters anyway.
+    <<jump A4_Parrot_Chat>>
+-> Ask it about Gus's bald spot <<if flagged("a4_gus_bald") and not flagged("a4_got_hat")>>
+    Admiral: ISLAND! ISLAND! LAND HO!
+    Captain Gus: Hush, you. That's a private island.
+    <<jump A4_Parrot_Chat>>
+-> Try a comeback on it <<if flagged("a4_cb_backrow") or flagged("a4_cb_boot") or flagged("a4_cb_pie") or flagged("a4_cb_cry")>>
+    Dex: I try my best comeback on the parrot. I really sell it.
+    Admiral: MORE FANS THAN YOU! MORE FANS THAN YOU!
+    Dex: The parrot out-heckled me. I'm not ready for Mortimer. I'm not ready for anything.
+    <<jump A4_Parrot_Chat>>
+-> Back away slowly
+    Admiral: LANDLUBBER!
+===
+title: A4_Parrot_Pie
+---
+Admiral: PIE! PIE! NUTMEG! PIE!
+Captain Gus: No pie for the Admiral, lad. Last time he had pie he sang till Tuesday.
 ===
 
 title: A4_Gus_Look
 ---
 <<if flagged("a4_got_hat")>>
-    Dex: Captain Gus, bare-headed, swaying to the Barnacle Waltz. His bald spot is shaped like a little island.
+    Dex: Commodore Gus, in a towering white wig, swaying to the Barnacle Waltz. He keeps catching sight of himself in the bottles and saluting.
 <<else>>
     Dex: An old sailor in a navy coat and a battered captain's hat, glued to his bar stool. A beard you could lose a sandwich in.
 <<endif>>
@@ -704,6 +946,17 @@ title: A4_Gus_Talk
     <<flag a4_met_gus>>
 <<elseif not flagged("a4_gus_song")>>
     Captain Gus: (hums the Barnacle Waltz, badly) No song, no sailor talk, lad. B-7. Twenty-five cents.
+<<elseif flagged("a4_got_hat")>>
+    Captain Gus: (adjusting his curls) That's COMMODORE Gus to you, lad. What can the Commodore do for you?
+<<else>>
+    Captain Gus: Ahh, the Barnacle Waltz. What can old Gus do for you, lad?
+<<endif>>
+<<jump A4_Gus_Chat>>
+===
+title: A4_Gus_Chat
+---
+-> Ask about his song <<if not flagged("a4_gus_song")>>
+    Captain Gus: B-7. The Barnacle Waltz. Not another word till I hear it.
     <<if has("wish_quarter")>>
         Dex: I've got a quarter now. To the jukebox!
     <<elseif has("fishing_net")>>
@@ -711,35 +964,63 @@ title: A4_Gus_Talk
     <<else>>
         Dex: A quarter. Where do people throw away perfectly good quarters? ...Oh. The wishing fountain.
     <<endif>>
-<<else>>
-    Captain Gus: Ahh, the Barnacle Waltz. What can old Gus do for you, lad?
     <<jump A4_Gus_Chat>>
-<<endif>>
-===
-title: A4_Gus_Chat
----
 -> Ask about Lou's crossword clue <<if flagged("a4_lou_clue") and not flagged("a4_got_coaster")>>
-    Dex: A sailor's word for the bathroom. Four letters.
-    Captain Gus: Ha! That's the HEAD, lad. On a ship the bathroom's the head. Always has been.
-    Dex: Why?
-    Captain Gus: Because it's at the head of the ship. And you go there when you're ahead of schedule. And... look, I don't make the rules.
-    Captain Gus: Here, I'll write it on a coaster so you don't forget. Tell Lou that Gus says ahoy.
-    <<give gus_coaster>>
-    <<flag a4_got_coaster>>
--> Ask to borrow his captain's hat <<if flagged("a4_met_bree") and not flagged("a4_got_hat")>>
-    Dex: There's an actress outside the diner. Her audition's tomorrow. She's playing a sea captain, and she doesn't have a hat.
-    Captain Gus: An actress playing a captain, with no hat? That's mutiny against good taste!
-    Captain Gus: (takes off his hat and looks at it for a long moment) This hat's been round Cape Horn three times. It's time it saw a stage.
-    Captain Gus: Tell her to wear it proud. And to tilt it a bit to the left. Captains always tilt left.
-    <<give captains_hat>>
-    <<flag a4_got_hat>>
--> Ask for a sailor word
+    <<if not flagged("a4_gus_song")>>
+        Captain Gus: A sailor word? Lad, I've taken a vow. No sailor talk till B-7. (taps his nose) Twenty-five cents and I'm an open book.
+    <<else>>
+        Dex: A sailor's word for the bathroom. Four letters.
+        Captain Gus: Ha! That's the HEAD, lad. On a ship the bathroom's the head. Always has been.
+        Dex: Why?
+        Captain Gus: Because it's at the head of the ship. And you go there when you're ahead of schedule. And... look, I don't make the rules.
+        Captain Gus: Here, I'll write it on a coaster so you don't forget. Tell Lou that Gus says ahoy.
+        <<give gus_coaster>>
+        <<flag a4_got_coaster>>
+    <<endif>>
+    <<jump A4_Gus_Chat>>
+-> Ask about the Starlite's Mystery Pie <<if flagged("a4_lou_clue") and not flagged("a4_knows_pie") and not flagged("a4_gus_pie")>>
+    Captain Gus: That's not sailor talk, so I'm allowed. Thirty years I've been guessing that pie. Sal says it's his nonna's secret.
+    Captain Gus: He keeps the recipe in a red tin over his grill and never takes his eyes off it. A man that careful is hiding something very simple, lad. Mark my words.
+    <<flag a4_gus_pie>>
+    <<jump A4_Gus_Chat>>
+-> Ask to borrow his captain's hat <<if flagged("a4_gus_song") and flagged("a4_met_bree") and not flagged("a4_got_hat")>>
+    <<if not flagged("a4_gus_bald")>>
+        Dex: There's an actress outside the diner. Her audition's tomorrow. She's playing a sea captain, and she doesn't have a hat.
+        Captain Gus: An actress playing a captain, with no hat? That's mutiny against good taste!
+        Captain Gus: (reaches for the brim, then freezes) But lad... under this hat is a bald spot. Shaped like a little island.
+        Captain Gus: Gulls have tried to land on it. A sailor's head is never bare in public. Never!
+        Captain Gus: Find me something else to cover the old island, something with a bit of dignity, and the hat's hers.
+        <<flag a4_gus_bald>>
+    <<else>>
+        Captain Gus: Not till the old island's covered, lad. Something with dignity. Not a bucket. I've tried a bucket.
+    <<endif>>
+    <<jump A4_Gus_Chat>>
+-> Ask if anyone ever insulted him <<if flagged("a4_gus_song") and not flagged("a4_cb_boot")>>
+    Captain Gus: Insulted me? Lad, I've been insulted in every port from here to the Horn.
+    Captain Gus: Best was a bosun in Lisbon. He says, "Gus, you've got all the charm of a wet sock."
+    Captain Gus: And I says: "Maybe. But this sock's been round the world in a boot!"
+    Captain Gus: Whole crew cheered. The bosun bought the rum. Well, he bought me a lemonade. I don't drink rum. Don't tell anyone.
+    Dex: "This sock's been round the world in a boot." That's going in the vault.
+    <<flag a4_cb_boot>>
+    <<jump A4_Gus_Chat>>
+-> Ask for a sailor word <<if flagged("a4_got_coaster") and not flagged("a4_gus_word")>>
     Captain Gus: "Scuttlebutt". It means gossip. Like the gossip that some lad in a flowery shirt is going to be on the telly.
--> Ask for dating advice
+    <<flag a4_gus_word>>
+    <<jump A4_Gus_Chat>>
+-> Ask for dating advice <<if flagged("a4_got_coaster") and not flagged("a4_gus_advice")>>
     Captain Gus: Listen to the lady, lad. Really listen. Every word she says is a map to the treasure.
     Captain Gus: And never say "ahoy matey, wanna see my anchor". I tried it once. Took forty years to live down.
--> Ask about the Barnacle Waltz
+    <<flag a4_gus_advice>>
+    <<jump A4_Gus_Chat>>
+-> Ask about Mortimer <<if flagged("a4_met_mortimer") and not flagged("a4_gus_mortimer")>>
+    Captain Gus: That old heckler at the Bijou? He heckled my wedding. Stood up at the back and yelled "SHE CAN DO BETTER!"
+    Captain Gus: Margaret laughed so hard she snorted. Fair play to him. It was a good heckle. She couldn't do better, mind.
+    <<flag a4_gus_mortimer>>
+    <<jump A4_Gus_Chat>>
+-> Ask about the Barnacle Waltz <<if flagged("a4_gus_song") and not flagged("a4_gus_waltz")>>
     Captain Gus: Me and my Margaret danced to it on the deck in a storm. Both of us seasick. Best night of my life.
+    <<flag a4_gus_waltz>>
+    <<jump A4_Gus_Chat>>
 -> Never mind
     Captain Gus: Fair winds, lad.
 ===
@@ -762,6 +1043,38 @@ Captain Gus: No, no, it's not mine anymore. It belongs to the actress now. Go on
 title: A4_Gus_Headshots
 ---
 Captain Gus: (squints) Is that my hat? On a movie star? (sniffs) The old hat's made it, lad. The old hat's made it.
+===
+title: A4_Gus_Wig
+---
+<<if flagged("a4_got_hat")>>
+    Captain Gus: I'm already wearing it, lad. Commodore Gus. Say it with me.
+<<elseif not flagged("a4_met_bree")>>
+    Captain Gus: A wig? What would an old sailor want with... wait. You're offering a swap, aren't you? What would you want with old Gus's things?
+    Dex: I... honestly don't know yet.
+    Captain Gus: Then come back when you do, lad.
+<<else>>
+    Captain Gus: Is that... a commodore's wig? White curls? A little black bow? The genuine article?
+    Captain Gus: (takes off the captain's hat, revealing a bald spot shaped like a little island, and pulls the wig on in one smooth motion)
+    Captain Gus: Well? How do I look?
+    Dex: Like a commodore who's about to declare war on a small country. In a good way.
+    Captain Gus: COMMODORE Gus! I've been promoted! Forty years at sea and the promotion comes in a sailors' bar from a lad in a flowery shirt!
+    Captain Gus: Here. The hat. Tell the actress to wear it proud, and to tilt it a bit to the left. Captains always tilt left.
+    <<take commodore_wig>>
+    <<give captains_hat>>
+    <<flag a4_got_hat>>
+<<endif>>
+===
+title: A4_Gus_Net
+---
+Captain Gus: A hairnet? For the old island? Lad, I'm a sailor, not a lunch lady. Go scoop something with it.
+===
+title: A4_Gus_Pie
+---
+Captain Gus: Starlite pie! (sniffs) Nutmeg. It's always nutmeg. But under the nutmeg, lad... something very simple. No, I won't eat it. It's somebody else's. I can tell by the way you're holding it.
+===
+title: A4_Gus_Coupon
+---
+Captain Gus: A diner coupon? Take it to Sal, lad. He has to go into the walk-in for those, and he hates it. The door sticks. He sings to keep warm.
 ===
 
 title: Item_fishing_net_Look
@@ -798,5 +1111,529 @@ Dex: Bree's diner name tag. "Hi, I'm BREE. Ask me about the pie." Nobody has eve
 ===
 title: Item_finished_crossword_Look
 ---
-Dex: Lou's finished crossword. Seventeen Across, HEAD, in pen. The only crossword that ever made her smile.
+Dex: Lou's finished crossword. HEAD across, APPLE down, in pen. The only crossword that ever made her smile.
+===
+title: Item_pie_coupon_Look
+---
+Dex: "STARLITE DINER. ONE FREE SLICE OF MYSTERY PIE. PRESENT TO THE COOK." Small print: "COOK WILL FETCH FRESH SLICE FROM WALK-IN. COOK WILL NOT BE HAPPY ABOUT IT."
+===
+title: Item_mystery_pie_Look
+---
+Dex: A slice of Starlite Mystery Pie, still frosty from the walk-in. It smells of nutmeg and smug apples.
+===
+title: Item_commodore_wig_Look
+---
+Dex: A towering white commodore's wig with a little black bow, from the Bijou's costume trunk. It has more volume than my whole personality.
+===
+
+title: A4_Diner_Enter
+---
+<<if not flagged("a4_diner_intro")>>
+    Dex: The inside of the Starlite. Chrome stools, red booths, and a cook juggling six orders and singing to every one of them.
+    Dex: Three regulars in a booth are holding up their empty mugs like protest signs.
+    Sal: Bree's on break! Seat yourself! NOT THERE! That stool wobbles. It's the wobble stool. We don't talk about the wobble stool.
+    <<flag a4_diner_intro>>
+<<elseif flagged("a4_sal_away")>>
+    Dex: The grill is sizzling all by itself. From inside the walk-in I can hear Sal singing to the pies.
+<<endif>>
+===
+title: A4_DinerExit_Look
+---
+Dex: The door back out to the street. The little bell over it rings in a minor key.
+===
+title: A4_DinerExit_Use
+---
+<<go downtown from_diner>>
+===
+title: A4_PieCase_Look
+---
+Dex: A glass dome on a stand with one perfect golden pie inside. Too perfect. It hasn't moved since I walked in. I'm not sure it's moved since 1987.
+===
+title: A4_PieCase_Use
+---
+<<if flagged("a4_sal_away")>>
+    Dex: I lift the dome and knock on the pie. It goes "tock". It's lacquered. It's basically furniture.
+<<else>>
+    Sal: That's the DISPLAY pie! It's ninety percent varnish! Eat that and you'll be shiny for a week!
+    Sal: Real pie lives in the walk-in, kid. For paying customers and coupon holders only.
+<<endif>>
+===
+title: A4_PieCase_Pie
+---
+Dex: Swap a real slice for the decoy? That would be a crime against pie. Also it's glued down.
+===
+title: A4_Sal_Look
+---
+Dex: The cook. Huge, hairy forearms, a paper hat, a spatula in each hand. He's working six orders at once and never once looks away from the red tin above his grill.
+===
+title: A4_Sal_Talk
+---
+<<if not flagged("a4_met_sal")>>
+    Sal: ORDER UP! ...Oh. You're not an order. Sal. I cook. Talk fast, kid, I got six eggs going and they're all at a delicate age.
+    Dex: I'm Dex. A friend of Bree's.
+    Sal: Bree! Best waitress on this street! She's on break, so tonight I'm cook AND waitress AND therapist. The booth over there needs a lot of therapy.
+    <<flag a4_met_sal>>
+<<elseif flagged("a4_got_pie")>>
+    Sal: How was the pie, kid? Don't answer. Your face says it all. Your face says "mystery".
+<<else>>
+    Sal: Kid! Talk while I flip. I got pancakes on a timer and the timer is me.
+<<endif>>
+<<jump A4_Sal_Chat>>
+===
+title: A4_Sal_Chat
+---
+-> Ask about the Mystery Pie <<if not flagged("a4_knows_pie")>>
+    Sal: The Starlite Mystery Pie. My nonna's recipe. Thirty years, and nobody on this street has ever guessed it. Lou's been trying all week. She looks so tired.
+    Sal: The recipe's in that tin up there. And I never, EVER leave this grill. Except for one thing.
+    Dex: What thing?
+    Sal: Coupon slices. The pie in the case is a decoy. Coupon pie comes fresh from the walk-in, and only the cook can fetch it. Rules are rules. The door sticks. Takes me forever.
+    <<flag a4_sal_secret>>
+    <<jump A4_Sal_Chat>>
+-> Ask him for the recipe <<if not flagged("a4_knows_pie")>>
+    Sal: Kid. I'd sooner tell you my PIN number. Which is also a secret. It's not 1234.
+    Sal: ...It's not.
+    Dex: He changes it on a little pad by the till without looking at me. He's changing it right now.
+    <<jump A4_Sal_Chat>>
+-> Ask about rude customers <<if not flagged("a4_cb_pie")>>
+    Sal: Rude customers? Kid, I got a guy every night. Last night he says, "Sal, that pie in the window's been sitting there since 1987."
+    Sal: I tell him: "Yeah, and it's still got more fans than you."
+    Sal: He's in the booth right now. He came back. They always come back.
+    Dex: "Yeah, and it's still got more fans than you." Noted.
+    <<flag a4_cb_pie>>
+    <<jump A4_Sal_Chat>>
+-> Ask about Mortimer <<if (flagged("a4_met_mortimer") or flagged("a4_knows_bijou")) and not flagged("a4_sal_mortimer")>>
+    Sal: Mortimer! Banned for life! He heckled my meatloaf. Said it had "no stage presence". In front of the regulars!
+    Sal: Thirty years he hasn't had a bite of my pie. He'd sell his flashlight for a slice. Serves him right.
+    <<flag a4_sal_mortimer>>
+    <<jump A4_Sal_Chat>>
+-> Ask about Bree <<if not flagged("a4_sal_bree")>>
+    Sal: She's gonna be a star. When she's famous I'm naming a pancake after her. The Bree. Short stack, lots of drama.
+    <<flag a4_sal_bree>>
+    <<jump A4_Sal_Chat>>
+-> Leave him to his eggs
+    Sal: Go, go! The eggs can sense fear.
+===
+title: A4_Sal_Coupon
+---
+<<if flagged("a4_sal_away")>>
+    Dex: Sal's already in the walk-in.
+<<else>>
+    Sal: A coupon! For a free slice! (reads it) "Present to the cook." That's me. I'm the cook.
+    Sal: Rules are rules. The case pie's a decoy. Coupon pie comes fresh from the walk-in.
+    Sal: (points a spatula at me) Watch my eggs. Don't touch NOTHING. ESPECIALLY not the tin.
+    <<take pie_coupon>>
+    <<flag a4_met_sal>>
+    <<flag a4_sal_away>>
+    Dex: Sal shoulders the walk-in door open and vanishes into a cloud of frost. A second later he starts singing to the pies. It's a long song.
+<<endif>>
+===
+title: A4_Sal_Pie
+---
+Sal: That's your slice, kid! Eat it somewhere I can't see. I can't watch people guess. It breaks my heart.
+===
+title: A4_Sal_Coaster
+---
+Sal: HEAD? (laughs) That's the Rusty Anchor's handwriting. Gus. Tell him the meatloaf misses him.
+===
+title: A4_Sal_Quarter
+---
+Sal: A quarter? Kid, a quarter doesn't buy pie. A quarter barely buys eye contact.
+===
+title: A4_Sal_Wig
+---
+Sal: I wear a paper hat for a reason, kid. Hygiene. That thing has seen four revivals and a pigeon.
+===
+title: A4_RecipeTin_Look
+---
+Dex: A dented red tin on the shelf above the grill. Hand-painted on the lid: "NONNA'S. KEEP OUT. THIS MEANS YOU, LOU."
+===
+title: A4_RecipeTin_Use
+---
+<<if flagged("a4_knows_pie")>>
+    Dex: I know its secret. It knows I know. We have an understanding.
+<<elseif flagged("a4_sal_away")>>
+    Dex: Sal's still singing in the walk-in. I reach up over the grill, very carefully, and pop the lid.
+    Dex: One index card, splattered with thirty years of grease. "STARLITE MYSTERY PIE."
+    Dex: "Step one: make an apple pie. Step two: add a pinch of nutmeg so nobody can tell it's apple. Step three: tell no one. Ever."
+    Dex: Apple. Thirty years of mystery, and it's APPLE.
+    <<flag a4_knows_pie>>
+    Dex: The walk-in door bangs. I snap the lid shut and try to look extremely casual.
+    Sal: One slice of Mystery Pie, frosty fresh! Hey. Why are you whistling?
+    Dex: No reason. Lovely tin. I mean, lovely eggs.
+    Sal: (narrows his eyes, then shrugs) Enjoy, kid. And don't try to guess what's in it. Nobody ever does.
+    <<unflag a4_sal_away>>
+    <<give mystery_pie>>
+    <<flag a4_got_pie>>
+<<else>>
+    Sal: HANDS OFF THE TIN!
+    Dex: He didn't even turn around. He has eyes in the back of his paper hat.
+    <<if flagged("a4_sal_secret")>>
+        Dex: I'll never get near that tin while Sal's at the grill. I need him somewhere else for a minute. Somewhere cold.
+    <<endif>>
+<<endif>>
+===
+title: A4_Freezer_Look
+---
+Dex: A steel walk-in freezer door. A sign: "REAL PIE INSIDE. DOOR STICKS. PULL HARD AND PRAY."
+===
+title: A4_Freezer_Use
+---
+<<if flagged("a4_sal_away")>>
+    Sal: (muffled) DON'T OPEN THAT DOOR! THE PIES ARE RESTING!
+<<else>>
+    Sal: Staff only, kid! That means me! I'm the staff!
+<<endif>>
+===
+title: A4_Freezer_Coupon
+---
+Dex: The coupon says "present to the cook". The freezer is not the cook. It's colder than the cook. Slightly.
+===
+title: A4_Regulars_Look
+---
+Dex: Three regulars in a booth: a trucker in a cap, a lady with a crossword of her own, and a nurse fast asleep on a stack of pancakes. They've been waiting for refills since Bree's break started.
+===
+title: A4_Regulars_Talk
+---
+<<if not flagged("a4_met_regulars")>>
+    Earl: Kid! You work here? You look like you work here. Your shirt looks like it works at a luau.
+    Dot: Don't mind Earl, honey. We've been waiting for coffee for forty minutes. We're getting philosophical.
+    <<flag a4_met_regulars>>
+<<else>>
+    Dot: Still no coffee, honey. Earl is starting to see things.
+<<endif>>
+<<jump A4_Regulars_Chat>>
+===
+title: A4_Regulars_Chat
+---
+-> Ask them to guess the Mystery Pie <<if not flagged("a4_knows_pie")>>
+    Earl: Rhubarb. Final answer. I've said rhubarb every night for eleven years.
+    Dot: I say "sorrow". Nobody's proved me wrong.
+    Nurse Pat: (asleep) ...nutmeg with ambition...
+    Dex: I don't think the regulars are going to crack this one.
+    <<jump A4_Regulars_Chat>>
+-> Ask about the pie now that I know <<if flagged("a4_knows_pie") and not flagged("a4_regulars_pie")>>
+    Earl: You know?! Tell us!
+    Dex: I... can't. I pinky-promised on a spatula. In my heart.
+    Dot: Then wink once for rhubarb.
+    Dex: I don't wink. Earl looks devastated anyway.
+    <<flag a4_regulars_pie>>
+    <<jump A4_Regulars_Chat>>
+-> Offer to pour them coffee
+    Sal: Customers don't pour! Insurance! Last time a customer poured, we lost a booth!
+    Dot: We don't talk about the booth, honey.
+    <<jump A4_Regulars_Chat>>
+-> Ask about the wobble stool
+    Earl: Kid. We don't talk about the wobble stool.
+    <<jump A4_Regulars_Chat>>
+-> Leave them to their philosophy
+    Dot: Bye, honey. If you see Bree, tell her we're dying. Politely.
+===
+title: A4_Regulars_Pie
+---
+Earl: That's coupon pie! Don't wave that around in here, kid. It's a riot waiting to happen.
+===
+title: A4_Regulars_Coupon
+---
+Dot: A coupon? Give that to Sal, honey. He has to go into the walk-in for those, and that door sticks something awful. We timed him once. Six minutes.
+===
+
+title: A4_Bijou_Enter
+---
+<<if not flagged("a4_bijou_intro")>>
+    Dex: The Bijou lobby. Red carpet worn pink, gold paint on everything, and the smell of popcorn that's been popping since the sixties.
+    Mortimer: (clicks a flashlight on, right in my eyes) The midnight show's at midnight, son. That's why it's called that.
+    <<flag a4_bijou_intro>>
+<<endif>>
+===
+title: A4_BijouExit_Look
+---
+Dex: The doors back out to the street, still propped open with a fire extinguisher.
+===
+title: A4_BijouExit_Use
+---
+<<go downtown from_bijou>>
+===
+title: A4_Concession_Look
+---
+Dex: A popcorn machine that's been popping since 1961, and a sign: "POPCORN FOR TICKET HOLDERS ONLY. NO TICKETS UNTIL MIDNIGHT. YES, WE KNOW."
+===
+title: A4_Concession_Use
+---
+Mortimer: Ticket holders only, son.
+Dex: Can I buy a ticket?
+Mortimer: Midnight.
+Dex: Can I buy popcorn at midnight?
+Mortimer: With a ticket.
+===
+title: A4_Concession_Quarter
+---
+Mortimer: Popcorn is three dollars, son. It was a nickel in 1961. It's been a rough few decades for all of us.
+===
+title: A4_Concession_Coupon
+---
+Mortimer: That's a Starlite coupon. This is a theatre. We don't take pie as currency. I wish we did.
+===
+title: A4_MoviePoster_Look
+---
+Dex: "LOVE AMONG THE LIGHTHOUSES. Tonight at midnight. Two lighthouse keepers. One lighthouse. No privacy." Someone has drawn a tiny heckler in the corner, booing.
+===
+title: A4_MoviePoster_Use
+---
+Dex: I strike the pose from the poster, gazing out to sea with one hand on my heart.
+Mortimer: Don't.
+===
+title: A4_Mortimer_Look
+---
+<<if flagged("a4_won_duel")>>
+    Dex: Mortimer, the old usher, polishing his flashlight and pretending he isn't sulking. His badge now says "UNDEFEATED (MOSTLY)".
+<<else>>
+    Dex: An ancient usher in a red jacket with gold buttons, holding a flashlight like a sword. His badge says "MORTIMER. HEAD USHER. UNDEFEATED."
+<<endif>>
+===
+title: A4_Mortimer_Talk
+---
+<<if not flagged("a4_met_mortimer")>>
+    Mortimer: Mortimer. Fifty-one years an usher at the Bijou, and every one of them the champion heckler of the midnight classics.
+    Mortimer: Behind that velvet rope is the old stage, and the trunk of costumes from our vaudeville days. Nobody crosses the rope unless they survive the Heckle.
+    Dex: The Heckle?
+    Mortimer: I heckle you. You come back at me. If you're still standing at the end, the rope is yours.
+    Mortimer: But I don't heckle on an empty stomach, son. Sal at the Starlite banned me thirty years ago, for an honest remark about his meatloaf.
+    Mortimer: Thirty years without a slice of Starlite pie. Bring me one, and I'll heckle you properly.
+    <<flag a4_met_mortimer>>
+<<elseif flagged("a4_won_duel")>>
+    Mortimer: Champ. The rope's down, the trunk's yours. Try not to wear the gorilla suit on a date.
+<<elseif flagged("a4_mortimer_fed")>>
+    Mortimer: (brushing crumbs off his lapel) Fed and ready, son. Care to step up?
+<<else>>
+    Mortimer: Back again? The Heckle doesn't happen on an empty stomach. Mine. Starlite pie, son.
+<<endif>>
+<<jump A4_Mortimer_Chat>>
+===
+title: A4_Mortimer_Chat
+---
+-> Challenge him to the Heckle <<if not flagged("a4_won_duel")>>
+    <<if not flagged("a4_mortimer_fed")>>
+        Mortimer: Pie first, son. Then pain.
+        <<jump A4_Mortimer_Chat>>
+    <<else>>
+        <<jump A4_Duel_Start>>
+    <<endif>>
+-> Ask how the Heckle works <<if not flagged("a4_won_duel")>>
+    Mortimer: Four heckles. You answer each with a proper comeback. Fumble one and it's back to your seat.
+    Mortimer: And no making things up on the spot, son. A comeback has to be road-tested. Somebody has to have used it on somebody.
+    Mortimer: Every sharp tongue on this street has taken a run at me. The girl at the Quickmart. Sal. That old sea dog at the Anchor. The waitress with the dramatic voice.
+    Mortimer: They all lost. But they all had one good line. Funny, that.
+    <<jump A4_Mortimer_Chat>>
+-> Ask about the costume trunk <<if not flagged("a4_got_wig")>>
+    Mortimer: Seventy years of shows in that trunk. A gorilla suit, a tin crown, and the commodore's wig from "The Admiral's Daughter", 1952.
+    Mortimer: White curls up to here, son. Covered three bald men in four revivals. Nobody ever knew.
+    <<flag a4_knows_wig>>
+    <<jump A4_Mortimer_Chat>>
+-> Ask about tonight's movie <<if not flagged("a4_mortimer_movie")>>
+    Mortimer: "Love Among the Lighthouses". Black and white. Everybody cries. I heckle the lighthouse. It's never once come back at me.
+    <<flag a4_mortimer_movie>>
+    <<jump A4_Mortimer_Chat>>
+-> Ask about Bree <<if flagged("a4_met_bree") and not flagged("a4_mortimer_bree")>>
+    Mortimer: The waitress? She sneaks in on her breaks, shoes off, front row. I pretend not to see. I've never heckled her once.
+    Mortimer: I'm a softie, son. Don't spread it around. It's bad for the brand.
+    <<flag a4_mortimer_bree>>
+    <<jump A4_Mortimer_Chat>>
+-> Goodbye
+    Mortimer: Enjoy the show. Or don't. I'll be heckling it either way.
+===
+title: A4_Mortimer_Pie
+---
+<<if flagged("a4_mortimer_fed")>>
+    Mortimer: One slice is a treat, son. Two is a lifestyle.
+<<else>>
+    Mortimer: Is that... Starlite pie? Coupon pie? From the walk-in?
+    Mortimer: (trembling, he eats it in four bites) Thirty years. Thirty years! Nutmeg! That sly dog. I still can't tell what it is.
+    Dex: I could tell him it's apple. I won't. A man needs his mysteries.
+    Mortimer: All right, son. The toll is paid. Challenge me whenever you're ready. I'll be gentle. I won't, actually.
+    <<take mystery_pie>>
+    <<flag a4_mortimer_fed>>
+<<endif>>
+===
+title: A4_Mortimer_Coupon
+---
+Mortimer: A Starlite coupon? I'm banned, son. If I walked in there, Sal would chase me down the street with a spatula. Again. Bring me the actual pie.
+===
+title: A4_Mortimer_Wig
+---
+Mortimer: My old commodore's wig! Treat it kindly, son. It's been in four revivals and one very confusing wedding.
+===
+title: A4_Mortimer_Hat
+---
+Mortimer: A real captain's hat? Running away to sea? I'd heckle you, but it's off duty.
+===
+title: A4_Mortimer_Headshots
+---
+Mortimer: (holds one up to his flashlight) Now THAT's a face for the big screen. Tell her the old usher said so. Don't tell her I got misty.
+===
+title: A4_Duel_Start
+---
+Mortimer: (aims the flashlight at me like a spotlight) Ladies and gentlemen of the empty lobby! A challenger!
+Mortimer: Four heckles, son. Answer every one. Ready? No? Too bad!
+<<jump A4_Duel_H1>>
+===
+title: A4_Duel_H1
+---
+Mortimer: Look at that shirt! It's so loud the back row's asking for earplugs!
+-> "Then the back row finally gets their money's worth!" <<if flagged("a4_cb_backrow")>>
+    Mortimer: (staggers back) Oof. A theatre comeback. Somebody's been talking to actors.
+    <<jump A4_Duel_H2>>
+-> "Maybe. But this sock's been round the world in a boot!" <<if flagged("a4_cb_boot")>>
+    Mortimer: What sock? I said SHIRT. Son, were you even listening?
+    <<jump A4_Duel_Lose>>
+-> "Yeah, and it's still got more fans than you." <<if flagged("a4_cb_pie")>>
+    Mortimer: The shirt has fans? Name one. I'll wait.
+    <<jump A4_Duel_Lose>>
+-> "Good. Then nobody'll see you cry." <<if flagged("a4_cb_cry")>>
+    Mortimer: Everybody's seeing it, son. That's the problem with the shirt.
+    <<jump A4_Duel_Lose>>
+-> "Oh yeah? Well... your jacket's also loud!"
+    Mortimer: My jacket's a classic. It's been loud since 1974. Next!
+    <<jump A4_Duel_Lose>>
+-> (Button the shirt up to the top)
+    Dex: I button it all the way up. Somehow it's louder.
+    <<jump A4_Duel_Lose>>
+===
+title: A4_Duel_H2
+---
+Mortimer: Son, you've got all the charm of a wet sock!
+-> "Then the back row finally gets their money's worth!" <<if flagged("a4_cb_backrow")>>
+    Mortimer: Nobody said you were loud, son. They said you were damp.
+    <<jump A4_Duel_Lose>>
+-> "Maybe. But this sock's been round the world in a boot!" <<if flagged("a4_cb_boot")>>
+    Mortimer: Round the world in a... (dabs his eye) That's a sailor's line. A good one. Fine. FINE.
+    <<jump A4_Duel_H3>>
+-> "Yeah, and it's still got more fans than you." <<if flagged("a4_cb_pie")>>
+    Mortimer: A wet sock with fans? I've met the socks on this street. Nobody's a fan.
+    <<jump A4_Duel_Lose>>
+-> "Good. Then nobody'll see you cry." <<if flagged("a4_cb_cry")>>
+    Mortimer: Socks don't cry, son. They just squelch.
+    <<jump A4_Duel_Lose>>
+-> "I am NOT a sock!"
+    Mortimer: Said every sock, ever.
+    <<jump A4_Duel_Lose>>
+===
+title: A4_Duel_H3
+---
+Mortimer: You've been standing up there so long you're gathering dust like the pie in the Starlite window!
+-> "Then the back row finally gets their money's worth!" <<if flagged("a4_cb_backrow")>>
+    Mortimer: The back row left, son. They got bored. Like the pie.
+    <<jump A4_Duel_Lose>>
+-> "Maybe. But this sock's been round the world in a boot!" <<if flagged("a4_cb_boot")>>
+    Mortimer: I said PIE, son. Keep up. The boot's not even in this one.
+    <<jump A4_Duel_Lose>>
+-> "Yeah, and it's still got more fans than you." <<if flagged("a4_cb_pie")>>
+    Mortimer: (clutches his heart) That's Sal's line. He used it on me in 1994. It still stings.
+    <<jump A4_Duel_H4>>
+-> "Good. Then nobody'll see you cry." <<if flagged("a4_cb_cry")>>
+    Mortimer: Everyone sees the pie, son. It's in a window. That's what windows are for.
+    <<jump A4_Duel_Lose>>
+-> "That pie is ninety percent varnish!"
+    Mortimer: Exactly my point, son. So are you.
+    <<jump A4_Duel_Lose>>
+===
+title: A4_Duel_H4
+---
+Mortimer: (getting desperate) Give it up, son! Nobody's even watching!
+-> "Then the back row finally gets their money's worth!" <<if flagged("a4_cb_backrow")>>
+    Mortimer: What back row? Nobody's watching! That was the whole heckle!
+    <<jump A4_Duel_Lose>>
+-> "Maybe. But this sock's been round the world in a boot!" <<if flagged("a4_cb_boot")>>
+    Mortimer: Nobody's watching the sock either, son.
+    <<jump A4_Duel_Lose>>
+-> "Yeah, and it's still got more fans than you." <<if flagged("a4_cb_pie")>>
+    Mortimer: Fans? Where? Nobody's watching! Look around!
+    <<jump A4_Duel_Lose>>
+-> "Good. Then nobody'll see you cry." <<if flagged("a4_cb_cry")>>
+    Mortimer: ...
+    Mortimer: (a long, long pause) ...Good one.
+    <<jump A4_Duel_Win>>
+-> "My mom's watching. Hi, Mom!"
+    Mortimer: She's not, son. I checked. Nobody's mom is here. It's a lobby.
+    <<jump A4_Duel_Lose>>
+===
+title: A4_Duel_Lose
+---
+Mortimer: BOOOOO! Get off my carpet!
+Dex: The applause from nobody is deafening.
+Mortimer: Come back with some road-tested material, son. Rematches are free. The pie covered all of them.
+<<if not flagged("a4_cb_backrow") or not flagged("a4_cb_boot") or not flagged("a4_cb_pie") or not flagged("a4_cb_cry")>>
+    Dex: I don't have a comeback for everything he throws. Mortimer said everyone downtown has taken a run at him. I should ask around about hecklers and rude customers.
+<<else>>
+    Dex: I've got the right lines. I just have to put each one on the right heckle.
+<<endif>>
+===
+title: A4_Duel_Win
+---
+Mortimer: (lowers the flashlight) Fifty-one years. Nobody's beaten the Heckle since 1974. That was me. I beat my own father.
+Mortimer: (unhooks the velvet rope, slowly, with enormous ceremony) The rope is yours, champ. The stage, the trunk, all of it.
+Mortimer: I'll have to get a second name put on that plaque. The plaque guy is going to love this. He's been waiting fifty years to charge me extra.
+<<flag a4_won_duel>>
+===
+title: A4_Rope_Look
+---
+Dex: A red velvet rope on two brass posts, guarding the stage door. A little sign: "BEYOND THIS ROPE: THE STAGE, THE TRUNK, AND MORTIMER'S DISAPPROVAL."
+===
+title: A4_Rope_Use
+---
+<<if not flagged("a4_met_mortimer")>>
+    Mortimer: (flashlight in my eyes) Ah-ah-ah. Nobody crosses the rope, son. Talk to me first.
+<<else>>
+    Mortimer: Survive the Heckle, son. Then the rope is yours.
+<<endif>>
+===
+title: A4_Trunk_Look
+---
+<<if flagged("a4_got_wig")>>
+    Dex: The costume trunk. A gorilla suit and a tin crown are all that's left. I'm saving them for the Finals.
+<<else>>
+    Dex: A huge steamer trunk plastered with stickers from old theatres. The lid's cracked open: a gorilla suit, a tin crown, and a towering white commodore's wig.
+    <<flag a4_knows_wig>>
+<<endif>>
+===
+title: A4_Trunk_Use
+---
+<<if not flagged("a4_won_duel")>>
+    Mortimer: (flashlight beam on the trunk) Ah-ah. That's behind the rope, son.
+    Dex: The rope is technically over there.
+    Mortimer: The rope is a state of mind.
+<<elseif flagged("a4_got_wig")>>
+    Dex: A gorilla suit and a tin crown. Tempting, but no.
+<<else>>
+    Dex: I lift the lid. It smells of mothballs and applause.
+    -> Take the gorilla suit
+        Dex: I put one arm in. It's still warm. I take my arm out and decide not to think about it.
+        <<jump A4_Trunk_Use>>
+    -> Take the tin crown
+        Dex: It says "KING (UNDERSTUDY)" on the inside. I don't want to be anybody's understudy tonight.
+        <<jump A4_Trunk_Use>>
+    -> Take the commodore's wig
+        Dex: White curls, a little black bow at the back, and enough powder to bake a cake. Somebody bald is going to love this.
+        Mortimer: Bring it back by the next revival, champ.
+        <<give commodore_wig>>
+        <<flag a4_got_wig>>
+    -> Close the lid
+        Dex: Not yet.
+<<endif>>
+===
+title: A4_HallOfFame_Look
+---
+<<if flagged("a4_won_duel")>>
+    Dex: The Heckler Hall of Fame. Fifty brass plates that all say MORTIMER, and one new one that says "D. DOOLEY", scratched in with a house key. Mortimer did it himself. He sniffed the whole time.
+<<else>>
+    Dex: "BIJOU HECKLE CHAMPION." Fifty little brass plates. 1974: MORTIMER. 1975: MORTIMER. 1976: MORTIMER. Every single one. The plate for this year is blank and looks nervous.
+<<endif>>
+===
+title: A4_HallOfFame_Use
+---
+<<if flagged("a4_won_duel")>>
+    Dex: I polish my plate with my sleeve. Mortimer pretends not to watch. He watches.
+<<else>>
+    Dex: I polish one of the plates with my sleeve.
+    Mortimer: Thank you. I'll allow it. That's 1983. A very good year for heckling. Roller skates were in.
+<<endif>>
 ===

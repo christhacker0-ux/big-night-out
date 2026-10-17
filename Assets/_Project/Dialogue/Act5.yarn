@@ -1,16 +1,113 @@
 // =====================================================================
 // ACT 5: UPTOWN (the Finals)
-// Rooms: uptown (street), art_gallery, nightclub
+// Rooms: uptown (street), art_gallery, nightclub, cafe_snoot, velour_backstage
 // Women: Mimi (token white_glove), Jett Vex (token guitar_pick)
-// Others: Brutus (bouncer), Pierre (curator), Roxy Vale (Finals host)
+// Others: Brutus (bouncer), Pierre (curator), Roxy Vale (Finals host),
+//         Vivian Quill (art critic), Anton (waiter), Mr. Pemberton (pigeon), Grizz (Jett's roadie)
+//
+// Puzzle web:
+//   Pierre's canvas is upside down -> VIP pass -> Brutus -> club -> Jett wants to paint the canvas.
+//   Canvas (Pierre) + paint (gallery cart) -> Jett paints "Something No. 1".
+//   Pierre only swaps Mimi's invisible key for it once a real critic blesses it: Vivian Quill at Cafe Snoot.
+//   Reaching Vivian: Grizz (backstage) lost his knitting needles to Brutus; tell Brutus the scarf is for him,
+//     needles -> Grizz -> rider croissant -> Mr. Pemberton the pigeon -> the flock chases Anton inside (distraction).
+//   Vivian ignores florals: Mimi's spare beret + paint smock = tortured artist disguise.
+//   The Critique-Off (verbal duel): five comebacks, learned from Jett, Pierre, Mimi, Brutus and Grizz.
+//   Win, show her the painting: rave review. Jett hears of it -> guitar pick. Painting + review -> Pierre -> key -> Mimi -> glove.
 // =====================================================================
+
+// ------------------------------------------------------------ HINTS
+title: A5_Hint
+---
+<<if not flagged("a5_met_mimi")>>
+    Dex: The mime outside the gallery looks like she's in real trouble. Well. Pretend trouble. Real pretend trouble.
+<<elseif not flagged("a5_canvas_fixed")>>
+    <<if not flagged("a5_met_pierre")>>
+        Dex: Mimi pointed at the gallery. Brutus says the gallery guy has the club passes too. Time to get cultured.
+    <<elseif not flagged("a5_saw_signature")>>
+        Dex: Pierre's terrified "Nothing No. 5" is upside down. If I look really closely at that canvas, maybe I can tell.
+    <<else>>
+        Dex: I spotted the upside-down signature on "Nothing No. 5". Pierre needs to hear it.
+    <<endif>>
+<<elseif not flagged("a5_on_list")>>
+    Dex: I've got Pierre's VIP pass. Brutus has been waiting his whole career for someone to show him one.
+<<elseif not flagged("a5_met_jett")>>
+    Dex: I'm in the club. The rock star from the poster must be in the VIP booth.
+<<elseif not flagged("a5_took_canvas")>>
+    Dex: Jett wants to paint on Pierre's blank canvas. Pierre won't give it to just anybody. But Jett isn't just anybody.
+<<elseif not flagged("a5_jett_painted")>>
+    <<if not flagged("a5_jett_has_paint") and not has("paint_set")>>
+        Dex: Jett needs loud paint. There's a cart of free paint in the gallery.
+    <<else>>
+        Dex: Jett needs both the canvas and the paint. Then stand well back.
+    <<endif>>
+<<elseif not flagged("a5_got_rave")>>
+    <<if not flagged("a5_anton_fled")>>
+        <<if has("rider_croissant")>>
+            Dex: Anton said if a croissant ever landed on his terrace, the pigeons would come down like the stock market. Mr. Pemberton looks hungry.
+        <<elseif not flagged("a5_met_grizz")>>
+            Dex: Anton won't let anyone near Vivian. I need a distraction. Maybe somebody backstage at the club has something a pigeon would like.
+        <<elseif not flagged("a5_heard_scarf")>>
+            Dex: Grizz has a croissant he'd swap for his knitting needles. I should ask him what he's knitting, and who has the needles.
+        <<elseif not flagged("a5_grizz_has_needles") and not has("grizz_needles")>>
+            Dex: Brutus confiscated Grizz's needles. Brutus doesn't know Grizz is knitting him a scarf. Maybe he should.
+        <<elseif has("grizz_needles")>>
+            Dex: Grizz's needles. Grizz. Backstage. This one's easy.
+        <<else>>
+            Dex: Grizz owes me a croissant. Or gave me one. Let me check my pockets.
+        <<endif>>
+    <<elseif not flagged("a5_disguised")>>
+        <<if has("artiste_outfit")>>
+            Dex: I look like a tortured artist now. Or I will once I show Vivian.
+        <<elseif not has("mime_beret") and not flagged("a5_got_beret")>>
+            Dex: Vivian only talks to people who look like artists. A beret would help. Mimi has a beret. Mimi also has strong feelings about Pierre.
+        <<elseif not has("paint_smock") and not flagged("a5_got_smock")>>
+            Dex: A beret's not enough. The gallery's paint cart had smocks on it.
+        <<else>>
+            Dex: Beret, smock. Put them together and I'm a tortured artist.
+        <<endif>>
+    <<elseif not flagged("a5_won_duel")>>
+        Dex: To win the Critique-Off I need five comebacks. Everybody uptown has had to talk back to someone.
+        <<if not flagged("a5_cb_noise")>>
+            Dex: Jett's music gets called noise a lot. I bet she has an answer for critics.
+        <<endif>>
+        <<if not flagged("a5_cb_puddle")>>
+            Dex: Pierre's art is famously shallow. He must have a line for that.
+        <<endif>>
+        <<if not flagged("a5_cb_anyone")>>
+            Dex: Mimi's whole act gets heckled. I should ask her what people say about it.
+        <<endif>>
+        <<if not flagged("a5_cb_rules")>>
+            Dex: Brutus knows all about rules. Mostly because he wrote them.
+        <<endif>>
+        <<if not flagged("a5_cb_sofar")>>
+            Dex: Grizz has toured for thirty years. He's seen everything. Or has he?
+        <<endif>>
+        <<if flagged("a5_cb_noise") and flagged("a5_cb_puddle") and flagged("a5_cb_anyone") and flagged("a5_cb_rules") and flagged("a5_cb_sofar")>>
+            Dex: I've got all five comebacks. Time for a rematch with Vivian Quill.
+        <<endif>>
+    <<elseif has("jett_canvas")>>
+        Dex: Vivian agreed to look at one piece of art. I'm holding one piece of art.
+    <<else>>
+        Dex: Vivian wants to see the painting. Jett's painting.
+    <<endif>>
+<<elseif not flagged("a5_won_jett")>>
+    Dex: Vivian Quill raved about Jett's painting. Jett is going to want to hear about this.
+<<elseif not flagged("a5_got_key")>>
+    Dex: A finished painting and a rave review. Pierre said "greater genius". This is greater genius with paperwork.
+<<elseif not flagged("a5_won_mimi")>>
+    Dex: I've got the invisible key. Mimi's still in her box.
+<<else>>
+    Dex: The glove and the pick. Roxy's waiting at the club stage.
+<<endif>>
+===
 
 // ------------------------------------------------------------ UPTOWN STREET
 title: A5_Uptown_Enter
 ---
 <<if not flagged("a5_uptown_intro")>>
     Dex: Uptown. The buildings are taller, the shoes are shinier, and the pigeons look like they have stock portfolios.
-    Dex: An art gallery, a nightclub with a line around the block, and a mime. The Finals are somewhere in there.
+    Dex: An art gallery, a nightclub with a line around the block, a cafe that looks too expensive to look at, and a mime.
     Dex: Uncle Vic always says: "Be the guy who shows up with what they need." Uptown, what do you need?
     <<flag a5_uptown_intro>>
 <<elseif flagged("act5_done")>>
@@ -36,6 +133,15 @@ title: A5_GalleryDoor_Use
 <<go art_gallery from_street>>
 ===
 
+title: A5_CafeDoor_Look
+---
+Dex: An archway with a sign: "CAFE SNOOT. Espresso. Opinions. No refunds on either."
+===
+title: A5_CafeDoor_Use
+---
+<<go cafe_snoot from_street>>
+===
+
 title: A5_Poster_Look
 ---
 Dex: "JETT VEX. LIVE AT CLUB VELOUR. The 'Bored Out Of My Skull' Tour."
@@ -44,7 +150,8 @@ Dex: In the photo she's yawning into the microphone. It's somehow the coolest th
 ===
 title: A5_Poster_Use
 ---
-Dex: Someone's drawn a moustache on her. Jett Vex would probably think that's boring too.
+Dex: Someone's drawn a moustache on her. I stare at it and try to think like a person with a plan.
+<<jump A5_Hint>>
 ===
 
 // ------------------------------------------------------------ MIMI
@@ -60,7 +167,7 @@ title: A5_Mimi_Look
 title: A5_Mimi_Talk
 ---
 <<if flagged("a5_won_mimi")>>
-    <<jump A5_Mimi_After>>
+    Dex: (Mimi waves. She mimes a tiny dancing man, then points at me and wiggles her eyebrows.)
 <<elseif not flagged("a5_met_mimi")>>
     Dex: Hi! I'm Dex. Are you... okay in there?
     Dex: (She presses both palms against the air. Slides them along. Knocks. It sounds exactly like nothing.)
@@ -73,36 +180,66 @@ title: A5_Mimi_Talk
     Dex: (Mimi's eyes go wide. She points at my hand. Then at her invisible door. Then at my hand again. Faster.)
     Dex: Right! The key! I should probably hand it over.
 <<else>>
-    -> Ask about the key
-        Dex: (She mimes a long, fancy cigarette holder, a nose so high it touches the clouds, and someone polishing a column.)
-        <<if flagged("a5_asked_key")>>
-            Dex: Pierre, polishing his plinth. Yeah. He says he'll only trade the key for a work of "greater genius". Whatever that means.
-            Dex: (She mimes painting. Wild, splashy painting. Then she mimes a guitar. Then she shrugs, like: "You figure it out.")
-        <<else>>
-            Dex: The gallery guy has your key on display? I'll go take a look.
-        <<endif>>
-    -> Mime a key back at her
-        Dex: I mime a big, shiny key and offer it to her. She tries it in the lock.
-        Dex: (She shakes her head. Wrong key. Apparently an imaginary lock needs HER imaginary key. Mime law is strict.)
-    -> Ask her name
-        Dex: (She traces letters in the air. M. I. M. I.)
-        Dex: Mimi. Nice to meet you, Mimi. I'm going to get you out of there.
-        Dex: (She mimes clutching her heart and falling over backwards. Into the wall of the box. Ow.)
-    -> Leave her to it
-        Dex: Hang in there. Literally, I guess.
+    Dex: (Mimi leans on her invisible wall, chin in her hand. She raises an eyebrow: "Well?")
 <<endif>>
+<<jump A5_Mimi_Menu>>
 ===
-title: A5_Mimi_After
+title: A5_Mimi_Menu
 ---
-Dex: (Mimi waves. She mimes a tiny dancing man, then points at me and wiggles her eyebrows.)
--> Ask how she got stuck
+-> Ask about the key <<if not flagged("a5_won_mimi")>>
+    Dex: (She mimes a long, fancy cigarette holder, a nose so high it touches the clouds, and someone polishing a column.)
+    <<if flagged("a5_pierre_wants_review")>>
+        Dex: Pierre wants a critic to bless Jett's painting before he swaps it for your key. Vivian Quill, at the cafe.
+        Dex: (Mimi mimes a tiny old lady with a pen like a sword. She shudders. Then she gives me two thumbs up. Brave.)
+    <<elseif flagged("a5_asked_key")>>
+        Dex: Pierre, polishing his plinth. Yeah. He says he'll only trade the key for a work of "greater genius". Whatever that means.
+        Dex: (She mimes painting. Wild, splashy painting. Then she mimes a guitar. Then she shrugs, like: "You figure it out.")
+    <<else>>
+        Dex: The gallery guy has your key on display? I'll go take a look.
+    <<endif>>
+    <<jump A5_Mimi_Menu>>
+-> Mime a key back at her <<if not flagged("a5_won_mimi") and not flagged("a5_mimed_key")>>
+    Dex: I mime a big, shiny key and offer it to her. She tries it in the lock.
+    Dex: (She shakes her head. Wrong key. Apparently an imaginary lock needs HER imaginary key. Mime law is strict.)
+    <<flag a5_mimed_key>>
+    <<jump A5_Mimi_Menu>>
+-> Ask her name <<if not flagged("a5_mimi_name")>>
+    Dex: (She traces letters in the air. M. I. M. I.)
+    Dex: Mimi. Nice to meet you, Mimi. I'm going to get you out of there.
+    Dex: (She mimes clutching her heart and falling over backwards. Into the wall of the box. Ow.)
+    <<flag a5_mimi_name>>
+    <<jump A5_Mimi_Menu>>
+-> Ask if Pierre is a snob <<if flagged("a5_met_pierre") and not flagged("a5_got_beret")>>
+    Dex: Between you and me... is Pierre a bit of a snob?
+    Dex: (Mimi nods. Then nods harder. Then nods so hard that her beret flies clean over the wall of the box...)
+    Dex: (...and lands on my head.)
+    Dex: (She peeks under where her beret was. There's another beret under it. She pats it smugly and waves at me: "Keep that one.")
+    Dex: How many berets are you wearing?
+    Dex: (She holds up seven fingers. Then, after some thought, eight.)
+    <<give mime_beret>>
+    <<flag a5_got_beret>>
+    <<jump A5_Mimi_Menu>>
+-> Ask what people say about her act <<if not flagged("a5_cb_anyone")>>
+    Dex: Do people ever heckle you? Like, mime critics?
+    Dex: (She points at a passer-by. She mimes him pointing at her, rolling his eyes, and saying something like "Pfft. Anyone could do that.")
+    Dex: (Then she points at the whole empty sidewalk around her. Nobody else is in a box. She spreads her arms: "And yet.")
+    Dex: "Anyone could have. Nobody did." That's... actually a fantastic comeback. I'm keeping that one.
+    <<flag a5_cb_anyone>>
+    <<jump A5_Mimi_Menu>>
+-> Ask how she got stuck <<if flagged("a5_won_mimi")>>
     Dex: (She mimes building a box, admiring it, stepping inside, closing the door, and dropping the key down a drain. Except it didn't fall down the drain. It rolled into the gallery.)
     Dex: (Then she mimes a snooty man picking it up and putting it on a column.) Classic Pierre.
--> Ask if she ever talks
+    <<jump A5_Mimi_Menu>>
+-> Ask if she ever talks <<if flagged("a5_won_mimi")>>
     Dex: (She looks left. She looks right. She leans close, opens her mouth...)
     Dex: (...and mimes a zipper closing it. She winks.) Fair enough.
+    <<jump A5_Mimi_Menu>>
 -> Say goodbye
-    Dex: (She mimes pulling a rope. A long rope. Hand over hand.) Is that... me? Am I on the rope? Okay, bye, Mimi!
+    <<if flagged("a5_won_mimi")>>
+        Dex: (She mimes pulling a rope. A long rope. Hand over hand.) Is that... me? Am I on the rope? Okay, bye, Mimi!
+    <<else>>
+        Dex: Hang in there. Literally, I guess.
+    <<endif>>
 ===
 title: A5_Mimi_GiveKey
 ---
@@ -134,6 +271,15 @@ title: A5_Mimi_GivePaint
 Dex: (She mimes a paintbrush, paints an invisible masterpiece in the air, bows... then hands the paint set back.)
 Dex: (She points at the club poster. Rock star. Paint. Hm.)
 ===
+title: A5_Mimi_GiveCroissant
+---
+Dex: (Mimi takes a huge, delighted bite... of an invisible croissant she's pulled out of thin air. The real one stays in my hand.)
+Dex: (She shakes her finger at me. Mimes only eat mimed food. Everybody knows that.)
+===
+title: A5_Mimi_GiveSmock
+---
+Dex: (She holds the smock up against herself, checks an invisible mirror, and shakes her head. Stripes only. She hands it back.)
+===
 
 // ------------------------------------------------------------ BRUTUS / CLUB DOOR
 title: A5_ClubDoor_Look
@@ -151,7 +297,9 @@ title: A5_ClubDoor_Use
 ===
 title: A5_Brutus_Look
 ---
-<<if flagged("a5_on_list")>>
+<<if flagged("a5_brutus_scarf")>>
+    Dex: Brutus. Still enormous. Every few seconds he touches his neck, where a scarf is going to be. He's smiling. I think. It's hard to tell with the jaw.
+<<elseif flagged("a5_on_list")>>
     Dex: Brutus. Still enormous. But now he nods at me. A tiny nod. From a huge man, it feels like a parade.
 <<else>>
     Dex: The bouncer. Six and a half feet of "no", wearing sunglasses at night and a clipboard like a shield.
@@ -167,29 +315,74 @@ title: A5_Brutus_Talk
     Brutus: (checks the clipboard) Not on the list.
     Dex: Could you check again?
     Brutus: (doesn't move) Checked again. Still not on the list.
-    -> Who IS on the list?
-        Brutus: Jett Vex. Guests of Jett Vex. Roxy Vale and crew. And anybody holding a Velour VIP pass.
-        Dex: Where does a guy get a VIP pass?
-        Brutus: The owner sends a stack to the art guy next door every week. Pierre. He never comes. Says dancing is "beneath him".
-        Brutus: His loss. I've got moves. You'll never see them.
-    -> I'm a Speed Daters Live contestant!
-        Brutus: So is everyone in that line. That guy's a contestant. That pigeon's a contestant.
-        Brutus: No list, no pass, no entry. I hear the art guy next door gets passes and never uses them, though.
-    -> Try a smooth line
-        Dex: You know, you've got really kind eyes.
-        Brutus: You can't see my eyes. That's what the sunglasses are for.
-        Brutus: Pass or list, kid. The art guy next door has a drawer full of passes, if you're desperate.
     <<flag a5_met_brutus>>
 <<elseif has("vip_pass")>>
-    Dex: I've got Pierre's VIP pass. I should just show it to him.
+    Brutus: Is that a Velour pass sticking out of your pocket, or are you just happy to see me?
 <<else>>
     Brutus: List or pass, kid. That's the whole rulebook. I wrote it. It's one page.
-    <<if flagged("a5_met_pierre")>>
+<<endif>>
+<<jump A5_Brutus_Menu>>
+===
+title: A5_Brutus_Menu
+---
+-> Who IS on the list? <<if not flagged("a5_on_list")>>
+    Brutus: Jett Vex. Guests of Jett Vex. Roxy Vale and crew. And anybody holding a Velour VIP pass.
+    Dex: Where does a guy get a VIP pass?
+    Brutus: The owner sends a stack to the art guy next door every week. Pierre. He never comes. Says dancing is "beneath him".
+    Brutus: His loss. I've got moves. You'll never see them.
+    <<jump A5_Brutus_Menu>>
+-> I'm a Speed Daters Live contestant! <<if not flagged("a5_on_list") and not flagged("a5_brutus_contestant")>>
+    Brutus: So is everyone in that line. That guy's a contestant. That pigeon's a contestant.
+    Brutus: No list, no pass, no entry. I hear the art guy next door gets passes and never uses them, though.
+    <<flag a5_brutus_contestant>>
+    <<jump A5_Brutus_Menu>>
+-> Try a smooth line <<if not flagged("a5_brutus_line")>>
+    Dex: You know, you've got really kind eyes.
+    Brutus: You can't see my eyes. That's what the sunglasses are for.
+    Brutus: Pass or list, kid. Smooth doesn't work on me. I'm sandpaper.
+    <<flag a5_brutus_line>>
+    <<jump A5_Brutus_Menu>>
+-> Show him the VIP pass <<if has("vip_pass")>>
+    <<jump A5_Brutus_GivePass>>
+-> Ask about the rules <<if not flagged("a5_cb_rules")>>
+    Dex: Do you ever break the rules? Just a little?
+    Brutus: Kid. You know what a rule is? It's a velvet rope. (He flicks it. It wobbles.) Two brass poles and a bit of fuzzy string.
+    Brutus: Anybody could step over it. Nobody does. Rules are velvet ropes. They only work if you believe in them.
+    Brutus: Don't tell anybody I said that. It's bad for business.
+    Dex: "Rules are velvet ropes. They only work if you believe in them." I'm writing that on my hand.
+    <<flag a5_cb_rules>>
+    <<jump A5_Brutus_Menu>>
+-> Ask about the confiscation bin <<if flagged("a5_heard_needles") and not flagged("a5_brutus_scarf")>>
+    Brutus: The bin? Sharp objects, outside food, one trumpet. People bring weird things to a nightclub.
+    Dex: There are knitting needles in there. They're Grizz's. Jett's roadie.
+    Brutus: Grizz. Yeah. Big guy, beard, sad eyes. Rules are rules, kid. No needles past the rope.
+    <<if flagged("a5_heard_scarf")>>
+        -> Tell him what Grizz is knitting
+            Dex: He's knitting a scarf. For a friend who stands outside all night in the cold. Big guy. Sunglasses. Clipboard.
+            Brutus: (very long pause) ...
+            Brutus: For me? Grizz is knitting... for ME?
+            Brutus: (He takes his sunglasses off. He wipes one eye. He puts the sunglasses back on, fast.) It's windy. It's a windy night.
+            Brutus: (He fishes two long wooden needles out of the bin and presses them into my hands.) Take them back to him. Tell him... tell him I like blue.
+            <<give grizz_needles>>
+            <<flag a5_brutus_scarf>>
+        -> Never mind
+            Dex: Fair enough. Rules are rules.
+    <<else>>
+        Dex: (If I knew what Grizz was knitting with them, maybe Brutus would see it differently.)
+    <<endif>>
+    <<jump A5_Brutus_Menu>>
+-> Ask about Grizz <<if flagged("a5_brutus_scarf")>>
+    Brutus: Grizz and me go way back. Every tour, he brings me a coffee at midnight. Never says a word. Just a coffee.
+    Brutus: I thought he didn't like me. Turns out he's shy. Turns out I'm shy too. Who knew. Don't spread it around.
+    <<jump A5_Brutus_Menu>>
+-> See you around
+    <<if flagged("a5_on_list")>>
+        Brutus: Not if I see you first. I always see you first.
+    <<elseif flagged("a5_met_pierre")>>
         Dex: Pierre's got the passes. I need to do him a favour, so he'll do me one.
     <<else>>
         Dex: Brutus said the art guy next door has the passes. Time to go get cultured.
     <<endif>>
-<<endif>>
 ===
 title: A5_Brutus_GivePass
 ---
@@ -205,7 +398,425 @@ title: A5_Brutus_GivePass
 ===
 title: A5_Brutus_ShowToken
 ---
-Brutus: Cute. My niece collects those. Doesn't get you inside, though. Only the list does.
+Brutus: Cute. My niece collects those. Doesn't get you anywhere with me, though. Only the list does.
+===
+title: A5_Brutus_GiveCroissant
+---
+Brutus: Outside food. Rules say I confiscate it. My heart says eat it. My trainer says neither. Put it away, kid.
+===
+title: A5_Brutus_GiveNeedles
+---
+Brutus: Don't give them back to ME. Give them to Grizz. And kid? Blue. Tell him blue.
+===
+title: A5_Brutus_GiveOutfit
+---
+Dex: (I hold up the beret and the smock.)
+Brutus: Whatever you're planning, I didn't see it. That's the other thing the sunglasses are for.
+===
+
+// ------------------------------------------------------------ CAFE SNOOT
+title: A5_Cafe_Enter
+---
+<<if not flagged("a5_cafe_intro")>>
+    Dex: Cafe Snoot. Tiny tables, tiny cups, enormous prices. The menu is in a font I can't afford.
+    Dex: There's a waiter guarding a lady in black like she's the crown jewels. And a pigeon on the planter, judging all of us.
+    Anton: Bonsoir. And... oh. Florals. At night. I will pretend I did not see.
+    <<flag a5_cafe_intro>>
+<<elseif flagged("a5_anton_fled") and not flagged("a5_cafe_after_flock")>>
+    Dex: The terrace is covered in feathers. Anton is still pressed up against the inside of the window, holding a napkin like a shield.
+    <<flag a5_cafe_after_flock>>
+<<endif>>
+===
+title: A5_CafeExit_Look
+---
+Dex: The archway back to the street, where coffee costs a normal amount of money.
+===
+title: A5_CafeExit_Use
+---
+<<go uptown from_cafe>>
+===
+
+title: A5_Specials_Look
+---
+Dex: A chalkboard. "TONIGHT: Espresso, 9 dollars. Double espresso, 30 dollars. Croissant: SOLD OUT. Opinions: FREE, from Madame Quill."
+===
+title: A5_Specials_Use
+---
+Dex: I could add something with the chalk. "Hallway Hooch, 18 dollars." No. They'd actually buy it.
+===
+
+title: A5_Newspaper_Look
+---
+Dex: "THE UPTOWN SNEER". Tonight's headline: "GALLERY PIERRE OPENS. ALSO, IS ITS MASTERPIECE UPSIDE DOWN? by Vivian Quill."
+Dex: Underneath, last month's review: "JETT VEX'S NEW ALBUM: BEIGE NOISE. Two stars, one of them for the cover."
+<<flag a5_read_paper>>
+===
+title: A5_Newspaper_Use
+---
+Dex: I take a free copy. Then I read the price. It's not free. I put it back very gently.
+===
+
+title: A5_EmptyTable_Look
+---
+Dex: An empty table with a tiny card: "RESERVED: PEOPLE OF IMPORTANCE." Every table here has that card.
+===
+title: A5_EmptyTable_Use
+---
+<<if not flagged("a5_sat_down")>>
+    Dex: I sit down. A chair has never been so disappointed in me.
+    <<if not flagged("a5_anton_fled")>>
+        Anton: (appearing out of nowhere) Monsieur. That chair is reserved for someone who matters. Up, please.
+    <<else>>
+        Dex: Nobody comes to take my order. Anton is still hiding inside. Probably for the best.
+    <<endif>>
+    <<flag a5_sat_down>>
+<<else>>
+    Dex: I'm not sitting there again. The chair and I need some time apart.
+<<endif>>
+===
+
+// ------------------------------------------------------------ ANTON (waiter)
+title: A5_Anton_Look
+---
+Dex: A waiter so neat he looks ironed. White jacket, pencil moustache, a napkin over his arm like a tiny flag of surrender.
+Dex: He keeps glaring up at the pigeon on the planter. The pigeon glares back.
+===
+title: A5_Anton_Talk
+---
+<<if not flagged("a5_met_anton")>>
+    Anton: I am Anton. I have been the head waiter at Cafe Snoot for nineteen years. I have never once smiled at a customer.
+    Anton: Before you ask: no, you cannot speak to Madame Quill. Nobody speaks to Madame Quill. Madame Quill speaks to YOU. In print.
+    <<flag a5_met_anton>>
+<<else>>
+    Anton: (flicks his napkin) Monsieur is still here. Monsieur is still floral.
+<<endif>>
+<<jump A5_Anton_Menu>>
+===
+title: A5_Anton_Menu
+---
+-> Ask for a table <<if not flagged("a5_anton_table")>>
+    Anton: We are fully booked.
+    Dex: Every table's empty.
+    Anton: Yes. Booked by people who are too important to come. It is a very exclusive cafe.
+    <<flag a5_anton_table>>
+    <<jump A5_Anton_Menu>>
+-> Order a croissant <<if not flagged("a5_anton_croissant")>>
+    Anton: We are out of croissants.
+    Dex: Since when?
+    Anton: Since you walked in. Specifically for you.
+    <<flag a5_anton_croissant>>
+    <<jump A5_Anton_Menu>>
+-> Ask about Vivian Quill
+    Anton: Madame Quill writes "The Uptown Sneer". She has closed four restaurants. One of them with a single word: "Damp."
+    Anton: Tonight she reviews the gallery opening. She will not go IN, naturally. She reviews it from here. It saves time.
+    Anton: I guard her table with my life. Nothing gets past Anton.
+    <<jump A5_Anton_Menu>>
+-> Ask about the pigeon
+    Anton: Mr. Pemberton. He has sat on that planter for four years. He stares at my customers. He stares at ME.
+    Anton: And if a single croissant crumb ever touched this terrace, every pigeon uptown would come down on us like the stock market.
+    Anton: I would have to run inside and hide under the counter. I am not proud of it. It has happened twice.
+    <<flag a5_heard_pigeons>>
+    <<jump A5_Anton_Menu>>
+-> Tell him I'm an artist <<if has("artiste_outfit")>>
+    Anton: Monsieur, an artist has suffered. You have the face of a man who has never once been sad in a meaningful way.
+    Anton: But Madame Quill might believe you. She is very nearsighted. Do not tell her I said that.
+    <<jump A5_Anton_Menu>>
+-> Leave him to his guarding
+    Anton: Au revoir. Mind the step. There is no step. I simply enjoy watching people check.
+===
+title: A5_Anton_GiveCroissant
+---
+Anton: You are offering ME a croissant? On MY terrace? Monsieur, put that AWAY, before HE sees it!
+Dex: (Anton glances up at the pigeon in pure terror. Interesting.)
+<<flag a5_heard_pigeons>>
+===
+title: A5_Anton_GiveOutfit
+---
+Anton: A beret and a smock. Very convincing. If I squint. And close my eyes.
+===
+
+// ------------------------------------------------------------ MR. PEMBERTON (pigeon)
+title: A5_Pemberton_Look
+---
+Dex: A fat grey pigeon on the planter. His neck feathers puff out like a tiny cravat. He looks like he owns property.
+Dex: A little brass plaque on the planter says "MR. PEMBERTON. DO NOT FEED." It's the only sign uptown he's ever obeyed.
+===
+title: A5_Pemberton_Talk
+---
+Dex: Hi, buddy.
+Mr. Pemberton: Coo.
+<<jump A5_Pemberton_Menu>>
+===
+title: A5_Pemberton_Menu
+---
+-> Ask about the stock market <<if not flagged("a5_pemberton_stocks")>>
+    Mr. Pemberton: (He puffs up. He lets out a long, low coo. It sounds smug. I think he's doing better than me.)
+    <<flag a5_pemberton_stocks>>
+    <<jump A5_Pemberton_Menu>>
+-> Ask him to move along <<if not flagged("a5_pemberton_move")>>
+    Mr. Pemberton: (He turns, very slowly, until his back is to me.)
+    Dex: Rude. Fair, but rude.
+    <<flag a5_pemberton_move>>
+    <<jump A5_Pemberton_Menu>>
+-> Ask what he wants <<if not flagged("a5_pemberton_wants")>>
+    Mr. Pemberton: (He looks at the empty pastry case in the cafe window. Then at me. Then back at the case. Longingly.)
+    Dex: You and me both, buddy. They're out of croissants. For me, specifically.
+    <<flag a5_pemberton_wants>>
+    <<jump A5_Pemberton_Menu>>
+-> Offer him the croissant <<if has("rider_croissant")>>
+    <<jump A5_Pemberton_GiveCroissant>>
+-> Bye, Mr. Pemberton
+    Mr. Pemberton: Coo.
+===
+title: A5_Pemberton_GiveCroissant
+---
+Dex: (I hold up the croissant. Mr. Pemberton's eyes go wide. Both of them. At once. I didn't know pigeons could do that.)
+Dex: (I crumble it over the terrace.)
+Mr. Pemberton: COOOOOOOO!
+Dex: (The sky goes dark. Pigeons. Hundreds of pigeons. From the rooftops, the lamp posts, the gallery gutter. One of them is wearing a tiny hat.)
+Anton: Non. NON! Not again! Not the flock! Madame, forgive me!
+Dex: (Anton flaps his napkin, sprints inside and dives behind the counter. The door slams. Then it locks. Then a little sign flips over: "CLOSED FOR PIGEONS".)
+Dex: (Two minutes later the croissant is gone, the flock is gone, and Mr. Pemberton flies off into the night, looking full and rich.)
+Vivian Quill: (without looking up) Finally. That man hovers like a fruit fly.
+<<take rider_croissant>>
+<<flag a5_anton_fled>>
+<<flag a5_cafe_after_flock>>
+Dex: Nothing between me and the most dangerous pen uptown now. Except my shirt.
+===
+
+// ------------------------------------------------------------ VIVIAN QUILL (critic)
+title: A5_Vivian_Look
+---
+<<if flagged("a5_got_rave")>>
+    Dex: Vivian Quill, typing on her phone with one finger and smiling. It's a small, scary smile. Like a shark that just got good news.
+<<else>>
+    Dex: An older lady in all black, standing at a tall table, a pen behind each ear and a third in her hand. Her glasses are on a chain made of smaller glasses.
+    Dex: She doesn't sit. She looms. It's very effective.
+<<endif>>
+===
+title: A5_Vivian_Talk
+---
+<<if not flagged("a5_anton_fled")>>
+    Anton: (gliding between us) Ah-ah-ah. Monsieur. Madame Quill is not to be disturbed. By anyone. Especially florals.
+    Dex: (Nothing gets past Anton. I need him out of the way. Something that would make him run.)
+<<elseif flagged("a5_got_rave")>>
+    Vivian Quill: The young man in the beret. I posted my review. Uptown has already read it twice. Some of them are crying. In a good way, for once.
+    <<jump A5_Vivian_Menu>>
+<<elseif flagged("a5_won_duel")>>
+    Vivian Quill: You again. You may show me ONE work of art. I have a deadline and a very short attention span.
+    <<jump A5_Vivian_Menu>>
+<<elseif flagged("a5_disguised")>>
+    Vivian Quill: The artist returns. Have you suffered enough to defend yourself yet?
+    <<jump A5_Vivian_Menu>>
+<<elseif not flagged("a5_vivian_snub")>>
+    Vivian Quill: (without looking up) No.
+    Dex: I didn't say anything yet.
+    Vivian Quill: You were going to. A hibiscus shirt. At night. Uptown. I do not speak to tourists. I speak to ARTISTS.
+    Vivian Quill: Artists wear black. Artists wear berets. Artists have paint on their clothes and regret in their eyes. You have mustard on your sleeve.
+    <<flag a5_vivian_snub>>
+    <<flag a5_met_vivian>>
+    <<jump A5_Vivian_Menu>>
+<<else>>
+    Vivian Quill: Still floral. Still no.
+    <<jump A5_Vivian_Menu>>
+<<endif>>
+===
+title: A5_Vivian_Menu
+---
+-> Insist I'm an artist <<if not flagged("a5_disguised")>>
+    Dex: I'm an artist! Inside! Really far inside.
+    Vivian Quill: Then come back when it reaches the outside. Beret. Something with paint on it. I'll know.
+    <<jump A5_Vivian_Menu>>
+-> Challenge her to an art debate <<if flagged("a5_disguised") and not flagged("a5_won_duel")>>
+    <<jump A5_Duel_Start>>
+-> Show her Something No. 1 <<if flagged("a5_won_duel") and has("jett_canvas") and not flagged("a5_got_rave")>>
+    <<jump A5_Vivian_ShowPainting>>
+-> Ask about Pierre's opening <<if not flagged("a5_got_rave")>>
+    Vivian Quill: Pierre's centerpiece is a white canvas called "Nothing". I suspect it hangs upside down. I am rarely wrong.
+    Vivian Quill: Pierre would trade his own mother for a review that doesn't make him cry. He won't get one. There's nothing there to praise.
+    <<if flagged("a5_pierre_wants_review")>>
+        Dex: (Unless there was something there. Something loud.)
+    <<endif>>
+    <<jump A5_Vivian_Menu>>
+-> Ask about Jett Vex <<if flagged("a5_met_jett") and not flagged("a5_got_rave")>>
+    Vivian Quill: Jett Vex. Her first album made me feel something. I have never forgiven her for it.
+    Vivian Quill: Her new one made me feel nothing at all. I called it "beige noise". I believe she was hurt. Good. Hurt is where art comes from.
+    <<jump A5_Vivian_Menu>>
+-> Ask why she never sits down <<if not flagged("a5_vivian_sit")>>
+    Vivian Quill: Sitting is for people with nothing to say. I have been standing since 1987.
+    <<flag a5_vivian_sit>>
+    <<jump A5_Vivian_Menu>>
+-> Ask about her review <<if flagged("a5_got_rave")>>
+    Vivian Quill: "SOMETHING, FINALLY." That's the headline. Jett Vex has already called me. She shouted at me for ten minutes. It was wonderful.
+    <<jump A5_Vivian_Menu>>
+-> Leave her to her deadline
+    <<if flagged("a5_got_rave")>>
+        Vivian Quill: Go. And take that beret off before Anton comes out. He'll faint again.
+    <<else>>
+        Vivian Quill: (She's already not listening. She was never listening.)
+    <<endif>>
+===
+title: A5_Vivian_GiveOutfit
+---
+<<if not flagged("a5_anton_fled")>>
+    Anton: (stepping between us) Monsieur is attempting a costume change on my terrace. Monsieur is not.
+<<elseif flagged("a5_disguised")>>
+    Dex: I'm already wearing it. Any more beret and I'll tip over.
+<<else>>
+    Dex: (I pull the paint smock on over my shirt and tug Mimi's beret down over one eyebrow. I try to look like I've had a hard life.)
+    Vivian Quill: (She looks up. Squints. Squints harder.) ...Black. Paint. A beret worn by someone who's been rained on. Hm.
+    Vivian Quill: Very well, "artist". Speak. But I warn you. If you can't defend art from me, you have no business making it.
+    <<take artiste_outfit>>
+    <<flag a5_disguised>>
+    <<flag a5_met_vivian>>
+    <<jump A5_Vivian_Menu>>
+<<endif>>
+===
+title: A5_Vivian_ShowBlank
+---
+<<if not flagged("a5_anton_fled")>>
+    Anton: Madame Quill is not to be shown things. Especially blank things.
+<<else>>
+    Vivian Quill: Ah. "Nothing No. 5". It looks even more like nothing up close. Take it away before I review it twice.
+<<endif>>
+===
+title: A5_Vivian_GiveCroissant
+---
+<<if not flagged("a5_anton_fled")>>
+    Anton: Monsieur! Put that away before the pigeon sees it! Before HE sees it!
+<<else>>
+    Vivian Quill: I do not eat. I judge.
+<<endif>>
+===
+title: A5_Vivian_ShowToken
+---
+<<if not flagged("a5_anton_fled")>>
+    Anton: Madame Quill does not look at souvenirs. Madame Quill looks at nothing. Then writes about it.
+<<else>>
+    Vivian Quill: A keepsake. Sentimental. Two stars. Though I respect the craftsmanship.
+<<endif>>
+===
+title: A5_Vivian_ShowPainting
+---
+<<if not flagged("a5_anton_fled")>>
+    Anton: Madame Quill is NOT to be shown paintings by tourists! Back, monsieur!
+<<elseif not flagged("a5_won_duel")>>
+    Vivian Quill: I don't look at art for people who can't talk about art. Win an argument with me first. Nobody has.
+    <<if not flagged("a5_disguised")>>
+        Dex: (And she won't argue with me in this shirt.)
+    <<endif>>
+<<elseif flagged("a5_got_rave")>>
+    Vivian Quill: I've seen it. I've written it. I'm not going to cry twice in one night.
+<<else>>
+    Dex: This is "Something No. 1". By Jett Vex. She painted it tonight, on Pierre's "Nothing No. 5".
+    Vivian Quill: (She looks at it. She takes off her glasses. She puts on a different pair of glasses. She looks again.)
+    Vivian Quill: Pink. Green. A lightning bolt. A heart. A small, furious bouncer.
+    Vivian Quill: (Her pen moves. It moves fast. She tears a napkin off the table and writes on it in tiny, vicious capitals.)
+    Vivian Quill: Thirty years. Thirty years of nothing. And then this rude, wet, ugly, wonderful thing.
+    Vivian Quill: "SOMETHING, FINALLY." Five stars. I have never given five stars. I had to draw the fifth one by hand.
+    Vivian Quill: Here. My notes. Pierre will want to frame them, and I'll want him to suffer while he does. I'm posting the full review now.
+    <<give rave_review>>
+    <<flag a5_got_rave>>
+    Dex: A five-star rave from the scariest critic uptown. Jett's going to hear about this. Pierre's going to faint.
+<<endif>>
+===
+
+// ------------------------------------------------------------ THE CRITIQUE-OFF (verbal duel)
+title: A5_Duel_Start
+---
+Vivian Quill: Very well. A Critique-Off. I critique, you defend. Five strokes of my pen.
+Vivian Quill: Miss once, and you're dismissed. Nobody has lasted past three. One man went into accounting.
+Dex: (Okay. Deep breath. Think like an artist. Think like someone who's been yelled at by a critic and yelled back.)
+<<jump A5_Duel_1>>
+===
+title: A5_Duel_1
+---
+Vivian Quill: So you're an "artist". Your so-called art is nothing but noise.
+-> "Noise is just music nobody's invited to dinner yet." <<if flagged("a5_cb_noise")>>
+    Vivian Quill: (Her pen stops.) ...Hm. That's a Jett Vex line. You're well read. Continue.
+    <<jump A5_Duel_2>>
+-> "Your FACE is nothing but noise!"
+    Vivian Quill: How original. My face has been reviewed by better faces than yours.
+    <<jump A5_Duel_Lose>>
+-> "Sorry, I couldn't hear you over my art."
+    Vivian Quill: Then your art is as loud as your shirt. That isn't the compliment you think it is.
+    <<jump A5_Duel_Lose>>
+-> "Um."
+    <<jump A5_Duel_Lose>>
+===
+title: A5_Duel_2
+---
+Vivian Quill: I've seen more depth in a puddle.
+-> "Then you've been looking at some really deep puddles."
+    Vivian Quill: I have. I fell in one in Paris. It was better than your work.
+    <<jump A5_Duel_Lose>>
+-> "A puddle is just an ocean that's practising." <<if flagged("a5_cb_puddle")>>
+    Vivian Quill: (A pause. A long one.) ...That's absurd. And annoyingly beautiful. Go on.
+    <<jump A5_Duel_3>>
+-> "Puddles are very underrated, actually."
+    Vivian Quill: So are you. By me. Constantly.
+    <<jump A5_Duel_Lose>>
+===
+title: A5_Duel_3
+---
+Vivian Quill: Anyone could have made this.
+-> "Oh yeah? Well, YOU couldn't."
+    Vivian Quill: Correct. I have never made anything. That's what makes me so good at this.
+    <<jump A5_Duel_Lose>>
+-> "Anyone could have. Nobody did." <<if flagged("a5_cb_anyone")>>
+    Vivian Quill: (She writes that down. She underlines it twice.) ...Infuriating. Next.
+    <<jump A5_Duel_4>>
+-> "Thank you! I was going for 'anyone'."
+    Vivian Quill: Then you've succeeded. Congratulations. Goodbye.
+    <<jump A5_Duel_Lose>>
+-> (Mime being trapped in a box.)
+    Vivian Quill: That's been done. By the girl outside. Better.
+    <<jump A5_Duel_Lose>>
+===
+title: A5_Duel_4
+---
+Vivian Quill: This would never be allowed in a real gallery.
+-> "Galleries are boring anyway."
+    Vivian Quill: Galleries are where I eat lunch. Watch your tone.
+    <<jump A5_Duel_Lose>>
+-> "Rules are velvet ropes. They only work if you believe in them." <<if flagged("a5_cb_rules")>>
+    Vivian Quill: (She glances toward Club Velour, where a very large man is guarding a very small rope.) ...Touche.
+    <<jump A5_Duel_5>>
+-> "I'll have you know I'm on the list."
+    Vivian Quill: Everyone's on a list, dear. Yours is shorter than you think.
+    <<jump A5_Duel_Lose>>
+===
+title: A5_Duel_5
+---
+Vivian Quill: Final stroke. I have been a critic for thirty years. I have seen it all. What could you possibly show me?
+-> "You haven't seen it all. You've just seen it all so far." <<if flagged("a5_cb_sofar")>>
+    Vivian Quill: (Silence. She puts down her pen. All three of her pens.)
+    Vivian Quill: ...So far. Yes. Well. That's the only reason anyone keeps looking, isn't it.
+    <<jump A5_Duel_Win>>
+-> "My shirt?"
+    Vivian Quill: I have seen your shirt. Everybody uptown has seen your shirt. Satellites have seen your shirt.
+    <<jump A5_Duel_Lose>>
+-> "Thirty years? Wow. You don't look a day over twenty-nine."
+    Vivian Quill: Flattery. The last refuge of the unarmed.
+    <<jump A5_Duel_Lose>>
+===
+title: A5_Duel_Lose
+---
+Vivian Quill: Dismissed. Come back when you have something to say. Preferably something I haven't heard.
+Dex: (Ouch. I need better comebacks. Everyone uptown has had to talk back to somebody. Jett, Pierre, Mimi, Brutus, Grizz... Somebody's got the words I need.)
+<<flag a5_lost_duel>>
+===
+title: A5_Duel_Win
+---
+Vivian Quill: Thirty years, and nobody has ever lasted all five. You talk like a punk, a curator, a mime, a bouncer and a roadie all at once.
+Dex: I've had a very busy night.
+Vivian Quill: I can tell. Very well, artist. You've earned ONE look. Show me something worth seeing, and I will write about it.
+<<flag a5_won_duel>>
+<<if has("jett_canvas")>>
+    Dex: Funny you should say that.
+<<else>>
+    Dex: Something worth seeing. I know exactly who's making it.
+<<endif>>
 ===
 
 // ------------------------------------------------------------ ART GALLERY
@@ -260,7 +871,7 @@ Dex: Anyway, I'm no painter. If anyone's putting paint on that thing, it should 
 title: A5_Masterpiece_Look
 ---
 Dex: "Something No. 1", by Jett Vex. Pink, green, black, and loud. A lightning bolt, a heart, and what is definitely a doodle of Brutus.
-Dex: People keep wandering in from the street to stare at it. Pierre is pretending not to cry.
+Dex: Vivian Quill's napkin is framed beside it: "SOMETHING, FINALLY." Pierre is pretending not to cry.
 ===
 title: A5_Masterpiece_Use
 ---
@@ -292,20 +903,24 @@ title: A5_Plinth_Use
 
 title: A5_Supplies_Look
 ---
-Dex: A cart full of paint tubes, brushes and smocks. The sign says: "FREE PAINT! Take some. MAKE SOMETHING."
+Dex: A cart full of paint tubes, brushes and black smocks. The sign says: "FREE PAINT! Take some. MAKE SOMETHING."
 Dex: Funny sign to have in a gallery full of nothing.
 ===
 title: A5_Supplies_Use
 ---
-<<if has("paint_set") or flagged("a5_jett_has_paint")>>
-    Dex: I've already got all the paint I can be trusted with.
-<<else>>
+<<if not has("paint_set") and not flagged("a5_jett_has_paint")>>
     Dex: One paint set: hot pink, toxic green, midnight black, and a brush that's seen things.
     <<give paint_set>>
     <<flag a5_took_paint>>
     <<if not flagged("a5_met_jett")>>
         Dex: I'm not an artist. But somebody uptown has to be.
     <<endif>>
+<<elseif not flagged("a5_got_smock")>>
+    Dex: And a smock. Black, stiff with old paint, and it smells like ambition. Very "artist". I'll borrow it.
+    <<give paint_smock>>
+    <<flag a5_got_smock>>
+<<else>>
+    Dex: I've already got all the paint and smock I can be trusted with.
 <<endif>>
 ===
 
@@ -321,7 +936,7 @@ title: A5_Pierre_Look
 title: A5_Pierre_Talk
 ---
 <<if flagged("a5_canvas_hung")>>
-    Pierre: The critics are calling. ALL of them. "Gallery Pierre: Finally, Something." That is the headline. Something!
+    Pierre: The critics are calling. ALL of them. "Gallery Pierre: Something, Finally." That is the headline. Something!
     Pierre: And you, my little hibiscus, may visit whenever you like. Breathing is permitted. Within reason.
 <<elseif not flagged("a5_met_pierre")>>
     Pierre: You are not a critic. Critics do not wear shirts with flowers on them. What do you want?
@@ -330,13 +945,15 @@ title: A5_Pierre_Talk
     Pierre: Upside down! "Nothing No. 5"! Can you tell which way is up? No. Nobody can. That is the genius of it.
     Pierre: But if it IS upside down, I will be laughed out of uptown. Make yourself useful, or make yourself gone.
     <<flag a5_met_pierre>>
+<<elseif has("jett_canvas") and has("rave_review")>>
+    Pierre: What is that you are carrying? Is that... a napkin? With HANDWRITING? Show me. Show me now.
 <<else>>
-    <<jump A5_Pierre_Menu>>
+    Pierre: Yes? I am very busy staring at nothing.
 <<endif>>
+<<jump A5_Pierre_Menu>>
 ===
 title: A5_Pierre_Menu
 ---
-Pierre: Yes? I am very busy staring at nothing.
 -> "Nothing No. 5" really is upside down <<if not flagged("a5_canvas_fixed")>>
     <<if flagged("a5_saw_signature")>>
         Dex: It's upside down. The artist's signature is in the top corner, and it's upside down too.
@@ -351,12 +968,14 @@ Pierre: Yes? I am very busy staring at nothing.
         Pierre: Philistine. Everything looks the same both ways to you. Go away and look harder.
         Dex: If I'm going to prove which way is up, I need to take a closer look at that canvas.
     <<endif>>
--> Ask about the key on the plinth <<if flagged("a5_met_mimi") and not flagged("a5_got_key")>>
+    <<jump A5_Pierre_Menu>>
+-> Ask about the key on the plinth <<if flagged("a5_met_mimi") and not flagged("a5_got_key") and not flagged("a5_asked_key")>>
     Dex: That key on the plinth. The invisible one. I think it belongs to the mime outside.
     Pierre: The mime? Pfft. It rolled through my door this morning. It is a found object now. It is ART.
     Pierre: I will part with "Untitled (Key)" only for a work of even greater genius. Something the world has never seen.
     Dex: Something the world has never seen, for something nobody can see. Got it.
     <<flag a5_asked_key>>
+    <<jump A5_Pierre_Menu>>
 -> Jett Vex wants to paint on your blank canvas <<if flagged("a5_jett_wants_canvas") and not flagged("a5_took_canvas")>>
     Pierre: Jett... VEX? THE Jett Vex? "Loud Little Nothing" Jett Vex?
     Pierre: I played that album every night in art school. I painted my dorm room black. My mother cried.
@@ -365,28 +984,55 @@ Pierre: Yes? I am very busy staring at nothing.
     Pierre: Bring it back with her on it. Or do not come back at all.
     <<give blank_canvas>>
     <<flag a5_took_canvas>>
+    <<jump A5_Pierre_Menu>>
 -> About the passes for the club <<if flagged("a5_met_brutus") and not flagged("a5_canvas_fixed")>>
     Pierre: The Velour passes? Yes, I have a drawer full. They are for people who have done something for me.
     Pierre: Have you done something for me? No. You have stood there. Fix my upside-down problem, and we will talk.
+    <<jump A5_Pierre_Menu>>
+-> Offer him Something No. 1 <<if has("jett_canvas") and not flagged("a5_canvas_hung")>>
+    <<jump A5_Pierre_GiveMasterpiece>>
+-> Ask about Vivian Quill <<if (flagged("a5_read_paper") or flagged("a5_met_vivian")) and not flagged("a5_canvas_hung")>>
+    Pierre: (He hisses like a cat that's been shown a bath.) That woman. She reviews my openings from a CAFE. Across the street!
+    Pierre: She is the only critic uptown who matters. One good word from Vivian Quill, and a gallery is made. One bad word, and it is a shoe shop.
+    <<jump A5_Pierre_Menu>>
+-> Ask about art <<if not flagged("a5_cb_puddle")>>
+    Dex: How do you deal with people who say your art is... you know. Shallow?
+    Pierre: Shallow! Ha. They said that about my "Puddle" series. Twelve photographs of puddles. Very deep puddles.
+    Pierre: I told them what I tell everyone: "A puddle is just an ocean that is practising." And then I raised the prices.
+    Dex: "A puddle is just an ocean that's practising." That's ridiculous. I love it. I'm keeping it.
+    <<flag a5_cb_puddle>>
+    <<jump A5_Pierre_Menu>>
 -> Never mind
     Pierre: I never mind. That is why I am so relaxed.
 ===
 title: A5_Pierre_GiveMasterpiece
 ---
-Pierre: What is this? Is that... MY "Nothing No. 5"? You let someone put... pink... on my...
-Pierre: (stops) That signature. J. V. With a lightning bolt.
-Pierre: A JETT VEX ORIGINAL. On MY canvas. It is not nothing anymore. It is SOMETHING.
-Dex: She called it "Something No. 1".
-Pierre: (hangs it on the wall with shaking hands) Of course she did. Of COURSE she did. Name your price.
-Dex: The invisible key on the plinth. For the mime outside.
-Pierre: The... nothing? Take it. Take the plinth too! ...No? Just the key? Fine. Mind the edges, they are invisible.
-Dex: (I scoop nothing off the plinth. It feels like a key. I think.)
-<<take jett_canvas>>
-<<give invisible_key>>
-<<flag a5_canvas_hung>>
-<<flag a5_got_key>>
-<<if not flagged("a5_met_mimi")>>
-    Dex: An invisible key. Who on earth needs an invisible key? ...The mime! Of course.
+<<if flagged("a5_canvas_hung")>>
+    Pierre: It is already on my wall. I am not giving it back. I will chain myself to it. I have a chain. It is minimal.
+<<elseif not has("jett_canvas")>>
+    Pierre: A review? Of WHAT? Bring me the painting it is about, young man. A review of nothing is just my Tuesday.
+<<elseif not has("rave_review")>>
+    Pierre: What is this? Is that... MY "Nothing No. 5"? You let someone put... pink... on my...
+    Pierre: (stops) That signature. J. V. With a lightning bolt. A Jett Vex? On MY canvas?
+    Pierre: (He reaches for it. Then he stops. Then he wrings his hands.) But is it genius? Or is it just... loud? I cannot tell! I have only ever looked at white!
+    Pierre: Genius is not genius until a critic says so. And there is only one critic uptown whose word counts. Vivian Quill.
+    Pierre: She sits at Cafe Snoot, sharpening her pens. Get her blessing in writing, and the key is yours. Without it, I dare not.
+    <<flag a5_pierre_wants_review>>
+<<else>>
+    Pierre: The painting. And... is that Vivian Quill's handwriting? On a napkin? "SOMETHING, FINALLY. Five stars."
+    Pierre: (He sits down on the floor. Right there. On the floor of his own gallery.) She has never given five stars. To anyone. She drew the fifth one by hand.
+    Pierre: (hangs the painting and the napkin side by side with shaking hands) A JETT VEX ORIGINAL. A VIVIAN QUILL RAVE. In MY gallery. Name your price.
+    Dex: The invisible key on the plinth. For the mime outside.
+    Pierre: The... nothing? Take it. Take the plinth too! ...No? Just the key? Fine. Mind the edges, they are invisible.
+    Dex: (I scoop nothing off the plinth. It feels like a key. I think.)
+    <<take jett_canvas>>
+    <<take rave_review>>
+    <<give invisible_key>>
+    <<flag a5_canvas_hung>>
+    <<flag a5_got_key>>
+    <<if not flagged("a5_met_mimi")>>
+        Dex: An invisible key. Who on earth needs an invisible key? ...The mime! Of course.
+    <<endif>>
 <<endif>>
 ===
 title: A5_Pierre_GiveBlank
@@ -402,6 +1048,12 @@ title: A5_Pierre_GivePass
 Pierre: Keep it. I have nine more. Nobody wants to dance with me anyway.
 Dex: You said dancing was beneath you.
 Pierre: Yes. That is what I said.
+===
+title: A5_Pierre_GiveOutfit
+---
+Pierre: A beret AND a smock? Is that supposed to be me? I have never worn a smock. I am a curator. I wear disappointment.
+Dex: It's not you. It's for a critic.
+Pierre: (whispering) Vivian Quill? Then pull the beret lower. Lower. She can smell florals.
 ===
 
 // ------------------------------------------------------------ NIGHTCLUB
@@ -421,6 +1073,15 @@ Dex: The way out. Back to the street, the mime, and fresh air.
 title: A5_ClubExit_Use
 ---
 <<go uptown from_club>>
+===
+
+title: A5_BackstageDoor_Look
+---
+Dex: A black door by the stage. "BACKSTAGE. CREW ONLY." Someone has propped it open with a guitar case. Security, uptown style.
+===
+title: A5_BackstageDoor_Use
+---
+<<go velour_backstage from_club>>
 ===
 
 title: A5_Bar_Look
@@ -456,11 +1117,193 @@ title: A5_Stage_Use
 <<jump A5_Roxy_Talk>>
 ===
 
+// ------------------------------------------------------------ VELOUR BACKSTAGE
+title: A5_Backstage_Enter
+---
+<<if not flagged("a5_backstage_intro")>>
+    Dex: Backstage. Concrete walls, gaffer tape on everything, and a smell like hot amplifiers and old pizza. It's beautiful.
+    Grizz: (from the road case, without looking up) You crew?
+    Dex: Uh...
+    Grizz: Nobody's crew. Come in. Don't touch the amp.
+    <<flag a5_backstage_intro>>
+<<endif>>
+===
+title: A5_BackstageExit_Look
+---
+Dex: Back out to the club. The bass is coming through the door like a heartbeat.
+===
+title: A5_BackstageExit_Use
+---
+<<go nightclub from_backstage>>
+===
+
+title: A5_Mirror_Look
+---
+Dex: A dressing-room mirror ringed with bulbs. Half of them are out. The other half are trying very hard.
+Dex: Someone's written on the glass in lipstick: "YOU ARE NOT BORING. - J". It's been half wiped off.
+===
+title: A5_Mirror_Use
+---
+Dex: I check my hair. Still spiky. Still orange. Still the most confident part of me.
+===
+title: A5_Mirror_Outfit
+---
+Dex: (I hold the beret and the smock up in the mirror.) Hm. With these on I could pass for a tortured artist. Or at least a mildly inconvenienced one.
+===
+
+title: A5_Costumes_Look
+---
+Dex: A rack of Jett's old stage outfits. A jacket made of safety pins. Trousers with forty zips. A cape that just says "NO" on the back.
+===
+title: A5_Costumes_Use
+---
+<<if not flagged("a5_tried_costume")>>
+    Dex: I try on the cape. It says "NO" on the back. I turn around. Grizz reads it.
+    Grizz: Fair enough.
+    Dex: (I put it back. Vivian wants an artist, not a punk. Different kind of black.)
+    <<flag a5_tried_costume>>
+<<else>>
+    Dex: I'm not borrowing a rock star's trousers. That's a line, and I'm drawing it.
+<<endif>>
+===
+
+title: A5_Rider_Look
+---
+<<if flagged("a5_got_croissant")>>
+    Dex: Jett's rider table. Green gummy bears, a boxed espresso machine, and an empty glass dome. The croissant is out there living its best life.
+<<else>>
+    Dex: Jett's rider table. A bowl of gummy bears, only the green ones. An espresso machine still in its box. And on a stool, under a glass dome, one perfect croissant.
+    Dex: The card says "RIDER: One croissant, warm, for emotional support. Do not eat. Do not discuss."
+<<endif>>
+===
+title: A5_Rider_Use
+---
+<<if flagged("a5_got_croissant")>>
+    Dex: Only the green gummy bears left. Even the gummy bears are punk back here.
+<<else>>
+    Dex: I reach for the dome...
+    Grizz: (still knitting nothing) That's Jett's. Hands off the rider, buddy.
+<<endif>>
+===
+
+title: A5_Amp_Look
+---
+Dex: A stack of amplifiers taller than Brutus. The volume knob doesn't have numbers. It just says "LOUD", "LOUDER", and "SORRY".
+===
+title: A5_Amp_Use
+---
+Grizz: Don't touch the amp.
+Dex: I didn't!
+Grizz: You were thinking about it. I can hear you thinking about it. It's my job.
+===
+
+title: A5_SetList_Look
+---
+Dex: Tonight's set list, taped to the wall. "1. Beige. 2. Still Beige. 3. Yawn (Reprise). 4. ..." Somebody's crossed them all out.
+Dex: At the bottom, in fresh pink marker: "Something?"
+===
+title: A5_SetList_Use
+---
+Dex: I'm not touching the set list. In a band, that's how wars start.
+===
+
+// ------------------------------------------------------------ GRIZZ (roadie)
+title: A5_Grizz_Look
+---
+<<if flagged("a5_grizz_has_needles")>>
+    Dex: Grizz, knitting at full speed. Blue wool, flying needles. The scarf is already four feet long. Brutus is a big guy.
+<<else>>
+    Dex: Jett's roadie. A beard like a hedge, arms like tree trunks, and a little pink scarf in his lap, half finished.
+    Dex: He's knitting with his bare fingers. Nothing's happening. He keeps doing it anyway, like it might start working.
+<<endif>>
+===
+title: A5_Grizz_Talk
+---
+<<if not flagged("a5_met_grizz")>>
+    Grizz: Grizz. Jett's roadie. Thirty years on the road. Drums, amps, egos. I carry all of it.
+    Grizz: Tonight I can't even carry a stitch. Somebody took my needles. Brutus. At the door. "Sharp objects."
+    Grizz: Big rule-follower, Brutus. Won't give them back to me. I can't really ask him either. It's... complicated.
+    <<flag a5_met_grizz>>
+    <<flag a5_heard_needles>>
+<<elseif has("grizz_needles") and not flagged("a5_grizz_has_needles")>>
+    Grizz: (He sniffs the air.) Is that... birch? Size eights? Buddy, are those my needles?
+<<elseif flagged("a5_grizz_has_needles")>>
+    Grizz: (click click click click) Blue. He said blue. I've got so much to do.
+<<else>>
+    Grizz: (twiddling empty fingers) Still knitting. Still nothing. This is the worst scarf I've ever made.
+<<endif>>
+<<jump A5_Grizz_Menu>>
+===
+title: A5_Grizz_Menu
+---
+-> Ask what he's knitting <<if not flagged("a5_heard_scarf")>>
+    Grizz: A scarf. For a friend. He stands outside all night in the cold. Every tour. Never complains.
+    Grizz: Big guy. Sunglasses. Clipboard. ...Don't tell him. He'd think it's weird.
+    Dex: (Big guy, sunglasses, clipboard. Brutus! Grizz is knitting a scarf for Brutus. And Brutus confiscated the needles.)
+    <<flag a5_heard_scarf>>
+    <<jump A5_Grizz_Menu>>
+-> Here are your needles <<if has("grizz_needles")>>
+    <<jump A5_Grizz_GiveNeedles>>
+-> Ask about touring <<if not flagged("a5_cb_sofar")>>
+    Grizz: Thirty years. Every night I think, Grizz, you've seen it all. Every guitar solo. Every stage dive. Every drummer who's "a bit of a poet".
+    Grizz: Then some kid plugs in and plays something new, and I stand there with my mouth open like a fish.
+    Grizz: Nobody's seen it all. You've just seen it all so far.
+    Dex: "You haven't seen it all. You've just seen it all so far." Grizz, that's beautiful.
+    Grizz: I know. I had it tattooed. (He rolls up a sleeve. It's there. Spelled wrong.)
+    <<flag a5_cb_sofar>>
+    <<jump A5_Grizz_Menu>>
+-> Ask about Jett
+    <<if flagged("a5_won_jett")>>
+        Grizz: She came back here before, covered in paint, hugged me, and called me "Grizzypants". She hasn't done that since the first album.
+        Grizz: Whatever you did, buddy. Thanks.
+    <<else>>
+        Grizz: She used to paint our backdrops herself. Spray cans, garage floors, the works. Then the label said "stick to the hits".
+        Grizz: Now she sits in the VIP booth, popping gum, bored. It's like watching a firework that forgot how.
+    <<endif>>
+    <<jump A5_Grizz_Menu>>
+-> Ask about the croissant <<if not flagged("a5_got_croissant")>>
+    Grizz: Jett's rider. Every venue, one warm croissant. She never eats it. She just likes knowing it's there. Like a nightlight.
+    Grizz: Not mine to give away, buddy. Although... I'd do a lot for my needles.
+    <<jump A5_Grizz_Menu>>
+-> See you, Grizz
+    Grizz: Don't touch the amp on your way out.
+===
+title: A5_Grizz_GiveNeedles
+---
+<<if flagged("a5_grizz_has_needles")>>
+    Grizz: I've got my needles, buddy. Two is the right number. More than two and it's a hedgehog.
+<<else>>
+    Grizz: My needles! How did you get these past Brutus? Brutus never gives anything back!
+    Dex: I told him who the scarf was for.
+    Grizz: (He goes very red. Then very quiet.) ...What did he say?
+    Dex: He said he likes blue.
+    Grizz: (He looks at the pink scarf. He looks at me. He pulls a ball of blue wool out of his beard. I don't ask.) I'm starting over.
+    Grizz: Here. Take Jett's croissant. She'll never notice, and if she does, I'll tell her a pigeon took it. Pigeons always get blamed.
+    <<take grizz_needles>>
+    <<give rider_croissant>>
+    <<flag a5_grizz_has_needles>>
+    <<flag a5_got_croissant>>
+    <<if flagged("a5_heard_pigeons")>>
+        Dex: (A croissant. Anton said one crumb on his terrace would bring every pigeon uptown down on him. Hm.)
+    <<endif>>
+<<endif>>
+===
+title: A5_Grizz_GiveCroissant
+---
+Grizz: Nah, keep it. Do something interesting with it. That croissant's been on tour for three weeks. It deserves an adventure.
+===
+title: A5_Grizz_ShowPick
+---
+Grizz: Her lucky pick! She gave you that? Buddy. She wouldn't give ME that, and I once carried her out of a burning bus.
+===
+
 // ------------------------------------------------------------ JETT VEX
 title: A5_Jett_Look
 ---
 <<if flagged("a5_won_jett")>>
     Dex: Jett Vex, paint on her jacket, humming something new. She looks like someone who just remembered why she started.
+<<elseif flagged("a5_jett_painted")>>
+    Dex: Jett Vex, paint on her nose, pretending not to check her phone. She's checking her phone.
 <<elseif flagged("a5_met_jett")>>
     Dex: Jett Vex, lounging in the VIP booth like it owes her money. Bubblegum bubble. Pop. Another one. Pop.
 <<else>>
@@ -471,7 +1314,9 @@ title: A5_Jett_Look
 title: A5_Jett_Talk
 ---
 <<if flagged("a5_won_jett")>>
-    <<jump A5_Jett_After>>
+    Jett Vex: Hey, flower shirt. Still not bored. It's been forty whole minutes. Personal record.
+<<elseif flagged("a5_got_rave")>>
+    <<jump A5_Jett_Win>>
 <<elseif not flagged("a5_met_jett")>>
     Jett Vex: Ugh. Let me guess. You're "not like other guys".
     Dex: No, I'm exactly like other guys. Just more nervous. And in a louder shirt.
@@ -482,6 +1327,8 @@ title: A5_Jett_Talk
     Jett Vex: I'd give my lucky pick to put some noise on that nothing. Ha. As if Mr. Turtleneck would ever let me near it.
     <<flag a5_met_jett>>
     <<flag a5_jett_wants_canvas>>
+<<elseif flagged("a5_jett_painted")>>
+    Jett Vex: So? Did the Quill see it? Never mind. I don't care. (She checks her phone.) I don't care at ALL.
 <<elseif flagged("a5_jett_has_canvas") and not flagged("a5_jett_has_paint")>>
     Jett Vex: Got the canvas. Got the urge. Don't have any paint, genius.
     Jett Vex: And not some sad beige stuff. Loud colours. Colours that would get kicked out of a library.
@@ -501,20 +1348,58 @@ title: A5_Jett_Talk
         Dex: The gallery next door. Time to meet Mr. Turtleneck.
     <<endif>>
 <<endif>>
+<<jump A5_Jett_Menu>>
 ===
-title: A5_Jett_After
+title: A5_Jett_Menu
 ---
-Jett Vex: Hey, flower shirt. Still not bored. It's been forty whole minutes. Personal record.
--> Ask what she'll do next
-    Jett Vex: Paint. Play. Paint while playing. Maybe a gallery show. Pierre already called me. Six times.
--> Ask about the pick
+-> Ask about painting <<if not flagged("a5_jett_painted")>>
+    Jett Vex: I used to paint our backdrops. Spray cans in a garage. Grizz held the ladder. Best years of my life.
+    Jett Vex: Then the label said painting was "off-brand". Being bored is on-brand. Apparently.
+    <<jump A5_Jett_Menu>>
+-> Ask how she handles critics <<if not flagged("a5_cb_noise")>>
+    Jett Vex: Critics? They've called my music "noise" since I was sixteen.
+    Jett Vex: I always tell them the same thing: "Noise is just music nobody's invited to dinner yet."
+    Jett Vex: They never invite me to dinner. Their loss. I'm great at dinner.
+    Dex: "Noise is just music nobody's invited to dinner yet." Oh, that's good. I'm stealing that.
+    Jett Vex: Steal it. That's what it's for. That's punk.
+    <<flag a5_cb_noise>>
+    <<jump A5_Jett_Menu>>
+-> Ask about the poster <<if flagged("a5_saw_poster") and not flagged("a5_jett_poster")>>
+    Jett Vex: The yawning one? The photographer said "look excited". That was me looking excited.
+    Jett Vex: Someone drew a moustache on it outside, right? Good. It's the most interesting thing that's happened to it.
+    <<flag a5_jett_poster>>
+    <<jump A5_Jett_Menu>>
+-> Ask about Vivian Quill <<if (flagged("a5_read_paper") or flagged("a5_met_vivian")) and not flagged("a5_won_jett")>>
+    Jett Vex: The Quill. She called my last album "beige noise". She wasn't wrong. That's what made it hurt.
+    <<if flagged("a5_jett_painted")>>
+        Jett Vex: If she saw that painting and felt something... anything... even rage... I'd know I've still got it. Not that I care. I don't. Show her.
+    <<else>>
+        Jett Vex: Her first review of me said I made her "feel something, against her will". I've been chasing that ever since.
+    <<endif>>
+    <<jump A5_Jett_Menu>>
+-> Ask about Grizz <<if flagged("a5_met_grizz") and not flagged("a5_jett_grizz")>>
+    Jett Vex: Grizz? Best roadie alive. He once carried a drum kit, a tuba player and me up six flights of stairs. At the same time.
+    Jett Vex: He knits when he's nervous. He's always nervous. I have forty scarves.
+    <<flag a5_jett_grizz>>
+    <<jump A5_Jett_Menu>>
+-> Ask about the pick <<if flagged("a5_won_jett")>>
     Jett Vex: Lucky pick. Played my first show with it, in a garage, for three people and a cat.
     Jett Vex: The cat left. You'd better not lose it.
--> Ask if she'll watch the Finals
+    <<jump A5_Jett_Menu>>
+-> Ask what she'll do next <<if flagged("a5_won_jett")>>
+    Jett Vex: Paint. Play. Paint while playing. Maybe a gallery show. Pierre already called me. Six times.
+    Jett Vex: And there's a new song on the set list. It's called "Something". Grizz cried at soundcheck.
+    <<jump A5_Jett_Menu>>
+-> Ask if she'll watch the Finals <<if flagged("a5_won_jett")>>
     Jett Vex: Front row. If you use a pickup line up there, I'm going to boo so loud.
     Dex: Noted. Very noted.
+    <<jump A5_Jett_Menu>>
 -> See you later
-    Jett Vex: Later, flower shirt.
+    <<if flagged("a5_won_jett")>>
+        Jett Vex: Later, flower shirt.
+    <<else>>
+        Jett Vex: (pop) Whatever.
+    <<endif>>
 ===
 title: A5_Jett_GiveCanvas
 ---
@@ -547,17 +1432,55 @@ title: A5_Jett_CheckPaint
     Dex: She goes at "Nothing No. 5" like it owes her money. Splat. Slash. Drip. A lightning bolt. A heart. A small, angry Brutus.
     Dex: The DJ stops the music. The whole club stops dancing to watch. Somebody starts clapping. It's Brutus.
     Jett Vex: (out of breath, paint on her nose) That's... I haven't had fun like that since I was fifteen.
-    Jett Vex: I'm not bored. I'm not BORED! Flower shirt, you did something nobody's done in years.
-    Jett Vex: Here. My lucky pick. A deal's a deal. And take the painting back to the gallery guy. Tell him it's called "Something No. 1".
-    <<give guitar_pick>>
+    Jett Vex: It's called "Something No. 1". Take it. No, wait. Don't take it to Mr. Turtleneck yet.
+    Jett Vex: Take it to the Quill first. Vivian Quill, at Cafe Snoot. The critic who called my album "beige noise".
+    Jett Vex: If she feels something looking at that, anything at all, then I'm not done. Then you get my lucky pick. Deal?
+    Dex: Deal.
     <<give jett_canvas>>
-    <<flag a5_won_jett>>
-    <<if has("white_glove")>>
-        Dex: The pick and the glove. Roxy's waiting by the stage.
+    <<flag a5_jett_painted>>
+    <<if flagged("a5_won_duel")>>
+        Dex: And Vivian already owes me one look. Perfect timing.
     <<else>>
-        Dex: "Something No. 1". If anything is a work of greater genius, it's this. Pierre's going to lose his mind.
+        Dex: Vivian Quill. The lady Anton guards like a dragon. No problem. Big problem. Medium problem.
     <<endif>>
 <<endif>>
+===
+title: A5_Jett_GiveReview
+---
+<<if flagged("a5_won_jett")>>
+    Jett Vex: I've read it. Eleven times. Don't tell anyone.
+<<else>>
+    <<jump A5_Jett_Win>>
+<<endif>>
+===
+title: A5_Jett_Win
+---
+Jett Vex: (Her phone buzzes. And buzzes. And buzzes. She looks at it. Her face does something it hasn't done in years.)
+Jett Vex: The Quill posted. "SOMETHING, FINALLY. Five stars." Five. She doesn't GIVE five. She drew the fifth one by hand!
+Dex: She cried a little. She'll deny it.
+Jett Vex: (She jumps up on the VIP booth and screams. Not bored. The opposite of bored. The whole club screams back.)
+Jett Vex: I'm not bored. I'm not BORED! Flower shirt, you did something nobody's done in years.
+Jett Vex: Here. My lucky pick. A deal's a deal. Now go give that painting to Mr. Turtleneck before I change my mind and hang it in the tour bus.
+<<give guitar_pick>>
+<<flag a5_won_jett>>
+<<if has("white_glove")>>
+    Dex: The pick and the glove. Roxy's waiting by the stage.
+<<else>>
+    Dex: One token. And a painting, and a five-star review, for a curator who's holding a mime's key hostage.
+<<endif>>
+===
+title: A5_Jett_GiveOwnPainting
+---
+<<if flagged("a5_got_rave")>>
+    Jett Vex: Don't give it back to me, give it to Mr. Turtleneck! It belongs on a wall with a snob next to it.
+<<else>>
+    Jett Vex: Nope. That's going to the Quill first. Cafe Snoot. I need to know if it's any good. I mean, I don't care. Go.
+<<endif>>
+===
+title: A5_Jett_GiveCroissant
+---
+Jett Vex: Is that my rider croissant? It's been on tour longer than my drummer. Grizz gave you that? Huh. He must like you.
+Jett Vex: Keep it. I never eat it. I just like knowing it's there.
 ===
 title: A5_Jett_ShowGlove
 ---
@@ -581,13 +1504,39 @@ title: A5_Roxy_Talk
     Roxy Vale: ...and a rock star who's bored by absolutely everything, including me. Which I find hard to believe.
     Roxy Vale: Win them both over, bring me something to remember them by, and you can make your case on this stage.
     <<flag a5_met_roxy>>
+    <<jump A5_Roxy_Menu>>
 <<elseif has("white_glove")>>
     Roxy Vale: The mime's glove! Smooth. Now, can you make Jett Vex feel anything at all?
+    <<jump A5_Roxy_Menu>>
 <<elseif has("guitar_pick")>>
     Roxy Vale: Jett Vex's lucky pick? I'm shook. Now what about our silent friend outside?
+    <<jump A5_Roxy_Menu>>
 <<else>>
     Roxy Vale: The mime and the rocker, lover boy. Two tokens, then the Finals. Tick tock!
+    <<jump A5_Roxy_Menu>>
 <<endif>>
+===
+title: A5_Roxy_Menu
+---
+-> Ask how the Finals work <<if not flagged("a5_roxy_rules")>>
+    Roxy Vale: Simple! No props, no partners. You stand on that stage and make your case to all of uptown. Three questions.
+    Roxy Vale: And honey? Uptown has heard every line in the book. Twice. Some of them wrote the book.
+    <<flag a5_roxy_rules>>
+    <<jump A5_Roxy_Menu>>
+-> Ask about Mimi <<if not has("white_glove")>>
+    Roxy Vale: The mime? She's been in that box since lunchtime. My crew offered her a sandwich. She mimed eating a better one.
+    <<jump A5_Roxy_Menu>>
+-> Ask about Jett Vex <<if not has("guitar_pick")>>
+    Roxy Vale: I asked her to co-host once. She yawned for the entire rehearsal. On beat, though. She's a professional.
+    <<jump A5_Roxy_Menu>>
+-> Ask about Vivian Quill <<if flagged("a5_met_vivian")>>
+    Roxy Vale: The Quill? She reviewed our show once. One word: "Loud." I had it printed on a pillow.
+    <<jump A5_Roxy_Menu>>
+-> Ask for a tip
+    Roxy Vale: A tip? Lover boy, I'm a host, not a hint line. But you look like you're thinking hard. Think out loud.
+    <<jump A5_Hint>>
+-> I'll be back
+    Roxy Vale: I'll be right here, sparkling. It's what I do.
 ===
 title: A5_Roxy_Token
 ---
@@ -597,6 +1546,7 @@ title: A5_Finals
 ---
 Roxy Vale: Ladies and gentlemen, it's FINALS NIGHT on Speed Daters Live! Please welcome Dex Dooley!
 Dex: The lights hit me. Somewhere in the crowd, Jett Vex is holding up a lighter. Mimi is miming holding up a lighter.
+Dex: At the back, Vivian Quill has a pen ready. Brutus is wearing a very long blue scarf. Grizz is next to him, beaming.
 Roxy Vale: Here's how it works, lover boy. No props, no partners. Just you, me, and the whole of uptown.
 Roxy Vale: Make your case. Three questions. Impress me.
 <<jump A5_Finals_Q1>>
@@ -652,6 +1602,7 @@ title: A5_Finals_Win
 ---
 Dex: (For a second, nothing. The DJ even takes off his headphones.)
 Dex: (Then the whole club goes off. Jett Vex plays a power chord on an imaginary guitar. Mimi mimes the fireworks. Brutus touches the disco ball.)
+Vivian Quill: (from the back, writing furiously) Sincere. Unpolished. Four stars. Don't let it go to your head.
 Roxy Vale: THAT is the most honest thing anybody has ever said on this show! And I once hosted a lie-detector episode!
 Roxy Vale: Dex Dooley, you are going to the LIVE FINALE!
 Roxy Vale: It's at the TV studio, lover boy, and it's on the campus map. Live television. Millions of people. No pressure!
@@ -667,6 +1618,14 @@ title: A5_Combine_Canvas_Paint
 ---
 Dex: Me? Paint on a priceless canvas? I can barely draw a stick figure. My stick figures look nervous.
 Dex: Jett Vex is the one who wants to paint. I should let a real artist do it.
+===
+title: A5_Combine_Beret_Smock
+---
+Dex: A beret. A paint-stiff black smock. Put them together and... I look like I've suffered for my art. Or at least sat near someone who did.
+<<take mime_beret>>
+<<take paint_smock>>
+<<give artiste_outfit>>
+Dex: The Tortured Artist. Vivian Quill won't know what hit her. Hopefully not my shirt, peeking out at the collar.
 ===
 title: Item_vip_pass_Look
 ---
@@ -695,4 +1654,28 @@ Dex: Mimi's white glove. It says more than she ever has, and that's saying somet
 title: Item_guitar_pick_Look
 ---
 Dex: Jett Vex's lucky guitar pick. Green, chewed on one corner, played to three people and a cat.
+===
+title: Item_mime_beret_Look
+---
+Dex: Mimi's spare beret. One of eight. Red, floppy, and it smells faintly of greasepaint and confidence.
+===
+title: Item_paint_smock_Look
+---
+Dex: A black painter's smock, stiff with old splatters. Wearing it, I'd look like I have opinions about colour.
+===
+title: Item_artiste_outfit_Look
+---
+Dex: Beret and smock. The complete tortured artist. All I need now is a tragic backstory. I once lost a sock. That'll do.
+===
+title: Item_grizz_needles_Look
+---
+Dex: Two long birch knitting needles. Confiscated by Brutus, released by Brutus, for a scarf for Brutus. Brutus is a whole ecosystem.
+===
+title: Item_rider_croissant_Look
+---
+Dex: Jett's rider croissant. Three weeks on tour and still somehow flaky. Every pigeon uptown would sell their grandmother for it.
+===
+title: Item_rave_review_Look
+---
+Dex: A napkin covered in tiny, vicious capitals. "SOMETHING, FINALLY. Five stars." The fifth star is drawn by hand. It's a bit wobbly. She was emotional.
 ===

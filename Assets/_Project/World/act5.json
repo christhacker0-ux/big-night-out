@@ -62,6 +62,60 @@
     0.9,
     0.4
    ]
+  },
+  {
+   "id": "mime_beret",
+   "name": "Mimi's Spare Beret",
+   "color": [
+    0.85,
+    0.15,
+    0.25
+   ]
+  },
+  {
+   "id": "paint_smock",
+   "name": "Paint Smock",
+   "color": [
+    0.15,
+    0.15,
+    0.18
+   ]
+  },
+  {
+   "id": "artiste_outfit",
+   "name": "Tortured Artist Disguise",
+   "color": [
+    0.3,
+    0.1,
+    0.2
+   ]
+  },
+  {
+   "id": "grizz_needles",
+   "name": "Knitting Needles",
+   "color": [
+    0.8,
+    0.7,
+    0.3
+   ]
+  },
+  {
+   "id": "rider_croissant",
+   "name": "Rider Croissant",
+   "color": [
+    0.9,
+    0.65,
+    0.3
+   ]
+  },
+  {
+   "id": "rave_review",
+   "name": "Vivian's Rave Review",
+   "color": [
+    0.95,
+    0.93,
+    0.85
+   ]
   }
  ],
  "combinations": [
@@ -69,6 +123,11 @@
    "a": "blank_canvas",
    "b": "paint_set",
    "node": "A5_Combine_Canvas_Paint"
+  },
+  {
+   "a": "mime_beret",
+   "b": "paint_smock",
+   "node": "A5_Combine_Beret_Smock"
   }
  ],
  "rooms": [
@@ -106,6 +165,14 @@
      "pos": [
       4.4,
       -3.8
+     ],
+     "faceLeft": true
+    },
+    {
+     "name": "from_cafe",
+     "pos": [
+      8.1,
+      -3.9
      ],
      "faceLeft": true
     }
@@ -189,6 +256,14 @@
       {
        "item": "paint_set",
        "node": "A5_Mimi_GivePaint"
+      },
+      {
+       "item": "rider_croissant",
+       "node": "A5_Mimi_GiveCroissant"
+      },
+      {
+       "item": "paint_smock",
+       "node": "A5_Mimi_GiveSmock"
       }
      ]
     },
@@ -275,8 +350,42 @@
       {
        "item": "guitar_pick",
        "node": "A5_Brutus_ShowToken"
+      },
+      {
+       "item": "rider_croissant",
+       "node": "A5_Brutus_GiveCroissant"
+      },
+      {
+       "item": "grizz_needles",
+       "node": "A5_Brutus_GiveNeedles"
+      },
+      {
+       "item": "artiste_outfit",
+       "node": "A5_Brutus_GiveOutfit"
       }
      ]
+    },
+    {
+     "name": "Cafe Snoot",
+     "feet": [
+      8.85,
+      -2.6
+     ],
+     "size": [
+      1.1,
+      3.0
+     ],
+     "color": [
+      0.9,
+      0.7,
+      0.4
+     ],
+     "standAt": [
+      8.4,
+      -3.7
+     ],
+     "look": "A5_CafeDoor_Look",
+     "use": "A5_CafeDoor_Use"
     }
    ]
   },
@@ -460,6 +569,14 @@
       {
        "item": "vip_pass",
        "node": "A5_Pierre_GivePass"
+      },
+      {
+       "item": "rave_review",
+       "node": "A5_Pierre_GiveMasterpiece"
+      },
+      {
+       "item": "artiste_outfit",
+       "node": "A5_Pierre_GiveOutfit"
       }
      ]
     },
@@ -507,6 +624,13 @@
      "pos": [
       -7.0,
       -3.9
+     ]
+    },
+    {
+     "name": "from_backstage",
+     "pos": [
+      -2.45,
+      -3.8
      ]
     }
    ],
@@ -665,8 +789,491 @@
       {
        "item": "white_glove",
        "node": "A5_Jett_ShowGlove"
+      },
+      {
+       "item": "rave_review",
+       "node": "A5_Jett_GiveReview"
+      },
+      {
+       "item": "jett_canvas",
+       "node": "A5_Jett_GiveOwnPainting"
+      },
+      {
+       "item": "rider_croissant",
+       "node": "A5_Jett_GiveCroissant"
       }
      ]
+    },
+    {
+     "name": "Backstage door",
+     "feet": [
+      -2.45,
+      -2.6
+     ],
+     "size": [
+      1.0,
+      2.5
+     ],
+     "color": [
+      0.3,
+      0.3,
+      0.35
+     ],
+     "standAt": [
+      -2.45,
+      -3.6
+     ],
+     "look": "A5_BackstageDoor_Look",
+     "use": "A5_BackstageDoor_Use"
+    }
+   ]
+  },
+  {
+   "id": "cafe_snoot",
+   "scene": "CafeSnoot",
+   "onEnter": "A5_Cafe_Enter",
+   "wall": [
+    0.35,
+    0.2,
+    0.18
+   ],
+   "floor": [
+    0.55,
+    0.5,
+    0.48
+   ],
+   "entries": [
+    {
+     "name": "from_street",
+     "pos": [
+      -7.0,
+      -3.9
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Uptown street",
+     "feet": [
+      -8.6,
+      -2.6
+     ],
+     "size": [
+      1.6,
+      3.2
+     ],
+     "color": [
+      0.3,
+      0.25,
+      0.45
+     ],
+     "standAt": [
+      -7.6,
+      -3.7
+     ],
+     "faceLeft": true,
+     "look": "A5_CafeExit_Look",
+     "use": "A5_CafeExit_Use"
+    },
+    {
+     "name": "Specials board",
+     "feet": [
+      -6.1,
+      -2.7
+     ],
+     "size": [
+      1.1,
+      1.7
+     ],
+     "color": [
+      0.15,
+      0.2,
+      0.15
+     ],
+     "standAt": [
+      -6.1,
+      -3.7
+     ],
+     "look": "A5_Specials_Look",
+     "use": "A5_Specials_Use"
+    },
+    {
+     "name": "Anton",
+     "feet": [
+      -3.4,
+      -2.85
+     ],
+     "size": [
+      1.0,
+      2.6
+     ],
+     "color": [
+      0.95,
+      0.95,
+      0.95
+     ],
+     "standAt": [
+      -4.6,
+      -3.8
+     ],
+     "look": "A5_Anton_Look",
+     "use": "A5_Anton_Talk",
+     "hideWhenFlag": "a5_anton_fled",
+     "items": [
+      {
+       "item": "rider_croissant",
+       "node": "A5_Anton_GiveCroissant"
+      },
+      {
+       "item": "artiste_outfit",
+       "node": "A5_Anton_GiveOutfit"
+      }
+     ]
+    },
+    {
+     "name": "Mr. Pemberton",
+     "feet": [
+      -0.9,
+      -1.75
+     ],
+     "size": [
+      0.9,
+      0.75
+     ],
+     "color": [
+      0.5,
+      0.5,
+      0.6
+     ],
+     "standAt": [
+      -0.9,
+      -3.6
+     ],
+     "look": "A5_Pemberton_Look",
+     "use": "A5_Pemberton_Talk",
+     "hideWhenFlag": "a5_anton_fled",
+     "items": [
+      {
+       "item": "rider_croissant",
+       "node": "A5_Pemberton_GiveCroissant"
+      }
+     ]
+    },
+    {
+     "name": "Vivian Quill",
+     "feet": [
+      2.3,
+      -2.85
+     ],
+     "size": [
+      1.0,
+      2.7
+     ],
+     "color": [
+      0.2,
+      0.2,
+      0.3
+     ],
+     "standAt": [
+      1.1,
+      -3.8
+     ],
+     "look": "A5_Vivian_Look",
+     "use": "A5_Vivian_Talk",
+     "items": [
+      {
+       "item": "artiste_outfit",
+       "node": "A5_Vivian_GiveOutfit"
+      },
+      {
+       "item": "jett_canvas",
+       "node": "A5_Vivian_ShowPainting"
+      },
+      {
+       "item": "blank_canvas",
+       "node": "A5_Vivian_ShowBlank"
+      },
+      {
+       "item": "rider_croissant",
+       "node": "A5_Vivian_GiveCroissant"
+      },
+      {
+       "item": "white_glove",
+       "node": "A5_Vivian_ShowToken"
+      },
+      {
+       "item": "guitar_pick",
+       "node": "A5_Vivian_ShowToken"
+      }
+     ]
+    },
+    {
+     "name": "Newspaper stand",
+     "feet": [
+      5.4,
+      -2.6
+     ],
+     "size": [
+      1.1,
+      1.6
+     ],
+     "color": [
+      0.3,
+      0.4,
+      0.6
+     ],
+     "standAt": [
+      5.4,
+      -3.7
+     ],
+     "look": "A5_Newspaper_Look",
+     "use": "A5_Newspaper_Use"
+    },
+    {
+     "name": "Empty table",
+     "feet": [
+      7.5,
+      -2.6
+     ],
+     "size": [
+      1.5,
+      1.4
+     ],
+     "color": [
+      0.9,
+      0.9,
+      0.9
+     ],
+     "standAt": [
+      7.3,
+      -3.7
+     ],
+     "look": "A5_EmptyTable_Look",
+     "use": "A5_EmptyTable_Use"
+    }
+   ]
+  },
+  {
+   "id": "velour_backstage",
+   "scene": "VelourBackstage",
+   "onEnter": "A5_Backstage_Enter",
+   "wall": [
+    0.3,
+    0.3,
+    0.32
+   ],
+   "floor": [
+    0.25,
+    0.22,
+    0.24
+   ],
+   "entries": [
+    {
+     "name": "from_club",
+     "pos": [
+      -7.0,
+      -3.9
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Club floor",
+     "feet": [
+      -8.6,
+      -2.6
+     ],
+     "size": [
+      1.6,
+      3.2
+     ],
+     "color": [
+      0.4,
+      0.2,
+      0.4
+     ],
+     "standAt": [
+      -7.6,
+      -3.7
+     ],
+     "faceLeft": true,
+     "look": "A5_BackstageExit_Look",
+     "use": "A5_BackstageExit_Use"
+    },
+    {
+     "name": "Dressing mirror",
+     "feet": [
+      -5.3,
+      -2.6
+     ],
+     "size": [
+      1.9,
+      2.6
+     ],
+     "color": [
+      0.9,
+      0.85,
+      0.6
+     ],
+     "standAt": [
+      -5.3,
+      -3.7
+     ],
+     "look": "A5_Mirror_Look",
+     "use": "A5_Mirror_Use",
+     "items": [
+      {
+       "item": "artiste_outfit",
+       "node": "A5_Mirror_Outfit"
+      }
+     ]
+    },
+    {
+     "name": "Costume rack",
+     "feet": [
+      -2.5,
+      -2.6
+     ],
+     "size": [
+      1.9,
+      2.5
+     ],
+     "color": [
+      0.6,
+      0.2,
+      0.4
+     ],
+     "standAt": [
+      -2.5,
+      -3.7
+     ],
+     "look": "A5_Costumes_Look",
+     "use": "A5_Costumes_Use"
+    },
+    {
+     "name": "Grizz",
+     "feet": [
+      0.7,
+      -2.85
+     ],
+     "size": [
+      1.4,
+      2.8
+     ],
+     "color": [
+      0.3,
+      0.25,
+      0.2
+     ],
+     "standAt": [
+      -0.6,
+      -3.8
+     ],
+     "look": "A5_Grizz_Look",
+     "use": "A5_Grizz_Talk",
+     "items": [
+      {
+       "item": "grizz_needles",
+       "node": "A5_Grizz_GiveNeedles"
+      },
+      {
+       "item": "rider_croissant",
+       "node": "A5_Grizz_GiveCroissant"
+      },
+      {
+       "item": "guitar_pick",
+       "node": "A5_Grizz_ShowPick"
+      }
+     ]
+    },
+    {
+     "name": "Rider croissant",
+     "feet": [
+      2.0,
+      -1.75
+     ],
+     "size": [
+      0.6,
+      0.45
+     ],
+     "color": [
+      0.9,
+      0.65,
+      0.3
+     ],
+     "standAt": [
+      2.0,
+      -3.7
+     ],
+     "look": "A5_Rider_Look",
+     "use": "A5_Rider_Use",
+     "hideWhenFlag": "a5_got_croissant"
+    },
+    {
+     "name": "Rider table",
+     "feet": [
+      3.5,
+      -2.6
+     ],
+     "size": [
+      2.2,
+      1.4
+     ],
+     "color": [
+      0.5,
+      0.35,
+      0.2
+     ],
+     "standAt": [
+      3.5,
+      -3.7
+     ],
+     "look": "A5_Rider_Look",
+     "use": "A5_Rider_Use"
+    },
+    {
+     "name": "Amp stack",
+     "feet": [
+      5.5,
+      -2.6
+     ],
+     "size": [
+      1.6,
+      3.0
+     ],
+     "color": [
+      0.15,
+      0.15,
+      0.15
+     ],
+     "standAt": [
+      5.5,
+      -3.7
+     ],
+     "look": "A5_Amp_Look",
+     "use": "A5_Amp_Use"
+    },
+    {
+     "name": "Set list",
+     "feet": [
+      7.6,
+      -1.2
+     ],
+     "size": [
+      0.9,
+      1.2
+     ],
+     "color": [
+      0.95,
+      0.95,
+      0.9
+     ],
+     "standAt": [
+      7.4,
+      -3.7
+     ],
+     "look": "A5_SetList_Look",
+     "use": "A5_SetList_Use"
     }
    ]
   }

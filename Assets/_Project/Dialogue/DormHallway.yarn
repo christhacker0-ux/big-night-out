@@ -1,12 +1,3 @@
-title: Generic_WrongItem
----
-Dex: That doesn't work.
-===
-title: Generic_CantCombine
----
-Dex: Those two don't go together. Trust me, I tried.
-===
-
 title: DormHallway_Enter
 ---
 <<if not flagged("hallway_intro")>>
@@ -21,8 +12,8 @@ title: Lacey_Look
 ---
 <<if flagged("won_lacey")>>
     Dex: Lacey Rae, humming Hank Hollister and smiling. I did that.
-<<elseif flagged("lacey_has_album")>>
-    Dex: She's tapping her boot to the album. One more thing and she's mine. For a dance.
+<<elseif flagged("lacey_has_album") or flagged("lacey_has_drink")>>
+    Dex: She's tapping her boot. Half impressed. One more thing and she's mine. For a dance.
 <<else>>
     Dex: Cowboy boots, a sundress, and zero interest in me. Yet.
 <<endif>>
@@ -41,26 +32,53 @@ title: Lacey_Talk
     Lacey Rae: I meant on a shelf, not on national TV. Fine. Win, and I get it back with interest.
 <<elseif flagged("won_lacey")>>
     Lacey Rae: Still here, freshman? That dance was the best thing to happen at this party.
-    -> Ask about the hat
-        Lacey Rae: Keep it. Wear it somewhere people will see it.
-        Dex: Like... on TV?
-        Lacey Rae: Sure, slick. Like on TV.
-    -> Ask for another dance
-        Lacey Rae: One dance is a memory. Two is a commitment. Go do something with that hat.
-    -> Say goodnight
-        Dex: Goodnight, Lacey Rae.
-        Lacey Rae: Goodnight, freshman.
 <<elseif flagged("lacey_has_album") and not flagged("lacey_has_drink")>>
     Lacey Rae: Hank's on, finally. Now I just need something to drink that isn't warm tap water.
-    Dex: Anything particular?
-    Lacey Rae: Something with a little zing. Check the drinks table, genius.
 <<elseif flagged("lacey_has_drink") and not flagged("lacey_has_album")>>
     Lacey Rae: Good drink. Bad music. Someone around here must own a real record.
-    Dex: Who'd keep vinyl in a dorm?
-    Lacey Rae: The guy in the bathrobe hasn't stopped bragging about his collection all night.
 <<else>>
     Lacey Rae: Song. Drink. I'm not asking for the moon, freshman.
 <<endif>>
+<<jump A1_Lacey_Menu>>
+===
+title: A1_Lacey_Menu
+---
+-> Ask what counts as real country <<if not flagged("lacey_has_album")>>
+    Lacey Rae: Hank Hollister. Live. The album where he cries during the yodel and keeps going anyway.
+    Dex: Who'd keep vinyl in a dorm?
+    Lacey Rae: The guy in the bathrobe hasn't stopped bragging about his record collection all night.
+    <<jump A1_Lacey_Menu>>
+-> Ask what she wants to drink <<if not flagged("lacey_has_drink")>>
+    Lacey Rae: Something with a little zing. There's a recipe card on the drinks table, genius.
+    <<if flagged("a1_saw_no_soda")>>
+        Dex: The table's out of soda.
+        Lacey Rae: Then try the Union. Doreen keeps the last cold cans behind her counter like they're gold bars.
+    <<endif>>
+    <<jump A1_Lacey_Menu>>
+-> Ask if she likes poetry <<if not flagged("a1_cb_me")>>
+    Lacey Rae: Poets? Ugh. My ex was a poet.
+    Lacey Rae: Boy knew forty thousand words, and the only one he ever used was "me".
+    Dex: (Ooh. "The only one you ever use is 'me'." Filing that one away.)
+    <<flag a1_cb_me>>
+    <<jump A1_Lacey_Menu>>
+-> Ask about her poet ex again <<if flagged("a1_cb_me")>>
+    Lacey Rae: He wrote a sonnet about his own haircut. Fourteen lines. All about the left side.
+    <<jump A1_Lacey_Menu>>
+-> Ask about the hat <<if flagged("won_lacey")>>
+    Lacey Rae: Keep it. Wear it somewhere people will see it.
+    Dex: Like... on TV?
+    Lacey Rae: Sure, slick. Like on TV.
+    <<jump A1_Lacey_Menu>>
+-> Ask for another dance <<if flagged("won_lacey")>>
+    Lacey Rae: One dance is a memory. Two is a commitment. Go do something with that hat.
+    <<jump A1_Lacey_Menu>>
+-> Ask her to be your Talent Round partner <<if flagged("signed_up") and not flagged("won_ivy")>>
+    Lacey Rae: Me, on a stage? I sing in the shower and the shower files complaints.
+    Lacey Rae: Try the library. The quiet ones are always the brave ones. They just don't know it yet.
+    <<jump A1_Lacey_Menu>>
+-> Say goodnight
+    Dex: Catch you later, Lacey Rae.
+    Lacey Rae: Not if I catch you first, freshman.
 ===
 title: Lacey_GiveAlbum
 ---
@@ -76,14 +94,24 @@ Lacey Rae: Lemon, soda, and a splash of something questionable. You're learning.
 <<flag lacey_has_drink>>
 <<jump Lacey_CheckWin>>
 ===
+title: A1_Lacey_GiveLemon
+---
+Lacey Rae: A lemon. Raw. You want me to just bite it, freshman?
+Dex: The recipe card says lemon plus soda. I should put them together first.
+===
+title: A1_Lacey_GiveSoda
+---
+Lacey Rae: Plain soda? Where's the zing? Check that recipe card again.
+===
 title: Lacey_CheckWin
 ---
 <<if flagged("lacey_has_album") and flagged("lacey_has_drink")>>
     Lacey Rae: Alright, freshman. One dance.
-    // TODO: dance cutscene
+    Dex: Hank yodels. Lacey spins. I mostly try not to step on her boots. I step on her boots. She laughs anyway.
     Lacey Rae: Here. Something to remember me by.
     <<give cowboy_hat>>
     <<flag won_lacey>>
+    Dex: Lacey Rae's own hat. If that isn't proof I'm a catch, nothing is. The sign-up sheet is in the lounge.
 <<endif>>
 ===
 
@@ -92,38 +120,217 @@ title: Gil_Look
 <<if flagged("gil_has_earplugs")>>
     Dex: Gil, finally at peace, earplugs in, swaying to a record only he can hear.
 <<else>>
-    Dex: A guy in a bathrobe, guarding his record collection like a dragon.
+    Dex: A guy in a bathrobe, hiding from his own room like it's haunted.
 <<endif>>
 ===
 title: Gil_Talk
 ---
 <<if not flagged("met_gil")>>
-    Gil: Shh. Do you hear that? That's my roommate. Snoring. At nine p.m.
-    Dex: Nice album collection.
-    Gil: Get me through one night of sleep and you can borrow anything.
+    Gil: Shh. Do you hear that? That's my roommate, Boomer. Snoring. At nine p.m. Through a closed door.
+    Dex: Nice album collection, I hear.
+    Gil: Get me through one night of sleep and you can borrow anything in my crate.
     <<flag met_gil>>
 <<elseif flagged("gil_has_earplugs") and flagged("won_lacey")>>
     Gil: WHAT? Sorry, earplugs. Did the country album work?
     Dex: Like a charm. She danced with me.
     Gil: Hank Hollister, uniting people since 1974. Keep it. I'm going to sleep for a week.
 <<elseif flagged("gil_has_earplugs")>>
-    Gil: WHAT? Oh, it's you. Best purchase of my life. Did you give the album to anyone yet?
-    Dex: Working on it.
-    Gil: The cowgirl by the lounge. Trust me. She's been glaring at the speakers all night.
+    Gil: WHAT? Oh, it's you. Best purchase of my life.
 <<else>>
     Gil: Still snoring. Still awake. The vending machine sells earplugs, but I'm broke.
 <<endif>>
+<<jump A1_Gil_Menu>>
+===
+title: A1_Gil_Menu
+---
+-> Ask about the snoring <<if not flagged("a1_boomer_moved")>>
+    Gil: Boomer is a linebacker. He snores like a leaf blower. And he sleepwalks.
+    Gil: Right now he's standing in the middle of our room, asleep, hugging the air. You never wake a sleepwalker.
+    Gil: Last time someone woke him, he cried for an hour and then ate a lamp.
+    <<jump A1_Gil_Menu>>
+-> Ask about his records
+    Gil: Crate by the bunk bed in room 216. Jazz, punk, polka, and one country album I won in a raffle.
+    <<jump A1_Gil_Menu>>
+-> Ask if you can go in his room <<if not flagged("gil_has_earplugs")>>
+    Gil: My room is a war zone. Get me earplugs and my room is your room.
+    <<jump A1_Gil_Menu>>
+-> Ask how you move a sleepwalker <<if flagged("gil_has_earplugs") and not flagged("a1_boomer_moved")>>
+    Gil: You don't push him. You lure him. Boomer follows food in his sleep.
+    Gil: Last week he sleepwalked all the way to the Union because Doreen was making possum waffles.
+    <<jump A1_Gil_Menu>>
+-> Ask how he deals with show-offs <<if not flagged("a1_cb_pillow")>>
+    Gil: Easy. Whenever Boomer brags about his bench press, I say "Cool story. Tell it to my pillow."
+    Dex: (That's... not great. I'll keep it anyway. "Cool story. Tell it to my pillow.")
+    <<flag a1_cb_pillow>>
+    <<jump A1_Gil_Menu>>
+-> Ask about Lacey Rae <<if flagged("met_lacey") and not flagged("won_lacey")>>
+    Gil: The cowgirl by the corkboard? She's been glaring at the speakers all night. Robot music offends her.
+    <<jump A1_Gil_Menu>>
+-> Let him get some rest
+    Gil: Rest. Ha. What a beautiful word.
 ===
 title: Gil_GiveEarplugs
 ---
 <<if flagged("gil_has_earplugs")>>
     Gil: I already have earplugs. I'm wearing them. WHAT?
 <<else>>
-    Gil: Earplugs! You beautiful man. Take the country one, I never liked it.
+    Gil: Earplugs! You beautiful man.
     <<take earplugs>>
     <<flag gil_has_earplugs>>
-    <<give dance_album>>
+    Gil: Take the country one, I never liked it. It's in the crate in my room, 216. Door's open.
+    Gil: Just... Boomer is standing in front of the crate. Sleepwalking. Do NOT wake him.
 <<endif>>
+===
+title: A1_Gil_GiveAlarm
+---
+Gil: Is that Boomer's alarm clock? Get it away from me. It's set for five a.m. It says GAME DAY. It's always game day.
+===
+title: A1_Gil_GiveFreshener
+---
+Gil: Keep it. That tree already lost the war against Boomer's socks. Maybe it can win somewhere else.
+===
+
+title: A1_Door216_Look
+---
+Dex: Room 216. Through the door I can hear a snore like someone sawing a tuba in half.
+===
+title: A1_Door216_Use
+---
+<<if flagged("gil_has_earplugs")>>
+    <<go gil_room from_hallway>>
+<<elseif flagged("met_gil")>>
+    Gil: Whoa, whoa. Nobody opens that door until I've got earplugs in. I can't take the full volume.
+<<else>>
+    Gil: Hey! That's my room. Unless you're here to stop the snoring, keep walking.
+    <<flag met_gil>>
+<<endif>>
+===
+
+title: A1_GilRoom_Enter
+---
+<<if not flagged("a1_gilroom_intro")>>
+    Dex: Room 216. Records everywhere, a bunk bed, and a smell like a locker room had a baby with a sock drawer.
+    Dex: And in the middle of it all, a giant in pyjamas, eyes shut, snoring on his feet. That must be Boomer.
+    <<flag a1_gilroom_intro>>
+<<endif>>
+===
+title: A1_GilDoor_Look
+---
+Dex: The door back to the hallway, and to air that doesn't taste like feet.
+===
+title: A1_GilDoor_Use
+---
+<<go dorm_hallway from_gil_room>>
+===
+title: A1_Bunk_Look
+---
+Dex: Bunk beds. Gil's on top, under a poster of a saxophone. Boomer's bunk is empty, because Boomer is busy sleepwalking.
+===
+title: A1_Bunk_Use
+---
+Dex: Lying down in a stranger's bunk while his roommate sleepwalks around me? That's a horror movie, not a nap.
+===
+title: A1_Crate_Look
+---
+Dex: A milk crate packed with vinyl. Gil has better taste in music than in bathrobes.
+===
+title: A1_Crate_Use
+---
+<<if flagged("a1_took_album") or flagged("lacey_has_album")>>
+    Dex: I've got the only record I need. The rest is polka. So much polka.
+<<elseif not flagged("a1_boomer_moved")>>
+    Dex: Boomer is planted right in front of the crate, hugging the air. If I reach past him, he hugs me.
+    Dex: I've seen him. That hug ends careers. I need to get him to move. Without waking him.
+<<else>>
+    Dex: Jazz, punk, polka, polka, polka... Hank Hollister, Live at the Grand Ole Barn. Bingo.
+    <<give dance_album>>
+    <<flag a1_took_album>>
+<<endif>>
+===
+title: A1_Turntable_Look
+---
+Dex: Gil's turntable. It costs more than my entire wardrobe. Admittedly, my wardrobe is mostly this shirt.
+===
+title: A1_Turntable_Use
+---
+Dex: If I touch Gil's turntable, Gil touches my face. With his fist. Hands off.
+===
+title: A1_Turntable_Album
+---
+Dex: Playing it in here would only serenade a sleepwalker. Lacey's the one who needs to hear it.
+===
+title: A1_Alarm_Look
+---
+Dex: A huge red alarm clock with two bells on top. The label says GAME DAY. It's set for five a.m.
+===
+title: A1_Alarm_Use
+---
+Dex: If this goes off next to Boomer, he wakes up mid-sleepwalk. I'd better take it far, far away. For his own good.
+Dex: It's loud, it's portable, and it's ticking. Somebody, somewhere, will want this.
+<<give boomer_alarm>>
+<<flag a1_took_alarm>>
+===
+title: A1_Freshener_Look
+---
+Dex: A pine tree air freshener on the window latch. "Alpine Morning." It never stood a chance.
+===
+title: A1_Freshener_Use
+---
+Dex: One slightly defeated pine tree. It still smells like a forest, if you put it right up your nose.
+<<give pine_freshener>>
+<<flag a1_took_freshener>>
+===
+
+title: A1_Boomer_Look
+---
+<<if flagged("a1_boomer_moved")>>
+    Dex: Boomer, asleep on his feet next to the couch, chewing waffle in his sleep. Living the dream. Literally.
+<<else>>
+    Dex: Boomer. Six and a half feet of linebacker in a nightcap, eyes shut, slowly hugging the air.
+<<endif>>
+===
+title: A1_Boomer_Talk
+---
+<<if flagged("a1_boomer_moved")>>
+    Boomer: (chewing) Mmm. Possum. Best waffle. Tell Coach... I'm full.
+<<else>>
+    Boomer: (snore) Hhhnnnk... shoo... hhhnnnk...
+    Dex: (whispering) Hi, Boomer. Don't mind me.
+<<endif>>
+<<jump A1_Boomer_Menu>>
+===
+title: A1_Boomer_Menu
+---
+-> Ask who he is
+    Boomer: Mmmf. Boomer. Linebacker. Second string. Mom says first string in her heart.
+    <<jump A1_Boomer_Menu>>
+-> Ask what he's dreaming about <<if not flagged("a1_boomer_dream")>>
+    Boomer: Waffles... the possum ones... from the Union...
+    Boomer: Doreen only makes them for the possum... why can't I be the possum...
+    Dex: The Union is off the main quad. If I could get one of those waffles...
+    <<flag a1_boomer_dream>>
+    <<jump A1_Boomer_Menu>>
+-> Ask him to move aside <<if not flagged("a1_boomer_moved")>>
+    Boomer: Can't. Guarding the records. From the bad music. Hut, hut. Hike.
+    <<jump A1_Boomer_Menu>>
+-> Wake him up
+    Dex: Gil said he cries for an hour and then eats a lamp. I like lamps. I'll let him sleep.
+    <<jump A1_Boomer_Menu>>
+-> Tiptoe away
+    Boomer: (snore) Hhhnnnk... good game... hhhnnnk...
+===
+title: A1_Boomer_GiveWaffle
+---
+Dex: I wave the possum waffle under his nose.
+Boomer: (sniff) ...sniff... POSSUM.
+Dex: He takes the waffle, turns around with his eyes still shut, and shuffles out the door, chewing.
+Dex: He's heading for the lounge. Sleepwalking with a snack. Good for you, big guy. The crate is free.
+<<take possum_waffle>>
+<<flag a1_boomer_moved>>
+===
+title: A1_Boomer_GiveAlarm
+---
+Dex: Ring an alarm clock in a sleepwalker's ear? Gil said he cries for an hour. I'm not starting that.
 ===
 
 title: Vending_Look
@@ -149,16 +356,18 @@ Dex: A recipe card: "Hallway Hooch. Lemon plus soda, served with confidence."
 ===
 title: DrinksTable_Use
 ---
-<<if flagged("made_hooch")>>
+<<if flagged("made_hooch") or flagged("lacey_has_drink")>>
     Dex: The table's picked clean.
-<<elseif not has("lemon")>>
+<<elseif not has("lemon") and not flagged("a1_took_lemon")>>
     Dex: One lemon, slightly used.
     <<give lemon>>
+    <<flag a1_took_lemon>>
 <<elseif not has("soda")>>
-    Dex: And a can of soda.
-    <<give soda>>
+    Dex: The soda's all gone. Just empty cans and one sad straw. Somebody had a powerful thirst.
+    Dex: The Student Union on the quad has a soda fountain. That's my best bet.
+    <<flag a1_saw_no_soda>>
 <<else>>
-    Dex: I have what I need.
+    Dex: I have what I need. Lemon, meet soda.
 <<endif>>
 ===
 title: Combine_Lemon_Soda
@@ -184,7 +393,7 @@ Dex: A lemon. Lightly bruised, like my ego.
 ===
 title: Item_soda_Look
 ---
-Dex: Lemon-lime soda. Or is it lime-lemon?
+Dex: Lemon-lime soda, ice cold, from Doreen's secret cooler. Or is it lime-lemon?
 ===
 title: Item_hallway_hooch_Look
 ---
@@ -194,6 +403,14 @@ title: Item_cowboy_hat_Look
 ---
 Dex: Lacey Rae's hat. Proof that tonight is going my way.
 ===
+title: Item_pine_freshener_Look
+---
+Dex: A pine tree air freshener. "Alpine Morning." It has seen things in room 216.
+===
+title: Item_boomer_alarm_Look
+---
+Dex: Boomer's alarm clock. Two bells, one setting: LOUD. Perfect for making a scene somewhere quiet.
+===
 
 title: Stairs_Look
 ---
@@ -201,9 +418,5 @@ Dex: The stairwell. Down to the main campus, and the rest of my life.
 ===
 title: Stairs_Use
 ---
-<<if flagged("signed_up")>>
-    <<go campus from_dorm>>
-<<else>>
-    Dex: Not yet. The party's up here, and so is my first chance at a big night out.
-<<endif>>
+<<go campus from_dorm>>
 ===

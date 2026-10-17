@@ -26,14 +26,16 @@ Each act ends with a **round** hosted by Roxy that needs that act's tokens.
 - **Ms. Hush** (Act 1): head librarian. Founder statue: Augustus Plumworth.
 
 ## Acts
+Each act has a verbal duel where Dex first learns the right comebacks from other characters, plus trading chains, disguises and distractions. Every character talks through a topic menu that changes as the story moves on. Docs/walkthrough/ has the exact solution per act.
+
 | Act | Round | Rooms (id) | Women | Other cast |
 |---|---|---|---|---|
-| 1 Freshman (done) | Talent Round, campus stage | dex_room, dorm_hallway, lounge, campus, library | Lacey Rae, Ivy | Gil, Ms. Hush, Roxy |
-| 2 Greek Week | Quiz Round, Greek Row | greek_row, frat_house, fuse_box | Tess Calloway, Dolly Spark | Chad Thunderclap |
-| 3 Lab Rats | Dare Round, the lab | science_hall, lab, rooftop | Dr. Mina Volt, Sky Rivera | Professor Nibbles (hamster) |
-| 4 Off Campus | Date Round, downtown | downtown, quickmart, rusty_anchor | Bree Marlowe, Lou | Captain Gus |
-| 5 Uptown | Finals, the nightclub | uptown, art_gallery, nightclub | Mimi, Jett Vex | Brutus (bouncer), Pierre (curator) |
-| Finale | Live final and dance-off | tv_studio | all of them, cheering | Roxy, rival Chet Studwell, Uncle Vic on the phone |
+| 1 Freshman | Talent Round, campus stage | dex_room, dorm_hallway, lounge, gil_room, campus, student_union, library, library_stacks | Lacey Rae, Ivy | Gil, Boomer, Doreen, Kyle, Percival Thorne, Ms. Hush, Roxy |
+| 2 Greek Week | Quiz Round, Greek Row | greek_row, sorority_parlor, frat_house, frat_basement, fuse_box | Tess Calloway, Dolly Spark | Chad Thunderclap, Mother Whitlock, Moose, Dunk |
+| 3 Lab Rats | Dare Round, the lab | science_hall, lab, rooftop, science_basement, faculty_lounge | Dr. Mina Volt, Sky Rivera | Professor Nibbles, Dot Pruitt, Professor Crumb, Mr. Bones |
+| 4 Off Campus | Date Round, downtown | downtown, quickmart, rusty_anchor, starlite_diner, bijou_lobby | Bree Marlowe, Lou | Captain Gus, Sal, Mortimer, Admiral the parrot |
+| 5 Uptown | Finals, the nightclub | uptown, cafe_snoot, art_gallery, nightclub, velour_backstage | Mimi, Jett Vex | Brutus, Pierre, Vivian Quill, Anton, Grizz, Mr. Pemberton |
+| Finale | Live final and dance-off | tv_studio, tv_green_room, tv_control_booth | all of them, cheering | Roxy, rival Chet Studwell, Gloria Puff, Norma Fade, Uncle Vic on the phone |
 
 ### Act 2: Greek Week (Quiz Round)
 - **Tess Calloway**, sorority president on the Greek Row porch: pearls, clipboard, runs everything. The frat stole the sorority

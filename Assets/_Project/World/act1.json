@@ -116,6 +116,51 @@
     0.8,
     0.4
    ]
+  },
+  {
+   "id": "pine_freshener",
+   "name": "Pine Tree Air Freshener",
+   "color": [
+    0.2,
+    0.6,
+    0.25
+   ]
+  },
+  {
+   "id": "possum_head",
+   "name": "Pokey's Possum Head",
+   "color": [
+    0.6,
+    0.6,
+    0.62
+   ]
+  },
+  {
+   "id": "possum_waffle",
+   "name": "Possum Waffle",
+   "color": [
+    0.85,
+    0.6,
+    0.25
+   ]
+  },
+  {
+   "id": "boomer_alarm",
+   "name": "Boomer's Alarm Clock",
+   "color": [
+    0.85,
+    0.2,
+    0.2
+   ]
+  },
+  {
+   "id": "ivy_notebook",
+   "name": "Ivy's Notebook",
+   "color": [
+    0.3,
+    0.5,
+    0.35
+   ]
   }
  ],
  "combinations": [
@@ -297,6 +342,13 @@
       -3.8
      ],
      "faceLeft": true
+    },
+    {
+     "name": "from_gil_room",
+     "pos": [
+      -2.4,
+      -3.8
+     ]
     }
    ],
    "hotspots": [
@@ -348,7 +400,7 @@
     {
      "name": "Lacey Rae",
      "feet": [
-      -2,
+      -0.2,
       -2.8
      ],
      "size": [
@@ -361,7 +413,7 @@
       0.65
      ],
      "standAt": [
-      -3.2,
+      -1.4,
       -3.4
      ],
      "look": "Lacey_Look",
@@ -374,6 +426,14 @@
       {
        "item": "hallway_hooch",
        "node": "Lacey_GiveDrink"
+      },
+      {
+       "item": "lemon",
+       "node": "A1_Lacey_GiveLemon"
+      },
+      {
+       "item": "soda",
+       "node": "A1_Lacey_GiveSoda"
       }
      ]
     },
@@ -402,6 +462,14 @@
       {
        "item": "earplugs",
        "node": "Gil_GiveEarplugs"
+      },
+      {
+       "item": "boomer_alarm",
+       "node": "A1_Gil_GiveAlarm"
+      },
+      {
+       "item": "pine_freshener",
+       "node": "A1_Gil_GiveFreshener"
       }
      ]
     },
@@ -476,6 +544,28 @@
      ],
      "look": "Stairs_Look",
      "use": "Stairs_Use"
+    },
+    {
+     "name": "Room 216",
+     "feet": [
+      -2.4,
+      -2.6
+     ],
+     "size": [
+      1.2,
+      3.0
+     ],
+     "color": [
+      0.3,
+      0.45,
+      0.35
+     ],
+     "standAt": [
+      -2.4,
+      -3.6
+     ],
+     "look": "A1_Door216_Look",
+     "use": "A1_Door216_Use"
     }
    ]
   },
@@ -597,6 +687,30 @@
        "node": "SignUp_GiveHat"
       }
      ]
+    },
+    {
+     "name": "Boomer",
+     "feet": [
+      -5.6,
+      -3.0
+     ],
+     "size": [
+      1.4,
+      2.9
+     ],
+     "color": [
+      0.5,
+      0.4,
+      0.6
+     ],
+     "standAt": [
+      -4.4,
+      -3.6
+     ],
+     "faceLeft": true,
+     "look": "A1_Boomer_Look",
+     "use": "A1_Boomer_Talk",
+     "showWhenFlag": "a1_boomer_moved"
     }
    ]
   },
@@ -634,6 +748,13 @@
      "pos": [
       3.0,
       -4.0
+     ]
+    },
+    {
+     "name": "from_union",
+     "pos": [
+      -2.2,
+      -3.9
      ]
     }
    ],
@@ -809,6 +930,28 @@
        "node": "Roxy_Token"
       }
      ]
+    },
+    {
+     "name": "Student Union",
+     "feet": [
+      -2.2,
+      -2.7
+     ],
+     "size": [
+      0.9,
+      2.6
+     ],
+     "color": [
+      0.6,
+      0.45,
+      0.3
+     ],
+     "standAt": [
+      -2.2,
+      -3.7
+     ],
+     "look": "A1_UnionSign_Look",
+     "use": "A1_UnionSign_Use"
     }
    ]
   },
@@ -832,6 +975,13 @@
      "pos": [
       -7.2,
       -3.9
+     ]
+    },
+    {
+     "name": "from_stacks",
+     "pos": [
+      3.0,
+      -3.8
      ]
     }
    ],
@@ -907,17 +1057,22 @@
       {
        "item": "note_for_ivy",
        "node": "Hush_Note"
+      },
+      {
+       "item": "boomer_alarm",
+       "node": "A1_Hush_GiveAlarm"
       }
-     ]
+     ],
+     "hideWhenFlag": "a1_hush_distracted"
     },
     {
      "name": "Bookshelves",
      "feet": [
-      1.9,
+      1.45,
       -2.6
      ],
      "size": [
-      3.0,
+      2.2,
       5.0
      ],
      "color": [
@@ -926,7 +1081,7 @@
       0.2
      ],
      "standAt": [
-      1.9,
+      1.45,
       -3.7
      ],
      "look": "Shelves_Look",
@@ -987,6 +1142,687 @@
       {
        "item": "cowboy_hat",
        "node": "Ivy_ShowHat"
+      },
+      {
+       "item": "ivy_notebook",
+       "node": "A1_Ivy_GiveNotebook"
+      }
+     ]
+    },
+    {
+     "name": "Ladder to the stacks",
+     "feet": [
+      3.05,
+      -2.6
+     ],
+     "size": [
+      0.8,
+      4.9
+     ],
+     "color": [
+      0.65,
+      0.43,
+      0.24
+     ],
+     "standAt": [
+      3.05,
+      -3.7
+     ],
+     "look": "A1_Ladder_Look",
+     "use": "A1_Ladder_Use"
+    },
+    {
+     "name": "Card catalogue",
+     "feet": [
+      -6.6,
+      -2.6
+     ],
+     "size": [
+      1.1,
+      2.2
+     ],
+     "color": [
+      0.6,
+      0.36,
+      0.2
+     ],
+     "standAt": [
+      -6.6,
+      -3.7
+     ],
+     "look": "A1_Catalogue_Look",
+     "use": "A1_Catalogue_Use",
+     "items": [
+      {
+       "item": "boomer_alarm",
+       "node": "A1_Catalogue_Alarm"
+      }
+     ],
+     "hideWhenFlag": "a1_hush_distracted"
+    },
+    {
+     "name": "Ms. Hush",
+     "feet": [
+      -6.2,
+      -3.3
+     ],
+     "size": [
+      1.0,
+      2.5
+     ],
+     "color": [
+      0.6,
+      0.6,
+      0.7
+     ],
+     "standAt": [
+      -4.9,
+      -3.8
+     ],
+     "faceLeft": true,
+     "look": "Hush_Look",
+     "use": "Hush_Talk",
+     "items": [
+      {
+       "item": "note_for_ivy",
+       "node": "Hush_Note"
+      },
+      {
+       "item": "boomer_alarm",
+       "node": "A1_Hush_GiveAlarm"
+      }
+     ],
+     "showWhenFlag": "a1_hush_distracted"
+    }
+   ]
+  },
+  {
+   "id": "gil_room",
+   "scene": "GilRoom",
+   "onEnter": "A1_GilRoom_Enter",
+   "wall": [
+    0.3,
+    0.38,
+    0.32
+   ],
+   "floor": [
+    0.42,
+    0.3,
+    0.24
+   ],
+   "entries": [
+    {
+     "name": "from_hallway",
+     "pos": [
+      6.4,
+      -4
+     ],
+     "faceLeft": true
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Door to hallway",
+     "feet": [
+      7.6,
+      -2.6
+     ],
+     "size": [
+      1.4,
+      3.0
+     ],
+     "color": [
+      0.45,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      6.6,
+      -3.6
+     ],
+     "look": "A1_GilDoor_Look",
+     "use": "A1_GilDoor_Use"
+    },
+    {
+     "name": "Bunk bed",
+     "feet": [
+      -6.6,
+      -2.6
+     ],
+     "size": [
+      2.8,
+      3.6
+     ],
+     "color": [
+      0.4,
+      0.3,
+      0.5
+     ],
+     "standAt": [
+      -5.0,
+      -3.7
+     ],
+     "faceLeft": true,
+     "look": "A1_Bunk_Look",
+     "use": "A1_Bunk_Use"
+    },
+    {
+     "name": "Record crate",
+     "feet": [
+      -4.3,
+      -2.7
+     ],
+     "size": [
+      1.3,
+      1.0
+     ],
+     "color": [
+      0.55,
+      0.35,
+      0.2
+     ],
+     "standAt": [
+      -3.6,
+      -3.6
+     ],
+     "faceLeft": true,
+     "look": "A1_Crate_Look",
+     "use": "A1_Crate_Use"
+    },
+    {
+     "name": "Boomer",
+     "feet": [
+      -2.6,
+      -3.1
+     ],
+     "size": [
+      1.4,
+      2.9
+     ],
+     "color": [
+      0.5,
+      0.4,
+      0.6
+     ],
+     "standAt": [
+      -1.3,
+      -3.6
+     ],
+     "faceLeft": true,
+     "look": "A1_Boomer_Look",
+     "use": "A1_Boomer_Talk",
+     "items": [
+      {
+       "item": "possum_waffle",
+       "node": "A1_Boomer_GiveWaffle"
+      },
+      {
+       "item": "boomer_alarm",
+       "node": "A1_Boomer_GiveAlarm"
+      }
+     ],
+     "hideWhenFlag": "a1_boomer_moved"
+    },
+    {
+     "name": "Turntable",
+     "feet": [
+      0.9,
+      -1.0
+     ],
+     "size": [
+      1.6,
+      0.7
+     ],
+     "color": [
+      0.2,
+      0.2,
+      0.2
+     ],
+     "standAt": [
+      0.9,
+      -3.6
+     ],
+     "look": "A1_Turntable_Look",
+     "use": "A1_Turntable_Use",
+     "items": [
+      {
+       "item": "dance_album",
+       "node": "A1_Turntable_Album"
+      }
+     ]
+    },
+    {
+     "name": "Alarm clock",
+     "feet": [
+      2.6,
+      -1.0
+     ],
+     "size": [
+      0.6,
+      0.6
+     ],
+     "color": [
+      0.85,
+      0.2,
+      0.2
+     ],
+     "standAt": [
+      2.6,
+      -3.6
+     ],
+     "look": "A1_Alarm_Look",
+     "use": "A1_Alarm_Use",
+     "hideWhenFlag": "a1_took_alarm"
+    },
+    {
+     "name": "Air freshener",
+     "feet": [
+      4.9,
+      -0.4
+     ],
+     "size": [
+      0.5,
+      0.9
+     ],
+     "color": [
+      0.2,
+      0.6,
+      0.25
+     ],
+     "standAt": [
+      4.9,
+      -3.6
+     ],
+     "look": "A1_Freshener_Look",
+     "use": "A1_Freshener_Use",
+     "hideWhenFlag": "a1_took_freshener"
+    }
+   ]
+  },
+  {
+   "id": "student_union",
+   "scene": "StudentUnion",
+   "onEnter": "A1_Union_Enter",
+   "wall": [
+    0.7,
+    0.5,
+    0.35
+   ],
+   "floor": [
+    0.5,
+    0.45,
+    0.4
+   ],
+   "entries": [
+    {
+     "name": "from_campus",
+     "pos": [
+      -7.2,
+      -3.9
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Quad",
+     "feet": [
+      -8.3,
+      -2.6
+     ],
+     "size": [
+      1.6,
+      3.4
+     ],
+     "color": [
+      0.4,
+      0.5,
+      0.6
+     ],
+     "standAt": [
+      -7.4,
+      -3.7
+     ],
+     "faceLeft": true,
+     "look": "A1_UnionExit_Look",
+     "use": "A1_UnionExit_Use"
+    },
+    {
+     "name": "Menu board",
+     "feet": [
+      -2.8,
+      0.5
+     ],
+     "size": [
+      3.4,
+      1.7
+     ],
+     "color": [
+      0.2,
+      0.2,
+      0.2
+     ],
+     "standAt": [
+      -2.8,
+      -3.6
+     ],
+     "look": "A1_Menu_Look",
+     "use": "A1_Menu_Use"
+    },
+    {
+     "name": "Grill counter",
+     "feet": [
+      -3.0,
+      -2.6
+     ],
+     "size": [
+      4.2,
+      1.5
+     ],
+     "color": [
+      0.6,
+      0.6,
+      0.62
+     ],
+     "standAt": [
+      -3.0,
+      -3.7
+     ],
+     "look": "A1_Grill_Look",
+     "use": "A1_Grill_Use",
+     "items": [
+      {
+       "item": "possum_head",
+       "node": "A1_Doreen_GivePossumHead"
+      }
+     ]
+    },
+    {
+     "name": "Doreen",
+     "feet": [
+      0.4,
+      -2.6
+     ],
+     "size": [
+      1.1,
+      2.6
+     ],
+     "color": [
+      0.9,
+      0.5,
+      0.5
+     ],
+     "standAt": [
+      1.6,
+      -3.6
+     ],
+     "faceLeft": true,
+     "look": "A1_Doreen_Look",
+     "use": "A1_Doreen_Talk",
+     "items": [
+      {
+       "item": "possum_head",
+       "node": "A1_Doreen_GivePossumHead"
+      },
+      {
+       "item": "pine_freshener",
+       "node": "A1_Doreen_GiveFreshener"
+      }
+     ]
+    },
+    {
+     "name": "Soda fountain",
+     "feet": [
+      2.6,
+      -2.6
+     ],
+     "size": [
+      1.3,
+      2.3
+     ],
+     "color": [
+      0.8,
+      0.2,
+      0.2
+     ],
+     "standAt": [
+      2.6,
+      -3.6
+     ],
+     "look": "A1_Fountain_Look",
+     "use": "A1_Fountain_Use",
+     "items": [
+      {
+       "item": "dollar",
+       "node": "A1_Fountain_Dollar"
+      }
+     ]
+    },
+    {
+     "name": "Kyle",
+     "feet": [
+      5.0,
+      -3.0
+     ],
+     "size": [
+      1.2,
+      2.6
+     ],
+     "color": [
+      0.6,
+      0.6,
+      0.62
+     ],
+     "standAt": [
+      3.8,
+      -3.6
+     ],
+     "look": "A1_Kyle_Look",
+     "use": "A1_Kyle_Talk",
+     "items": [
+      {
+       "item": "pine_freshener",
+       "node": "A1_Kyle_GiveFreshener"
+      },
+      {
+       "item": "soda",
+       "node": "A1_Kyle_GiveSoda"
+      }
+     ]
+    },
+    {
+     "name": "Bulletin board",
+     "feet": [
+      7.9,
+      -0.3
+     ],
+     "size": [
+      1.8,
+      1.9
+     ],
+     "color": [
+      0.6,
+      0.45,
+      0.3
+     ],
+     "standAt": [
+      7.6,
+      -3.6
+     ],
+     "look": "A1_Bulletin_Look",
+     "use": "A1_Bulletin_Use"
+    }
+   ]
+  },
+  {
+   "id": "library_stacks",
+   "scene": "LibraryStacks",
+   "onEnter": "A1_Stacks_Enter",
+   "wall": [
+    0.3,
+    0.25,
+    0.3
+   ],
+   "floor": [
+    0.4,
+    0.28,
+    0.2
+   ],
+   "entries": [
+    {
+     "name": "from_library",
+     "pos": [
+      -6.4,
+      -3.9
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Ladder down",
+     "feet": [
+      -7.9,
+      -2.9
+     ],
+     "size": [
+      1.4,
+      2.4
+     ],
+     "color": [
+      0.65,
+      0.43,
+      0.24
+     ],
+     "standAt": [
+      -6.8,
+      -3.8
+     ],
+     "faceLeft": true,
+     "look": "A1_LadderDown_Look",
+     "use": "A1_LadderDown_Use"
+    },
+    {
+     "name": "Dusty shelves",
+     "feet": [
+      -3.6,
+      -2.6
+     ],
+     "size": [
+      3.0,
+      4.8
+     ],
+     "color": [
+      0.4,
+      0.25,
+      0.18
+     ],
+     "standAt": [
+      -3.6,
+      -3.7
+     ],
+     "look": "A1_Dusty_Look",
+     "use": "A1_Dusty_Use"
+    },
+    {
+     "name": "Slam chalkboard",
+     "feet": [
+      0.2,
+      -0.6
+     ],
+     "size": [
+      2.0,
+      1.6
+     ],
+     "color": [
+      0.2,
+      0.25,
+      0.2
+     ],
+     "standAt": [
+      0.2,
+      -3.6
+     ],
+     "look": "A1_Chalk_Look",
+     "use": "A1_Chalk_Use"
+    },
+    {
+     "name": "Percival Thorne",
+     "feet": [
+      2.4,
+      -2.8
+     ],
+     "size": [
+      1.0,
+      2.7
+     ],
+     "color": [
+      0.3,
+      0.2,
+      0.3
+     ],
+     "standAt": [
+      1.2,
+      -3.6
+     ],
+     "look": "A1_Percival_Look",
+     "use": "A1_Percival_Talk",
+     "items": [
+      {
+       "item": "cowboy_hat",
+       "node": "A1_Percival_ShowHat"
+      },
+      {
+       "item": "note_for_ivy",
+       "node": "A1_Percival_ShowNote"
+      }
+     ]
+    },
+    {
+     "name": "Open mic",
+     "feet": [
+      3.9,
+      -2.7
+     ],
+     "size": [
+      0.7,
+      2.1
+     ],
+     "color": [
+      0.3,
+      0.3,
+      0.3
+     ],
+     "standAt": [
+      3.9,
+      -3.7
+     ],
+     "look": "A1_Mic_Look",
+     "use": "A1_Mic_Use"
+    },
+    {
+     "name": "Plumworth bust",
+     "feet": [
+      7.2,
+      -2.6
+     ],
+     "size": [
+      1.2,
+      2.6
+     ],
+     "color": [
+      0.8,
+      0.8,
+      0.8
+     ],
+     "standAt": [
+      6.4,
+      -3.7
+     ],
+     "look": "A1_Bust_Look",
+     "use": "A1_Bust_Use",
+     "items": [
+      {
+       "item": "sunglasses",
+       "node": "A1_Bust_Sunglasses"
       }
      ]
     }

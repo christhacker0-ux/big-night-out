@@ -444,6 +444,17 @@ namespace BigNightOut.EditorTools
             Set(inventory, "emptyHint", emptyHint.gameObject);
             Set(inventory, "pickupText", pickup);
 
+            // The held item follows the mouse. Last child of the bar's canvas so it draws on top,
+            // and not a raycast target so drops land on whatever is underneath it.
+            var heldGo = new GameObject("HeldItemCursor", typeof(RectTransform));
+            heldGo.transform.SetParent(canvasGo.transform, false);
+            ((RectTransform)heldGo.transform).sizeDelta = new Vector2(80f, 80f);
+            var heldImage = heldGo.AddComponent<Image>();
+            heldImage.raycastTarget = false;
+            heldImage.preserveAspect = true;
+            heldImage.enabled = false;
+            Set(heldGo.AddComponent<HeldItemCursor>(), "image", heldImage);
+
             AddPauseMenu(canvasGo.transform);
 
             // Input

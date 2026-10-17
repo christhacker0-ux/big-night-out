@@ -21,5 +21,15 @@ namespace BigNightOut.Inventory
         }
 
         public static void Clear() => Hold(null);
+
+        /// <summary>Raised when an item is dragged out of the inventory and let go over the room.</summary>
+        public static event Action<ItemDefinition, UnityEngine.Vector2> DroppedInWorld;
+
+        public static void DropInWorld(ItemDefinition item, UnityEngine.Vector2 screenPosition)
+        {
+            if (DroppedInWorld == null) { Clear(); return; }
+            try { DroppedInWorld(item, screenPosition); }
+            catch (Exception e) { UnityEngine.Debug.LogException(e); Clear(); }
+        }
     }
 }

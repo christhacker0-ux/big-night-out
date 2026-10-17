@@ -17,7 +17,7 @@ Plan: https://claude.ai/code/artifact/310973cf-fb08-4b26-95a7-0b2d8a5cc66a
 | `Assets/_Project/Scripts/Dialogue` | Yarn Spinner bridge: commands and functions for Yarn scripts |
 | `Assets/_Project/Dialogue` | `BigNightOut.yarnproject` (picks up every `.yarn` file in this folder) and `DormHallway.yarn`, the vertical-slice puzzle |
 
-Controls: left click walks or uses, right click looks, click an inventory item to hold it, then click a hotspot to use it there or another item to combine.
+Controls: left click walks or uses, right click looks, click an inventory item to hold it, then click a hotspot to use it there or another item to combine. You can also drag an item from the bar straight onto a person, an object or another item.
 
 ## Quick start (no Unity experience needed)
 
@@ -29,7 +29,7 @@ Controls: left click walks or uses, right click looks, click an inventory item t
 6. Open the project. The first open takes a few minutes. The project then installs its own packages (Input System, Yarn Spinner) and builds the first room by itself. If Unity asks to restart to enable the new Input System, click **Yes**.
 7. When the **Boot** scene opens, press the **Play** button at the top of the window.
 
-Left click to walk and use things, right click to look. Click an item in the bar at the top to hold it, then click a person or another item to use it.
+Left click to walk and use things, right click to look. Click an item in the bar at the top to hold it, then click a person or another item to use it, or just drag the item onto them.
 
 If anything shows red errors in the **Console** window, copy them and send them to Claude. To run the automatic setup again, use **Big Night Out > Run First-Time Setup Again** in the menu bar.
 

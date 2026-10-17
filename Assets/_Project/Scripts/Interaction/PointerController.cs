@@ -10,7 +10,8 @@ namespace BigNightOut.Interaction
     /// <summary>
     /// The modern adventure control scheme:
     /// left click walks or uses, right click looks (or drops the held item),
-    /// and a held inventory item is used on whatever is clicked next.
+    /// and a held inventory item is used on whatever is clicked next
+    /// (or whatever it is dragged onto from the inventory bar).
     /// </summary>
     public class PointerController : MonoBehaviour
     {
@@ -19,6 +20,25 @@ namespace BigNightOut.Interaction
         [SerializeField] HoverLabel hoverLabel;
 
         bool wasTalking;
+
+        void OnEnable() => InventorySelection.DroppedInWorld += DropItem;
+        void OnDisable() => InventorySelection.DroppedInWorld -= DropItem;
+
+        // An item dragged from the bar and let go over the room: use it on what is under it.
+        void DropItem(ItemDefinition item, Vector2 screen)
+        {
+            var hotspot = DialogueService.IsRunning ? null : HotspotAt(worldCamera.ScreenToWorldPoint(screen));
+            if (hotspot == null)
+            {
+                InventorySelection.Clear();
+                return;
+            }
+            WalkThen(hotspot, () =>
+            {
+                InventorySelection.Clear();
+                hotspot.UseItem(item.Id);
+            });
+        }
 
         void Update()
         {

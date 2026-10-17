@@ -38,14 +38,14 @@ namespace BigNightOut.Inventory
         void OnEnable()
         {
             GameState.Changed += Rebuild;
-            InventorySelection.HeldChanged += Rebuild;
+            InventorySelection.HeldChanged += RefreshHeld;
             Rebuild();
         }
 
         void OnDisable()
         {
             GameState.Changed -= Rebuild;
-            InventorySelection.HeldChanged -= Rebuild;
+            InventorySelection.HeldChanged -= RefreshHeld;
         }
 
         bool rebuilding;
@@ -85,6 +85,14 @@ namespace BigNightOut.Inventory
             firstRebuild = false;
             if (emptyHint != null) emptyHint.SetActive(slots.Count == 0);
             Debug.Log($"[BNO] inventory rebuilt with {slots.Count} slot(s)");
+        }
+
+        // Only the highlight changes when an item is picked up. Rebuilding here would destroy
+        // the slot that is being dragged and cancel the drag.
+        void RefreshHeld()
+        {
+            foreach (var slot in slots)
+                if (slot != null) slot.SetHeld(slot.Item != null && slot.Item == InventorySelection.Held);
         }
 
         /// <summary>Used when the slot prefab reference is missing, so items still show.</summary>
@@ -129,7 +137,13 @@ namespace BigNightOut.Inventory
                 return;
             }
             InventorySelection.Clear();
-            if (held != item) DialogueService.Run(database.CombineNode(held.Id, item.Id));
+            if (held != item) Combine(held, item);
+        }
+
+        public void Combine(ItemDefinition a, ItemDefinition b)
+        {
+            if (database == null) return;
+            DialogueService.Run(database.CombineNode(a.Id, b.Id));
         }
 
         public void RightClicked(ItemDefinition item)

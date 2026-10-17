@@ -12,12 +12,20 @@ title: DormHallway_Enter
 <<if not flagged("hallway_intro")>>
     Dex: First night in the dorms. Big night out. Let's not blow it.
     <<flag hallway_intro>>
+<<elseif flagged("signed_up")>>
+    Dex: Name on the list. Hat on my conscience. Hallway, you've been good to me.
 <<endif>>
 ===
 
 title: Lacey_Look
 ---
-Dex: Cowboy boots, a sundress, and zero interest in me. Yet.
+<<if flagged("won_lacey")>>
+    Dex: Lacey Rae, humming Hank Hollister and smiling. I did that.
+<<elseif flagged("lacey_has_album")>>
+    Dex: She's tapping her boot to the album. One more thing and she's mine. For a dance.
+<<else>>
+    Dex: Cowboy boots, a sundress, and zero interest in me. Yet.
+<<endif>>
 ===
 title: Lacey_Talk
 ---
@@ -25,9 +33,33 @@ title: Lacey_Talk
     Lacey Rae: You lost, freshman?
     Dex: Only in your eyes.
     Lacey Rae: Cute. I only dance to real country, and this party is playing robot music.
+    Lacey Rae: Bring me a decent song and a decent drink, then we'll talk.
     <<flag met_lacey>>
+<<elseif flagged("signed_up")>>
+    Lacey Rae: Word travels fast. You signed up for Speed Daters Live with MY hat?
+    Dex: You said it was something to remember you by.
+    Lacey Rae: I meant on a shelf, not on national TV. Fine. Win, and I get it back with interest.
+<<elseif flagged("won_lacey")>>
+    Lacey Rae: Still here, freshman? That dance was the best thing to happen at this party.
+    -> Ask about the hat
+        Lacey Rae: Keep it. Wear it somewhere people will see it.
+        Dex: Like... on TV?
+        Lacey Rae: Sure, slick. Like on TV.
+    -> Ask for another dance
+        Lacey Rae: One dance is a memory. Two is a commitment. Go do something with that hat.
+    -> Say goodnight
+        Dex: Goodnight, Lacey Rae.
+        Lacey Rae: Goodnight, freshman.
+<<elseif flagged("lacey_has_album") and not flagged("lacey_has_drink")>>
+    Lacey Rae: Hank's on, finally. Now I just need something to drink that isn't warm tap water.
+    Dex: Anything particular?
+    Lacey Rae: Something with a little zing. Check the drinks table, genius.
+<<elseif flagged("lacey_has_drink") and not flagged("lacey_has_album")>>
+    Lacey Rae: Good drink. Bad music. Someone around here must own a real record.
+    Dex: Who'd keep vinyl in a dorm?
+    Lacey Rae: The guy in the bathrobe hasn't stopped bragging about his collection all night.
 <<else>>
-    Lacey Rae: Find me a decent song and a decent drink, then we'll talk.
+    Lacey Rae: Song. Drink. I'm not asking for the moon, freshman.
 <<endif>>
 ===
 title: Lacey_GiveAlbum
@@ -57,7 +89,11 @@ title: Lacey_CheckWin
 
 title: Gil_Look
 ---
-Dex: A guy in a bathrobe, guarding his record collection like a dragon.
+<<if flagged("gil_has_earplugs")>>
+    Dex: Gil, finally at peace, earplugs in, swaying to a record only he can hear.
+<<else>>
+    Dex: A guy in a bathrobe, guarding his record collection like a dragon.
+<<endif>>
 ===
 title: Gil_Talk
 ---
@@ -66,16 +102,28 @@ title: Gil_Talk
     Dex: Nice album collection.
     Gil: Get me through one night of sleep and you can borrow anything.
     <<flag met_gil>>
+<<elseif flagged("gil_has_earplugs") and flagged("won_lacey")>>
+    Gil: WHAT? Sorry, earplugs. Did the country album work?
+    Dex: Like a charm. She danced with me.
+    Gil: Hank Hollister, uniting people since 1974. Keep it. I'm going to sleep for a week.
+<<elseif flagged("gil_has_earplugs")>>
+    Gil: WHAT? Oh, it's you. Best purchase of my life. Did you give the album to anyone yet?
+    Dex: Working on it.
+    Gil: The cowgirl by the lounge. Trust me. She's been glaring at the speakers all night.
 <<else>>
-    Gil: Still snoring. Still awake.
+    Gil: Still snoring. Still awake. The vending machine sells earplugs, but I'm broke.
 <<endif>>
 ===
 title: Gil_GiveEarplugs
 ---
-Gil: Earplugs! You beautiful man. Take the country one, I never liked it.
-<<take earplugs>>
-<<flag gil_has_earplugs>>
-<<give dance_album>>
+<<if flagged("gil_has_earplugs")>>
+    Gil: I already have earplugs. I'm wearing them. WHAT?
+<<else>>
+    Gil: Earplugs! You beautiful man. Take the country one, I never liked it.
+    <<take earplugs>>
+    <<flag gil_has_earplugs>>
+    <<give dance_album>>
+<<endif>>
 ===
 
 title: Vending_Look

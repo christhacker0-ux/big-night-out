@@ -215,7 +215,8 @@ namespace BigNightOut.EditorTools
                 new Vector2(-2f, -4.2f), false, "Couch_Look", "Couch_Use");
             AddHotspot(root, "TV", new Vector2(2f, -1.6f), new Vector2(2.4f, 1.6f), new Color(0.15f, 0.15f, 0.2f),
                 new Vector2(2f, -3.6f), false, "TV_Look", "TV_Use");
-            AddHotspot(root, "Sign-up sheet", new Vector2(6f, -1.4f), new Vector2(0.8f, 1f), new Color(0.95f, 0.95f, 0.85f),
+            // Covers the clipboard, the "Contestant sign-up" card above it and the pen below.
+            AddHotspot(root, "Sign-up sheet", new Vector2(6f, -0.5f), new Vector2(1.2f, 2.2f), new Color(0.95f, 0.95f, 0.85f),
                 new Vector2(6f, -3.6f), false, "SignUp_Look", "SignUp_Use",
                 ("cowboy_hat", "SignUp_GiveHat"));
 

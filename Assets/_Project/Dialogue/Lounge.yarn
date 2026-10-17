@@ -35,31 +35,49 @@ Dex: If I sit down now, I'll never get up. The night is calling.
 
 title: TV_Look
 ---
-Dex: It's tuned to the dating channel. Of course it is.
+<<if flagged("signed_up")>>
+    Dex: Roxy Vale, live on the dating channel. Soon that'll be me. On the TV. Not Roxy.
+<<else>>
+    Dex: It's tuned to the dating channel. Of course it is.
+<<endif>>
 ===
 title: TV_Use
 ---
-Roxy Vale: Hi, lovers! It's Roxy Vale, and Speed Daters Live is coming to campus!
-Roxy Vale: Think you're a catch? Sign the sheet in your dorm lounge, and bring proof that someone, somewhere, likes you.
-Dex: Proof. Right. My mom's fridge drawings probably don't count.
-<<flag saw_casting_call>>
+<<if flagged("signed_up")>>
+    Roxy Vale: ...and a big welcome to our newest campus contestants! See you on the show!
+    Dex: She means me. I think she means me.
+<<elseif flagged("saw_casting_call")>>
+    Roxy Vale: Remember, lovers: sign the sheet in your dorm lounge, and bring proof you're a catch!
+<<else>>
+    Roxy Vale: Hi, lovers! It's Roxy Vale, and Speed Daters Live is coming to campus!
+    Roxy Vale: Think you're a catch? Sign the sheet in your dorm lounge, and bring proof that someone, somewhere, likes you.
+    Dex: Proof. Right. My mom's fridge drawings probably don't count.
+    <<flag saw_casting_call>>
+<<endif>>
 ===
 
 title: SignUp_Look
 ---
-Dex: "Speed Daters Live, campus auditions. Bring proof you're a catch."
+<<if flagged("signed_up")>>
+    Dex: "Dex Dooley, room 214." Best handwriting of my life.
+<<else>>
+    Dex: "Speed Daters Live, campus auditions. Sign here. Bring proof you're a catch."
+    Dex: There's a pen on a string. Very trusting.
+<<endif>>
 ===
 title: SignUp_Use
 ---
 <<if flagged("signed_up")>>
     Dex: My name's on the list. In my best handwriting.
-<<elseif not flagged("saw_casting_call")>>
-    Dex: A sign-up sheet for something called Speed Daters Live. Maybe the TV knows more.
-<<elseif not has("cowboy_hat")>>
-    Dex: Roxy wants proof I'm a catch. I need someone to vouch for me first.
+<<elseif has("cowboy_hat")>>
+    Dex: "Bring proof you're a catch." I've got Lacey Rae's hat. That's proof if I ever saw it.
+    -> Sign up, with the hat as proof
+        <<jump SignUp_GiveHat>>
+    -> Not yet
+        Dex: Maybe I should check myself in a mirror first. No. Later.
 <<else>>
-    Dex: I've got Lacey Rae's hat. That's proof if I ever saw it.
-    <<jump SignUp_GiveHat>>
+    Dex: "Bring proof you're a catch." I pick up the pen... and put it down again.
+    Dex: I need someone to vouch for me first. Someone at this party must like me. Eventually.
 <<endif>>
 ===
 title: SignUp_GiveHat
@@ -68,9 +86,10 @@ title: SignUp_GiveHat
     Dex: Already signed. Lacey's hat stays with me.
 <<else>>
     Dex: Dex Dooley, room 214. Proof of catchiness: one cowboy hat, freely given.
+    Dex: I clip the hat to the clipboard and sign with a flourish. The pen string nearly strangles me.
     <<flag signed_up>>
     <<act 2>>
-    Roxy Vale: See you on the show, lover boy!
+    Roxy Vale: And we have a new contestant! See you on the show, lover boy!
     Dex: Big night out? More like big life out. That didn't make sense. Whatever. I'm in!
     Dex: Thanks for playing the Big Night Out demo. More rooms are on the way.
 <<endif>>

@@ -4,6 +4,8 @@ title: DexRoom_Enter
     Dex: Dorm room 214. Home sweet home, if home smelled like gym socks.
     Dex: Uncle Vic left me a letter. Should probably read that.
     <<flag room_intro>>
+<<elseif flagged("signed_up")>>
+    Dex: Back in 214. I should be sleeping. I'm going to be on TV. I will never sleep again.
 <<endif>>
 ===
 
@@ -17,8 +19,10 @@ title: Bed_Use
     Dex: Under the pillow... a crumpled dollar. The tooth fairy pays in cash.
     <<give dollar>>
     <<flag found_dollar>>
+<<elseif flagged("signed_up")>>
+    Dex: Sleep? On the night I got on Speed Daters Live? Not a chance.
 <<else>>
-    Dex: No time for naps. The night is young.
+    Dex: Nothing else under the pillow. No time for naps. The night is young.
 <<endif>>
 ===
 
@@ -28,7 +32,11 @@ Dex: Looking good, Dex Dooley. Looking... adequate.
 ===
 title: Mirror_Use
 ---
-<<if not flagged("pep_talk")>>
+<<if flagged("signed_up")>>
+    Dex: Hello, future TV star. Practice the smile. No, less teeth.
+<<elseif flagged("won_lacey")>>
+    Dex: She danced with me. She DANCED with me. Mirror, you were right all along.
+<<elseif not flagged("pep_talk")>>
     Dex: You are a catch. You are charming. You have most of your hair.
     Dex: Confidence up.
     <<add confidence 1>>
@@ -44,10 +52,20 @@ Dex: My desk. A letter from Uncle Vic is taped to it.
 ===
 title: Desk_Use
 ---
-Dex: "Dex, my boy. College is about one thing: getting out there."
-Dex: "Talk to people. Help them out. Be the guy who shows up with what they need."
-Dex: "And for the love of all that's holy, don't wear the turtleneck. Love, Uncle Vic."
-<<flag read_vic_letter>>
+<<if not flagged("read_vic_letter")>>
+    Dex: "Dex, my boy. College is about one thing: getting out there."
+    Dex: "Talk to people. Help them out. Be the guy who shows up with what they need."
+    Dex: "And for the love of all that's holy, don't wear the turtleneck. Love, Uncle Vic."
+    <<flag read_vic_letter>>
+<<elseif flagged("signed_up")>>
+    Dex: P.S. from Uncle Vic: "If you ever get on TV, call me." Gotta find a phone.
+<<else>>
+    Dex: "Be the guy who shows up with what they need." Uncle Vic, you old genius.
+    -> Read the whole letter again
+        Dex: "Talk to people. Help them out. And don't wear the turtleneck."
+    -> Leave it
+        Dex: Message received.
+<<endif>>
 ===
 
 title: DexDoor_Look

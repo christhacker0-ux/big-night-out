@@ -1,0 +1,202 @@
+{
+  "items": [
+    {"id": "lapel_mic", "name": "Dead Mic Pack", "color": [0.3, 0.3, 0.35]},
+    {"id": "nine_volt", "name": "Nine-Volt Battery", "color": [0.9, 0.6, 0.1]},
+    {"id": "soda_water", "name": "Club Soda", "color": [0.6, 0.85, 0.9]},
+    {"id": "cocktail_napkin", "name": "Bree's Napkin", "color": [0.95, 0.95, 0.9]},
+    {"id": "studio_walkie", "name": "Chet's Walkie-Talkie", "color": [0.2, 0.2, 0.25]},
+    {"id": "chet_mixtape", "name": "Chet's Pump-Up Jams", "color": [0.9, 0.8, 0.2]},
+    {"id": "floor_fillers_tape", "name": "Dolly's Floor-Fillers", "color": [0.9, 0.3, 0.8]},
+    {"id": "reserved_card", "name": "Chet's Reserved Card", "color": [0.95, 0.85, 0.4]},
+    {"id": "scandal_lipstick", "name": "Scandal Red Lipstick", "color": [0.85, 0.1, 0.2]},
+    {"id": "chet_protest_sign", "name": "CHET IS A CHEAT Sign", "color": [0.95, 0.9, 0.85]},
+    {"id": "runner_lanyard", "name": "Kevin's Lanyard", "color": [0.2, 0.5, 0.9]},
+    {"id": "dolly_headphones", "name": "Dolly's Headphones", "color": [0.25, 0.85, 0.9]},
+    {"id": "bendy_straw", "name": "Bendy Straw", "color": [0.95, 0.4, 0.6]},
+    {"id": "crew_headset", "name": "Homemade Crew Headset", "color": [0.25, 0.85, 0.9]},
+    {"id": "runner_disguise", "name": "The Kevin Kit", "color": [0.2, 0.5, 0.9]},
+    {"id": "studio_cheese_puff", "name": "Cheese Puff", "color": [1.0, 0.6, 0.1]},
+    {"id": "nibbles_on_loan", "name": "Professor Nibbles (On Loan)", "color": [0.9, 0.7, 0.4]},
+    {"id": "chet_cheat_tape", "name": "Chet's Comebacks Tape", "color": [0.9, 0.5, 0.9]},
+    {"id": "bun_pencil", "name": "Bree's Bun Pencil", "color": [0.95, 0.8, 0.2]}
+  ],
+  "combinations": [
+    {"a": "lapel_mic", "b": "nine_volt", "node": "F_Combine_Mic"},
+    {"a": "soda_water", "b": "cocktail_napkin", "node": "F_Combine_Blot"},
+    {"a": "reserved_card", "b": "scandal_lipstick", "node": "F_Combine_Sign"},
+    {"a": "dolly_headphones", "b": "bendy_straw", "node": "F_Combine_Headset"},
+    {"a": "crew_headset", "b": "runner_lanyard", "node": "F_Combine_Disguise"},
+    {"a": "chet_mixtape", "b": "bun_pencil", "node": "F_Combine_Rewind"}
+  ],
+  "rooms": [
+    {
+      "id": "tv_studio",
+      "scene": "TvStudio",
+      "onEnter": "F_Enter",
+      "wall": [0.25, 0.12, 0.3],
+      "floor": [0.15, 0.12, 0.2],
+      "walkable": [-8.9, -2.22, 8.9, -2.22, 9.4, -3.4, 9.0, -4.35, -9.0, -4.35, -9.4, -3.4],
+      "entries": [
+        {"name": "from_campus", "pos": [-7.1, -3.6]},
+        {"name": "from_green_room", "pos": [1.7, -2.7]}
+      ],
+      "hotspots": [
+        {"name": "Stage door", "feet": [-8.86, -2.4], "size": [1.32, 4.0], "color": [0.5, 0.2, 0.2],
+         "standAt": [-7.6, -3.4], "faceLeft": true, "look": "F_Exit_Look", "use": "F_Exit_Use"},
+        {"name": "Studio audience", "feet": [-4.11, -1.95], "size": [5.58, 3.35], "color": [0.5, 0.3, 0.5],
+         "standAt": [-4.0, -2.6], "look": "F_Audience_Look", "use": "F_Audience_Talk",
+         "items": [
+           {"item": "chet_mixtape", "node": "F_Audience_Mixtape"},
+           {"item": "studio_walkie", "node": "F_Audience_Walkie"},
+           {"item": "lapel_mic", "node": "F_Audience_Mic"},
+           {"item": "studio_cheese_puff", "node": "F_Audience_CheesePuff"},
+           {"item": "chet_protest_sign", "node": "F_Audience_Sign"},
+           {"item": "runner_disguise", "node": "F_Audience_Cans"},
+           {"item": "crew_headset", "node": "F_Audience_CansEarly"},
+           {"item": "dolly_headphones", "node": "F_Audience_CansEarly"},
+           {"item": "chet_cheat_tape", "node": "F_Audience_CheatTape"},
+           {"item": "nibbles_on_loan", "node": "F_Audience_Nibbles"},
+           {"item": "nine_volt", "node": "F_Audience_Item"},
+           {"item": "soda_water", "node": "F_Audience_Item"},
+           {"item": "cocktail_napkin", "node": "F_Audience_Item"},
+           {"item": "floor_fillers_tape", "node": "F_Audience_Item"},
+           {"item": "reserved_card", "node": "F_Audience_Item"},
+           {"item": "scandal_lipstick", "node": "F_Audience_Item"},
+           {"item": "runner_lanyard", "node": "F_Audience_Item"},
+           {"item": "bendy_straw", "node": "F_Audience_Item"},
+           {"item": "bun_pencil", "node": "F_Audience_Item"}
+         ]},
+        {"name": "Applause sign", "feet": [-4.3, 1.78], "size": [2.6, 0.8], "color": [0.8, 0.2, 0.2],
+         "standAt": [-4.3, -2.6], "look": "F_Applause_Look", "use": "F_Applause_Use"},
+        {"name": "Studio camera", "feet": [-0.2, -1.95], "size": [2.2, 3.3], "color": [0.3, 0.3, 0.3],
+         "standAt": [-0.2, -2.6], "look": "F_Camera_Look", "use": "F_Camera_Use"},
+        {"name": "Control booth window", "feet": [1.7, 1.3], "size": [1.8, 1.82], "color": [0.2, 0.3, 0.5],
+         "standAt": [1.7, -2.6], "look": "F_BoothWindow_Look", "use": "F_BoothWindow_Use"},
+        {"name": "Green room door", "feet": [1.7, -1.52], "size": [1.4, 2.8], "color": [0.3, 0.6, 0.4],
+         "standAt": [1.7, -2.5], "look": "F_GreenDoor_Look", "use": "F_GreenDoor_Use"},
+        {"name": "Contestant mark", "feet": [-0.3, -4.1], "size": [1.3, 0.75], "color": [0.9, 0.9, 0.3],
+         "standAt": [-0.3, -3.72], "look": "F_Mark_Look", "use": "F_Mark_Use"},
+        {"name": "Roxy Vale", "feet": [2.5, -4.05], "size": [1.9, 4.07], "color": [0.9, 0.3, 0.7],
+         "standAt": [1.0, -3.95], "look": "F_Roxy_Look", "use": "F_Roxy_Talk",
+         "items": [
+           {"item": "studio_walkie", "node": "F_Roxy_Walkie"},
+           {"item": "chet_cheat_tape", "node": "F_Roxy_CheatTape"},
+           {"item": "cowboy_hat", "node": "F_Roxy_Token"},
+           {"item": "bookmark", "node": "F_Roxy_Token"},
+           {"item": "sorority_pin", "node": "F_Roxy_Token"},
+           {"item": "glow_bracelet", "node": "F_Roxy_Token"},
+           {"item": "safety_goggles", "node": "F_Roxy_Token"},
+           {"item": "protest_button", "node": "F_Roxy_Token"},
+           {"item": "diner_name_tag", "node": "F_Roxy_Token"},
+           {"item": "finished_crossword", "node": "F_Roxy_Token"},
+           {"item": "white_glove", "node": "F_Roxy_Token"},
+           {"item": "guitar_pick", "node": "F_Roxy_Token"}
+         ]},
+        {"name": "Chet Studwell", "feet": [5.4, -4.05], "size": [1.9, 4.46], "color": [0.9, 0.8, 0.5],
+         "standAt": [4.0, -3.95], "look": "F_Chet_Look", "use": "F_Chet_Talk",
+         "items": [
+           {"item": "studio_walkie", "node": "F_Chet_Walkie"},
+           {"item": "chet_cheat_tape", "node": "F_Chet_CheatTape"},
+           {"item": "reserved_card", "node": "F_Chet_Card"},
+           {"item": "chet_protest_sign", "node": "F_Chet_Sign"},
+           {"item": "chet_mixtape", "node": "F_Chet_Item"}
+         ]},
+        {"name": "Sound board", "feet": [7.75, -2.18], "size": [2.1, 2.18], "color": [0.3, 0.3, 0.4],
+         "standAt": [7.8, -2.6], "look": "F_Board_Look", "use": "F_Board_Use",
+         "items": [
+           {"item": "floor_fillers_tape", "node": "F_Board_Tape"},
+           {"item": "chet_mixtape", "node": "F_Board_ChetTape"},
+           {"item": "chet_cheat_tape", "node": "F_Board_CheatTape"}
+         ]}
+      ]
+    },
+    {
+      "id": "tv_green_room",
+      "scene": "TvGreenRoom",
+      "onEnter": "F_GR_Enter",
+      "wall": [0.3, 0.45, 0.35],
+      "floor": [0.35, 0.25, 0.2],
+      "walkable": [-8.4, -2.22, 8.4, -2.22, 9.2, -3.4, 8.9, -4.35, -8.9, -4.35, -9.3, -3.4],
+      "entries": [
+        {"name": "from_studio", "pos": [-6.4, -3.5]},
+        {"name": "from_booth", "pos": [7.0, -3.3], "faceLeft": true}
+      ],
+      "hotspots": [
+        {"name": "Studio door", "feet": [-7.67, -2.22], "size": [1.75, 4.62], "color": [0.5, 0.2, 0.2],
+         "standAt": [-6.6, -3.3], "faceLeft": true, "look": "F_GR_Exit_Look", "use": "F_GR_Exit_Use"},
+        {"name": "Craft services", "feet": [-5.6, -1.95], "size": [3.2, 2.0], "color": [0.8, 0.6, 0.4],
+         "standAt": [-5.6, -2.6], "look": "F_GR_Craft_Look", "use": "F_GR_Craft_Use",
+         "items": [
+           {"item": "studio_cheese_puff", "node": "F_GR_Craft_Item"},
+           {"item": "bendy_straw", "node": "F_GR_Craft_Item"}
+         ]},
+        {"name": "Wardrobe rack", "feet": [-2.07, -1.8], "size": [1.95, 2.6], "color": [0.7, 0.4, 0.7],
+         "standAt": [-2.1, -2.6], "look": "F_Rack_Look", "use": "F_Rack_Use"},
+        {"name": "Makeup chair", "feet": [0.65, -2.0], "size": [2.7, 4.7], "color": [0.9, 0.8, 0.6],
+         "standAt": [0.7, -2.6], "look": "F_GR_Chair_Look", "use": "F_GR_Chair_Use",
+         "items": [
+           {"item": "reserved_card", "node": "F_GR_Chair_Card"}
+         ]},
+        {"name": "Reserved sign", "feet": [2.54, -2.14], "size": [1.01, 1.75], "color": [0.9, 0.8, 0.3],
+         "standAt": [2.55, -2.6], "look": "F_GR_Sign_Look", "use": "F_GR_Sign_Use", "hideWhenFlag": "f_took_card"},
+        {"name": "Gloria Puff", "feet": [4.9, -4.05], "size": [1.9, 4.33], "color": [0.9, 0.6, 0.8],
+         "standAt": [3.3, -3.95], "look": "F_GR_Gloria_Look", "use": "F_GR_Gloria_Talk",
+         "items": [
+           {"item": "reserved_card", "node": "F_GR_Gloria_Card"},
+           {"item": "chet_protest_sign", "node": "F_GR_Gloria_Sign"},
+           {"item": "studio_cheese_puff", "node": "F_GR_Gloria_Puff"},
+           {"item": "nibbles_on_loan", "node": "F_GR_Gloria_Nibbles"}
+         ]},
+        {"name": "Booth stairs", "feet": [8.17, -2.22], "size": [2.75, 4.62], "color": [0.3, 0.3, 0.35],
+         "standAt": [7.3, -3.1], "look": "F_GR_Booth_Look", "use": "F_GR_Booth_Use",
+         "items": [
+           {"item": "runner_disguise", "node": "F_GR_Booth_Use"},
+           {"item": "crew_headset", "node": "F_GR_Booth_Half"},
+           {"item": "runner_lanyard", "node": "F_GR_Booth_Half"},
+           {"item": "dolly_headphones", "node": "F_GR_Booth_Half"}
+         ]}
+      ]
+    },
+    {
+      "id": "tv_control_booth",
+      "scene": "TvControlBooth",
+      "onEnter": "F_BO_Enter",
+      "wall": [0.18, 0.2, 0.28],
+      "floor": [0.2, 0.2, 0.24],
+      "walkable": [-8.5, -2.22, 8.4, -2.22, 9.2, -3.4, 8.9, -4.35, -8.9, -4.35, -9.3, -3.4],
+      "entries": [
+        {"name": "from_green_room", "pos": [-6.4, -3.5]}
+      ],
+      "hotspots": [
+        {"name": "Stairs down", "feet": [-7.88, -2.32], "size": [1.95, 4.72], "color": [0.3, 0.3, 0.35],
+         "standAt": [-6.7, -3.3], "faceLeft": true, "look": "F_BO_Exit_Look", "use": "F_BO_Exit_Use"},
+        {"name": "Monitor wall", "feet": [-4.12, -0.4], "size": [4.75, 3.4], "color": [0.2, 0.3, 0.4],
+         "standAt": [-4.1, -2.6], "look": "F_BO_Monitors_Look", "use": "F_BO_Monitors_Use"},
+        {"name": "Coffee maker", "feet": [-0.75, -0.55], "size": [1.0, 1.55], "color": [0.3, 0.2, 0.15],
+         "standAt": [-0.75, -2.6], "look": "F_BO_Coffee_Look", "use": "F_BO_Coffee_Use"},
+        {"name": "Norma Fade", "feet": [1.5, -4.05], "size": [1.9, 3.83], "color": [0.5, 0.4, 0.6],
+         "standAt": [-0.1, -3.95], "look": "F_BO_Norma_Look", "use": "F_BO_Norma_Talk",
+         "items": [
+           {"item": "nibbles_on_loan", "node": "F_BO_Nibbles"},
+           {"item": "studio_cheese_puff", "node": "F_BO_Norma_Puff"},
+           {"item": "chet_cheat_tape", "node": "F_BO_Norma_Item"},
+           {"item": "chet_mixtape", "node": "F_BO_Norma_Tape"},
+           {"item": "floor_fillers_tape", "node": "F_BO_Norma_Tape"},
+           {"item": "studio_walkie", "node": "F_BO_Norma_Item"}
+         ]},
+        {"name": "Playback deck", "feet": [3.87, -2.21], "size": [2.32, 2.71], "color": [0.25, 0.25, 0.3],
+         "standAt": [3.87, -2.6], "look": "F_BO_Deck_Look", "use": "F_BO_Deck_Use", "hideWhenFlag": "f_tape_swapped",
+         "items": [
+           {"item": "nibbles_on_loan", "node": "F_BO_Nibbles"}
+         ]},
+        {"name": "Empty deck", "feet": [3.87, -2.21], "size": [2.32, 2.71], "color": [0.25, 0.25, 0.3],
+         "standAt": [3.87, -2.6], "look": "F_BO_Deck_Look", "use": "F_BO_Deck_Use", "showWhenFlag": "f_tape_swapped",
+         "items": [
+           {"item": "chet_cheat_tape", "node": "F_BO_Deck_PutBack"}
+         ]},
+        {"name": "Talkback mic", "feet": [7.05, -2.28], "size": [3.3, 2.98], "color": [0.3, 0.3, 0.4],
+         "standAt": [7.0, -2.7], "look": "F_BO_Talkback_Look", "use": "F_BO_Talkback_Use"}
+      ]
+    }
+  ]
+}

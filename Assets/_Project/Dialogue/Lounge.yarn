@@ -1,0 +1,97 @@
+title: LoungeDoor_Look
+---
+Dex: The lounge. I can hear a TV and smell burnt popcorn.
+===
+title: LoungeDoor_Use
+---
+<<go lounge from_hallway>>
+===
+
+title: Lounge_Enter
+---
+<<if not flagged("lounge_intro")>>
+    Dex: The dorm lounge. One couch, one TV, a thousand questionable stains.
+    <<flag lounge_intro>>
+<<endif>>
+===
+
+title: LoungeExit_Look
+---
+Dex: Back to the hallway.
+===
+title: LoungeExit_Use
+---
+<<go dorm_hallway from_lounge>>
+===
+
+title: Couch_Look
+---
+Dex: A couch older than me, with a permanent butt-shaped dent.
+===
+title: Couch_Use
+---
+Dex: If I sit down now, I'll never get up. The night is calling.
+===
+
+title: TV_Look
+---
+<<if flagged("signed_up")>>
+    Dex: Roxy Vale, live on the dating channel. Soon that'll be me. On the TV. Not Roxy.
+<<else>>
+    Dex: It's tuned to the dating channel. Of course it is.
+<<endif>>
+===
+title: TV_Use
+---
+<<if flagged("signed_up")>>
+    Roxy Vale: ...and a big welcome to our newest campus contestants! See you on the show!
+    Dex: She means me. I think she means me.
+<<elseif flagged("saw_casting_call")>>
+    Roxy Vale: Remember, lovers: sign the sheet in your dorm lounge, and bring proof you're a catch!
+<<else>>
+    Roxy Vale: Hi, lovers! It's Roxy Vale, and Speed Daters Live is coming to campus!
+    Roxy Vale: Think you're a catch? Sign the sheet in your dorm lounge, and bring proof that someone, somewhere, likes you.
+    Dex: Proof. Right. My mom's fridge drawings probably don't count.
+    <<flag saw_casting_call>>
+<<endif>>
+===
+
+title: SignUp_Look
+---
+<<if flagged("signed_up")>>
+    Dex: "Dex Dooley, room 214." Best handwriting of my life.
+<<else>>
+    Dex: "Speed Daters Live, campus auditions. Sign here. Bring proof you're a catch."
+    Dex: There's a pen on a string. Very trusting.
+<<endif>>
+===
+title: SignUp_Use
+---
+<<if flagged("signed_up")>>
+    Dex: My name's on the list. In my best handwriting.
+<<elseif has("cowboy_hat")>>
+    Dex: "Bring proof you're a catch." I've got Lacey Rae's hat. That's proof if I ever saw it.
+    -> Sign up, with the hat as proof
+        <<jump SignUp_GiveHat>>
+    -> Not yet
+        Dex: Maybe I should check myself in a mirror first. No. Later.
+<<else>>
+    Dex: "Bring proof you're a catch." I pick up the pen... and put it down again.
+    Dex: I need someone to vouch for me first. Someone at this party must like me. Eventually.
+<<endif>>
+===
+title: SignUp_GiveHat
+---
+<<if flagged("signed_up")>>
+    Dex: Already signed. Lacey's hat stays with me.
+<<else>>
+    Dex: Dex Dooley, room 214. Proof of catchiness: one cowboy hat, freely given.
+    Dex: I sign with a flourish. The pen string snaps. Finders keepers.
+    <<give pen>>
+    <<flag signed_up>>
+    Roxy Vale: And we have a new contestant! Auditions are tonight on the main campus stage, lover boy.
+    Roxy Vale: The Talent Round! Bring a talent, bring a partner, and bring that hat!
+    Dex: A talent. A partner. Tonight. Sure. Totally. No problem.
+    Dex: The stairs at the end of the hallway go down to campus.
+<<endif>>
+===

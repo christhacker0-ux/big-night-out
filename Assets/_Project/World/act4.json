@@ -1,0 +1,1351 @@
+{
+ "items": [
+  {
+   "id": "fishing_net",
+   "name": "Little Fishing Net",
+   "color": [
+    0.85,
+    0.75,
+    0.5
+   ]
+  },
+  {
+   "id": "wish_quarter",
+   "name": "Wishing-Fountain Quarter",
+   "color": [
+    0.8,
+    0.8,
+    0.85
+   ]
+  },
+  {
+   "id": "gus_coaster",
+   "name": "Gus's Coaster",
+   "color": [
+    0.9,
+    0.85,
+    0.7
+   ]
+  },
+  {
+   "id": "captains_hat",
+   "name": "Captain's Hat",
+   "color": [
+    0.15,
+    0.2,
+    0.4
+   ]
+  },
+  {
+   "id": "disposable_camera",
+   "name": "Disposable Camera",
+   "color": [
+    1.0,
+    0.8,
+    0.2
+   ]
+  },
+  {
+   "id": "full_camera",
+   "name": "Full Disposable Camera",
+   "color": [
+    0.9,
+    0.5,
+    0.2
+   ]
+  },
+  {
+   "id": "headshots",
+   "name": "Bree's Headshots",
+   "color": [
+    0.95,
+    0.95,
+    0.9
+   ]
+  },
+  {
+   "id": "diner_name_tag",
+   "name": "Bree's Name Tag",
+   "color": [
+    0.95,
+    0.3,
+    0.35
+   ]
+  },
+  {
+   "id": "finished_crossword",
+   "name": "Lou's Finished Crossword",
+   "color": [
+    0.9,
+    0.9,
+    0.85
+   ]
+  },
+  {
+   "id": "pie_coupon",
+   "name": "Free Pie Coupon",
+   "color": [
+    0.95,
+    0.85,
+    0.55
+   ]
+  },
+  {
+   "id": "mystery_pie",
+   "name": "Slice of Mystery Pie",
+   "color": [
+    0.85,
+    0.6,
+    0.35
+   ]
+  },
+  {
+   "id": "commodore_wig",
+   "name": "Commodore's Wig",
+   "color": [
+    0.95,
+    0.95,
+    0.95
+   ]
+  }
+ ],
+ "combinations": [],
+ "rooms": [
+  {
+   "id": "downtown",
+   "scene": "Downtown",
+   "onEnter": "A4_Downtown_Enter",
+   "wall": [
+    0.25,
+    0.2,
+    0.4
+   ],
+   "floor": [
+    0.45,
+    0.42,
+    0.45
+   ],
+   "entries": [
+    {
+     "name": "from_campus",
+     "pos": [
+      -7.6,
+      -3.4
+     ]
+    },
+    {
+     "name": "from_quickmart",
+     "pos": [
+      2.8,
+      -2.9
+     ]
+    },
+    {
+     "name": "from_anchor",
+     "pos": [
+      8.1,
+      -3.4
+     ],
+     "faceLeft": true
+    },
+    {
+     "name": "from_diner",
+     "pos": [
+      -5.16,
+      -2.9
+     ]
+    },
+    {
+     "name": "from_bijou",
+     "pos": [
+      6.4,
+      -3.0
+     ],
+     "faceLeft": true
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Bus stop",
+     "feet": [
+      -8.35,
+      -1.72
+     ],
+     "size": [
+      2.1,
+      2.92
+     ],
+     "color": [
+      0.3,
+      0.5,
+      0.7
+     ],
+     "standAt": [
+      -7.6,
+      -2.8
+     ],
+     "faceLeft": true,
+     "look": "A4_BusStop_Look",
+     "use": "A4_BusStop_Use"
+    },
+    {
+     "name": "Starlite Diner",
+     "feet": [
+      -5.15,
+      -1.62
+     ],
+     "size": [
+      3.9,
+      4.52
+     ],
+     "color": [
+      0.8,
+      0.3,
+      0.35
+     ],
+     "standAt": [
+      -5.16,
+      -2.6
+     ],
+     "look": "A4_Diner_Look",
+     "use": "A4_Diner_Use"
+    },
+    {
+     "name": "Bree Marlowe",
+     "feet": [
+      -3.0,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.42
+     ],
+     "color": [
+      0.95,
+      0.45,
+      0.5
+     ],
+     "standAt": [
+      -1.0,
+      -3.95
+     ],
+     "faceLeft": true,
+     "look": "A4_Bree_Look",
+     "use": "A4_Bree_Talk",
+     "items": [
+      {
+       "item": "disposable_camera",
+       "node": "A4_Bree_Camera"
+      },
+      {
+       "item": "captains_hat",
+       "node": "A4_Bree_Hat"
+      },
+      {
+       "item": "full_camera",
+       "node": "A4_Bree_FullCamera"
+      },
+      {
+       "item": "headshots",
+       "node": "A4_Bree_Headshots"
+      },
+      {
+       "item": "finished_crossword",
+       "node": "A4_Bree_ShowCrossword"
+      },
+      {
+       "item": "pie_coupon",
+       "node": "A4_Bree_Coupon"
+      },
+      {
+       "item": "mystery_pie",
+       "node": "A4_Bree_Pie"
+      },
+      {
+       "item": "commodore_wig",
+       "node": "A4_Bree_Wig"
+      }
+     ]
+    },
+    {
+     "name": "Fountain",
+     "feet": [
+      -0.8,
+      -2.22
+     ],
+     "size": [
+      3.2,
+      2.1
+     ],
+     "color": [
+      0.5,
+      0.7,
+      0.85
+     ],
+     "standAt": [
+      -0.8,
+      -2.65
+     ],
+     "look": "A4_Fountain_Look",
+     "use": "A4_Fountain_Use",
+     "items": [
+      {
+       "item": "fishing_net",
+       "node": "A4_Fountain_Net"
+      }
+     ]
+    },
+    {
+     "name": "Quickmart",
+     "feet": [
+      2.8,
+      -1.62
+     ],
+     "size": [
+      1.8,
+      3.02
+     ],
+     "color": [
+      0.3,
+      0.7,
+      0.4
+     ],
+     "standAt": [
+      2.8,
+      -2.6
+     ],
+     "look": "A4_QuickmartDoor_Look",
+     "use": "A4_QuickmartDoor_Use"
+    },
+    {
+     "name": "Bijou Theatre",
+     "feet": [
+      6.3,
+      1.28
+     ],
+     "size": [
+      3.6,
+      1.72
+     ],
+     "color": [
+      0.9,
+      0.7,
+      0.3
+     ],
+     "standAt": [
+      6.3,
+      -2.6
+     ],
+     "look": "A4_Bijou_Look",
+     "use": "A4_Bijou_Use"
+    },
+    {
+     "name": "Roxy Vale",
+     "feet": [
+      5.4,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.07
+     ],
+     "color": [
+      0.9,
+      0.3,
+      0.7
+     ],
+     "standAt": [
+      3.6,
+      -3.95
+     ],
+     "look": "A4_Roxy_Look",
+     "use": "A4_Roxy_Talk",
+     "items": [
+      {
+       "item": "diner_name_tag",
+       "node": "A4_Roxy_Token"
+      },
+      {
+       "item": "finished_crossword",
+       "node": "A4_Roxy_Token"
+      }
+     ]
+    },
+    {
+     "name": "Rusty Anchor",
+     "feet": [
+      8.92,
+      -1.62
+     ],
+     "size": [
+      1.25,
+      4.02
+     ],
+     "color": [
+      0.5,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      8.3,
+      -2.9
+     ],
+     "look": "A4_AnchorDoor_Look",
+     "use": "A4_AnchorDoor_Use"
+    }
+   ],
+   "walkable": [
+    -9.3,
+    -2.22,
+    9.3,
+    -2.22,
+    9.4,
+    -3.6,
+    8.9,
+    -4.35,
+    -8.9,
+    -4.35,
+    -9.4,
+    -3.6
+   ]
+  },
+  {
+   "id": "quickmart",
+   "scene": "Quickmart",
+   "onEnter": "A4_Quickmart_Enter",
+   "wall": [
+    0.75,
+    0.85,
+    0.8
+   ],
+   "floor": [
+    0.8,
+    0.8,
+    0.75
+   ],
+   "entries": [
+    {
+     "name": "from_downtown",
+     "pos": [
+      -6.7,
+      -3.4
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Exit",
+     "feet": [
+      -7.93,
+      -2.57
+     ],
+     "size": [
+      2.19,
+      4.76
+     ],
+     "color": [
+      0.6,
+      0.8,
+      0.9
+     ],
+     "standAt": [
+      -7.1,
+      -3.1
+     ],
+     "faceLeft": true,
+     "look": "A4_QuickmartExit_Look",
+     "use": "A4_QuickmartExit_Use"
+    },
+    {
+     "name": "Flower bucket",
+     "feet": [
+      -5.94,
+      -1.83
+     ],
+     "size": [
+      1.76,
+      1.99
+     ],
+     "color": [
+      0.9,
+      0.3,
+      0.4
+     ],
+     "standAt": [
+      -5.6,
+      -2.6
+     ],
+     "look": "A4_Flowers_Look",
+     "use": "A4_Flowers_Use"
+    },
+    {
+     "name": "Slushie machine",
+     "feet": [
+      -3.92,
+      -1.68
+     ],
+     "size": [
+      2.05,
+      3.06
+     ],
+     "color": [
+      0.3,
+      0.6,
+      0.9
+     ],
+     "standAt": [
+      -3.6,
+      -2.5
+     ],
+     "look": "A4_Slushie_Look",
+     "use": "A4_Slushie_Use"
+    },
+    {
+     "name": "Counter",
+     "feet": [
+      2.1,
+      -1.93
+     ],
+     "size": [
+      3.57,
+      1.89
+     ],
+     "color": [
+      0.6,
+      0.5,
+      0.4
+     ],
+     "standAt": [
+      2.1,
+      -2.6
+     ],
+     "look": "A4_Counter_Look",
+     "use": "A4_Counter_Use"
+    },
+    {
+     "name": "Lou",
+     "feet": [
+      3.3,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.2
+     ],
+     "color": [
+      0.4,
+      0.4,
+      0.5
+     ],
+     "standAt": [
+      1.4,
+      -3.95
+     ],
+     "look": "A4_Lou_Look",
+     "use": "A4_Lou_Talk",
+     "items": [
+      {
+       "item": "gus_coaster",
+       "node": "A4_Lou_Coaster"
+      },
+      {
+       "item": "full_camera",
+       "node": "A4_Lou_Develop"
+      },
+      {
+       "item": "disposable_camera",
+       "node": "A4_Lou_EmptyCamera"
+      },
+      {
+       "item": "wish_quarter",
+       "node": "A4_Lou_Quarter"
+      },
+      {
+       "item": "headshots",
+       "node": "A4_Lou_ShowHeadshots"
+      },
+      {
+       "item": "mystery_pie",
+       "node": "A4_Lou_Pie"
+      },
+      {
+       "item": "pie_coupon",
+       "node": "A4_Lou_Coupon"
+      },
+      {
+       "item": "commodore_wig",
+       "node": "A4_Lou_Wig"
+      }
+     ]
+    },
+    {
+     "name": "1-Hour Photo",
+     "feet": [
+      5.57,
+      -1.77
+     ],
+     "size": [
+      1.96,
+      2.67
+     ],
+     "color": [
+      0.9,
+      0.8,
+      0.3
+     ],
+     "standAt": [
+      5.6,
+      -2.6
+     ],
+     "look": "A4_Photo_Look",
+     "use": "A4_Photo_Use",
+     "items": [
+      {
+       "item": "full_camera",
+       "node": "A4_Lou_Develop"
+      }
+     ]
+    }
+   ],
+   "walkable": [
+    -7.6,
+    -2.22,
+    7.9,
+    -2.22,
+    8.6,
+    -3.2,
+    7.8,
+    -4.35,
+    -7.4,
+    -4.35,
+    -8.4,
+    -3.2
+   ]
+  },
+  {
+   "id": "rusty_anchor",
+   "scene": "RustyAnchor",
+   "onEnter": "A4_Anchor_Enter",
+   "wall": [
+    0.35,
+    0.25,
+    0.2
+   ],
+   "floor": [
+    0.4,
+    0.28,
+    0.2
+   ],
+   "entries": [
+    {
+     "name": "from_downtown",
+     "pos": [
+      -6.7,
+      -3.4
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Exit",
+     "feet": [
+      -7.93,
+      -2.57
+     ],
+     "size": [
+      2.19,
+      4.76
+     ],
+     "color": [
+      0.4,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      -7.1,
+      -3.1
+     ],
+     "faceLeft": true,
+     "look": "A4_AnchorExit_Look",
+     "use": "A4_AnchorExit_Use"
+    },
+    {
+     "name": "Junk barrel",
+     "feet": [
+      -6.3,
+      -2.0
+     ],
+     "size": [
+      1.85,
+      3.49
+     ],
+     "color": [
+      0.5,
+      0.35,
+      0.2
+     ],
+     "standAt": [
+      -5.4,
+      -2.6
+     ],
+     "look": "A4_Barrel_Look",
+     "use": "A4_Barrel_Use"
+    },
+    {
+     "name": "Jukebox",
+     "feet": [
+      -3.64,
+      -1.65
+     ],
+     "size": [
+      1.65,
+      3.19
+     ],
+     "color": [
+      0.9,
+      0.5,
+      0.3
+     ],
+     "standAt": [
+      -3.5,
+      -2.5
+     ],
+     "look": "A4_Jukebox_Look",
+     "use": "A4_Jukebox_Use",
+     "items": [
+      {
+       "item": "wish_quarter",
+       "node": "A4_Jukebox_Quarter"
+      }
+     ]
+    },
+    {
+     "name": "Captain Gus",
+     "feet": [
+      0.2,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.25
+     ],
+     "color": [
+      0.3,
+      0.35,
+      0.6
+     ],
+     "standAt": [
+      -1.7,
+      -3.95
+     ],
+     "look": "A4_Gus_Look",
+     "use": "A4_Gus_Talk",
+     "items": [
+      {
+       "item": "wish_quarter",
+       "node": "A4_Gus_Quarter"
+      },
+      {
+       "item": "gus_coaster",
+       "node": "A4_Gus_Coaster"
+      },
+      {
+       "item": "captains_hat",
+       "node": "A4_Gus_Hat"
+      },
+      {
+       "item": "headshots",
+       "node": "A4_Gus_Headshots"
+      },
+      {
+       "item": "commodore_wig",
+       "node": "A4_Gus_Wig"
+      },
+      {
+       "item": "fishing_net",
+       "node": "A4_Gus_Net"
+      },
+      {
+       "item": "mystery_pie",
+       "node": "A4_Gus_Pie"
+      },
+      {
+       "item": "pie_coupon",
+       "node": "A4_Gus_Coupon"
+      }
+     ],
+     "hideWhenFlag": "a4_got_hat"
+    },
+    {
+     "name": "Commodore Gus",
+     "feet": [
+      0.2,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.82
+     ],
+     "color": [
+      0.3,
+      0.35,
+      0.6
+     ],
+     "standAt": [
+      -1.7,
+      -3.95
+     ],
+     "look": "A4_Gus_Look",
+     "use": "A4_Gus_Talk",
+     "items": [
+      {
+       "item": "wish_quarter",
+       "node": "A4_Gus_Quarter"
+      },
+      {
+       "item": "gus_coaster",
+       "node": "A4_Gus_Coaster"
+      },
+      {
+       "item": "captains_hat",
+       "node": "A4_Gus_Hat"
+      },
+      {
+       "item": "headshots",
+       "node": "A4_Gus_Headshots"
+      },
+      {
+       "item": "commodore_wig",
+       "node": "A4_Gus_Wig"
+      },
+      {
+       "item": "fishing_net",
+       "node": "A4_Gus_Net"
+      },
+      {
+       "item": "mystery_pie",
+       "node": "A4_Gus_Pie"
+      },
+      {
+       "item": "pie_coupon",
+       "node": "A4_Gus_Coupon"
+      }
+     ],
+     "showWhenFlag": "a4_got_hat"
+    },
+    {
+     "name": "Bar",
+     "feet": [
+      4.02,
+      -1.83
+     ],
+     "size": [
+      5.83,
+      1.45
+     ],
+     "color": [
+      0.45,
+      0.28,
+      0.18
+     ],
+     "standAt": [
+      3.7,
+      -2.6
+     ],
+     "look": "A4_Bar_Look",
+     "use": "A4_Bar_Use"
+    },
+    {
+     "name": "Parrot",
+     "feet": [
+      6.26,
+      0.57
+     ],
+     "size": [
+      1.1,
+      1.87
+     ],
+     "color": [
+      0.3,
+      0.8,
+      0.3
+     ],
+     "standAt": [
+      6.6,
+      -2.6
+     ],
+     "look": "A4_Parrot_Look",
+     "use": "A4_Parrot_Use",
+     "items": [
+      {
+       "item": "mystery_pie",
+       "node": "A4_Parrot_Pie"
+      }
+     ]
+    }
+   ],
+   "walkable": [
+    -7.6,
+    -2.22,
+    7.9,
+    -2.22,
+    8.6,
+    -3.2,
+    7.8,
+    -4.35,
+    -7.4,
+    -4.35,
+    -8.4,
+    -3.2
+   ]
+  },
+  {
+   "id": "starlite_diner",
+   "scene": "StarliteDiner",
+   "onEnter": "A4_Diner_Enter",
+   "wall": [
+    0.85,
+    0.75,
+    0.6
+   ],
+   "floor": [
+    0.85,
+    0.85,
+    0.85
+   ],
+   "entries": [
+    {
+     "name": "from_downtown",
+     "pos": [
+      -6.7,
+      -3.4
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Exit",
+     "feet": [
+      -7.93,
+      -2.57
+     ],
+     "size": [
+      2.19,
+      4.76
+     ],
+     "color": [
+      0.8,
+      0.3,
+      0.35
+     ],
+     "standAt": [
+      -7.1,
+      -3.1
+     ],
+     "faceLeft": true,
+     "look": "A4_DinerExit_Look",
+     "use": "A4_DinerExit_Use"
+    },
+    {
+     "name": "Pie case",
+     "feet": [
+      -5.98,
+      -1.8
+     ],
+     "size": [
+      1.75,
+      2.66
+     ],
+     "color": [
+      0.9,
+      0.8,
+      0.6
+     ],
+     "standAt": [
+      -5.4,
+      -2.6
+     ],
+     "look": "A4_PieCase_Look",
+     "use": "A4_PieCase_Use",
+     "items": [
+      {
+       "item": "mystery_pie",
+       "node": "A4_PieCase_Pie"
+      }
+     ]
+    },
+    {
+     "name": "Sal",
+     "feet": [
+      -3.2,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.42
+     ],
+     "color": [
+      0.95,
+      0.95,
+      0.95
+     ],
+     "standAt": [
+      -1.1,
+      -3.95
+     ],
+     "faceLeft": true,
+     "look": "A4_Sal_Look",
+     "use": "A4_Sal_Talk",
+     "items": [
+      {
+       "item": "pie_coupon",
+       "node": "A4_Sal_Coupon"
+      },
+      {
+       "item": "mystery_pie",
+       "node": "A4_Sal_Pie"
+      },
+      {
+       "item": "gus_coaster",
+       "node": "A4_Sal_Coaster"
+      },
+      {
+       "item": "wish_quarter",
+       "node": "A4_Sal_Quarter"
+      },
+      {
+       "item": "commodore_wig",
+       "node": "A4_Sal_Wig"
+      }
+     ],
+     "hideWhenFlag": "a4_sal_away"
+    },
+    {
+     "name": "Recipe tin",
+     "feet": [
+      -2.0,
+      1.06
+     ],
+     "size": [
+      0.96,
+      0.78
+     ],
+     "color": [
+      0.8,
+      0.2,
+      0.2
+     ],
+     "standAt": [
+      -1.6,
+      -2.5
+     ],
+     "look": "A4_RecipeTin_Look",
+     "use": "A4_RecipeTin_Use"
+    },
+    {
+     "name": "Walk-in freezer",
+     "feet": [
+      1.9,
+      -1.5
+     ],
+     "size": [
+      1.88,
+      2.64
+     ],
+     "color": [
+      0.75,
+      0.8,
+      0.85
+     ],
+     "standAt": [
+      1.9,
+      -2.5
+     ],
+     "look": "A4_Freezer_Look",
+     "use": "A4_Freezer_Use",
+     "items": [
+      {
+       "item": "pie_coupon",
+       "node": "A4_Freezer_Coupon"
+      }
+     ]
+    },
+    {
+     "name": "Hungry regulars",
+     "feet": [
+      5.25,
+      -1.9
+     ],
+     "size": [
+      3.9,
+      2.3
+     ],
+     "color": [
+      0.6,
+      0.3,
+      0.3
+     ],
+     "standAt": [
+      5.2,
+      -2.6
+     ],
+     "look": "A4_Regulars_Look",
+     "use": "A4_Regulars_Talk",
+     "items": [
+      {
+       "item": "mystery_pie",
+       "node": "A4_Regulars_Pie"
+      },
+      {
+       "item": "pie_coupon",
+       "node": "A4_Regulars_Coupon"
+      }
+     ]
+    }
+   ],
+   "walkable": [
+    -7.6,
+    -2.22,
+    7.9,
+    -2.22,
+    8.6,
+    -3.2,
+    7.8,
+    -4.35,
+    -7.4,
+    -4.35,
+    -8.4,
+    -3.2
+   ]
+  },
+  {
+   "id": "bijou_lobby",
+   "scene": "BijouLobby",
+   "onEnter": "A4_Bijou_Enter",
+   "wall": [
+    0.5,
+    0.15,
+    0.2
+   ],
+   "floor": [
+    0.55,
+    0.2,
+    0.25
+   ],
+   "entries": [
+    {
+     "name": "from_downtown",
+     "pos": [
+      -6.7,
+      -3.4
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Exit",
+     "feet": [
+      -7.93,
+      -2.57
+     ],
+     "size": [
+      2.19,
+      4.76
+     ],
+     "color": [
+      0.6,
+      0.2,
+      0.25
+     ],
+     "standAt": [
+      -7.1,
+      -3.1
+     ],
+     "faceLeft": true,
+     "look": "A4_BijouExit_Look",
+     "use": "A4_BijouExit_Use"
+    },
+    {
+     "name": "Concession stand",
+     "feet": [
+      -5.15,
+      -1.86
+     ],
+     "size": [
+      3.49,
+      2.76
+     ],
+     "color": [
+      0.95,
+      0.85,
+      0.4
+     ],
+     "standAt": [
+      -5.0,
+      -2.6
+     ],
+     "look": "A4_Concession_Look",
+     "use": "A4_Concession_Use",
+     "items": [
+      {
+       "item": "wish_quarter",
+       "node": "A4_Concession_Quarter"
+      },
+      {
+       "item": "pie_coupon",
+       "node": "A4_Concession_Coupon"
+      }
+     ]
+    },
+    {
+     "name": "Movie poster",
+     "feet": [
+      -1.75,
+      -0.14
+     ],
+     "size": [
+      1.78,
+      2.58
+     ],
+     "color": [
+      0.3,
+      0.4,
+      0.7
+     ],
+     "standAt": [
+      -1.6,
+      -2.5
+     ],
+     "look": "A4_MoviePoster_Look",
+     "use": "A4_MoviePoster_Use"
+    },
+    {
+     "name": "Mortimer",
+     "feet": [
+      -1.6,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.06
+     ],
+     "color": [
+      0.8,
+      0.2,
+      0.2
+     ],
+     "standAt": [
+      0.2,
+      -3.95
+     ],
+     "faceLeft": true,
+     "look": "A4_Mortimer_Look",
+     "use": "A4_Mortimer_Talk",
+     "items": [
+      {
+       "item": "mystery_pie",
+       "node": "A4_Mortimer_Pie"
+      },
+      {
+       "item": "pie_coupon",
+       "node": "A4_Mortimer_Coupon"
+      },
+      {
+       "item": "commodore_wig",
+       "node": "A4_Mortimer_Wig"
+      },
+      {
+       "item": "captains_hat",
+       "node": "A4_Mortimer_Hat"
+      },
+      {
+       "item": "headshots",
+       "node": "A4_Mortimer_Headshots"
+      }
+     ]
+    },
+    {
+     "name": "Velvet rope",
+     "feet": [
+      1.48,
+      -2.36
+     ],
+     "size": [
+      4.19,
+      2.13
+     ],
+     "color": [
+      0.8,
+      0.1,
+      0.2
+     ],
+     "standAt": [
+      1.48,
+      -2.9
+     ],
+     "look": "A4_Rope_Look",
+     "use": "A4_Rope_Use",
+     "hideWhenFlag": "a4_won_duel"
+    },
+    {
+     "name": "Costume trunk",
+     "feet": [
+      4.69,
+      -1.9
+     ],
+     "size": [
+      2.71,
+      1.97
+     ],
+     "color": [
+      0.5,
+      0.35,
+      0.2
+     ],
+     "standAt": [
+      4.2,
+      -2.6
+     ],
+     "look": "A4_Trunk_Look",
+     "use": "A4_Trunk_Use"
+    },
+    {
+     "name": "Heckler Hall of Fame",
+     "feet": [
+      4.85,
+      0.08
+     ],
+     "size": [
+      2.34,
+      2.44
+     ],
+     "color": [
+      0.8,
+      0.65,
+      0.3
+     ],
+     "standAt": [
+      4.8,
+      -2.5
+     ],
+     "look": "A4_HallOfFame_Look",
+     "use": "A4_HallOfFame_Use"
+    }
+   ],
+   "walkable": [
+    -7.6,
+    -2.22,
+    7.9,
+    -2.22,
+    8.6,
+    -3.2,
+    7.8,
+    -4.35,
+    -7.4,
+    -4.35,
+    -8.4,
+    -3.2
+   ]
+  }
+ ]
+}

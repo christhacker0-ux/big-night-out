@@ -1,0 +1,199 @@
+title: DexRoom_Enter
+---
+<<if not flagged("room_intro")>>
+    Dex: Dorm room 214. Home sweet home, if home smelled like gym socks.
+    Dex: Uncle Vic left me a letter. Should probably read that.
+    <<flag room_intro>>
+<<elseif flagged("signed_up")>>
+    Dex: Back in 214. I should be sleeping. I'm going to be on TV. I will never sleep again.
+<<endif>>
+===
+
+title: Bed_Look
+---
+Dex: A mattress with the springs of a medieval torture device.
+===
+title: Bed_Use
+---
+<<if not flagged("found_dollar")>>
+    Dex: Under the pillow... a crumpled dollar. The tooth fairy pays in cash.
+    <<give dollar>>
+    <<flag found_dollar>>
+<<elseif flagged("signed_up")>>
+    Dex: Sleep? On the night I got on Speed Daters Live? Not a chance.
+<<else>>
+    Dex: Nothing else under the pillow. No time for naps. The night is young.
+<<endif>>
+===
+
+title: Mirror_Look
+---
+Dex: Looking good, Dex Dooley. Looking... adequate.
+===
+title: Mirror_Use
+---
+<<if flagged("signed_up")>>
+    Dex: Hello, future TV star. Practice the smile. No, less teeth.
+<<elseif flagged("won_lacey")>>
+    Dex: She danced with me. She DANCED with me. Mirror, you were right all along.
+<<elseif not flagged("pep_talk")>>
+    Dex: You are a catch. You are charming. You have most of your hair.
+    Dex: Confidence up.
+    <<add confidence 1>>
+    <<flag pep_talk>>
+<<else>>
+    Dex: Any more pep talk and I'll start believing it.
+<<endif>>
+-> Ask the mirror what to do next
+    <<jump A1_Hint>>
+-> Stop staring at myself
+    Dex: Looking away. Slowly. Like a cool guy in a movie.
+===
+
+title: Desk_Look
+---
+Dex: My desk. A letter from Uncle Vic is taped to it.
+===
+title: Desk_Use
+---
+<<if not flagged("read_vic_letter")>>
+    Dex: "Dex, my boy. College is about one thing: getting out there."
+    Dex: "Talk to people. Help them out. Be the guy who shows up with what they need."
+    Dex: "And for the love of all that's holy, don't wear the turtleneck. Love, Uncle Vic."
+    <<flag read_vic_letter>>
+<<elseif flagged("signed_up")>>
+    Dex: P.S. from Uncle Vic: "If you ever get on TV, call me." Gotta find a phone.
+<<else>>
+    Dex: "Be the guy who shows up with what they need." Uncle Vic, you old genius.
+    -> Read the whole letter again
+        Dex: "Talk to people. Help them out. And don't wear the turtleneck."
+    -> Leave it
+        Dex: Message received.
+<<endif>>
+===
+
+title: DexDoor_Look
+---
+Dex: The door to the hallway. Freedom, and the smell of microwave popcorn.
+===
+title: DexDoor_Use
+---
+<<go dorm_hallway from_room>>
+===
+
+title: HallDoor_Look
+---
+Dex: Room 214. My room.
+===
+title: HallDoor_Use
+---
+<<go dex_room from_hallway>>
+===
+
+title: Item_dollar_Look
+---
+Dex: One crumpled dollar. My entire net worth.
+===
+
+title: A1_Hint
+---
+<<if not flagged("read_vic_letter")>>
+    Dex: Uncle Vic left me a letter on my desk. He always knows what to do.
+<<elseif not flagged("found_dollar")>>
+    Dex: I'm broke. People lose money under pillows all the time. Even mine.
+<<elseif not flagged("met_lacey")>>
+    Dex: There's a cowgirl in the hallway who looks like she's waiting for someone to impress her.
+<<elseif not flagged("met_gil")>>
+    Dex: The guy in the bathrobe in the hallway owns records. Lacey wants a record.
+<<elseif not flagged("gil_has_earplugs")>>
+    <<if has("earplugs")>>
+        Dex: Gil can't sleep through the snoring. Earplugs, meet Gil.
+    <<elseif has("dollar")>>
+        Dex: The vending machine sells earplugs for a dollar. I have exactly a dollar.
+    <<else>>
+        Dex: Gil needs earplugs. I need to find some cash, or some earplugs.
+    <<endif>>
+<<elseif not flagged("lacey_has_album") and not has("dance_album")>>
+    <<if flagged("a1_boomer_moved")>>
+        Dex: Boomer wandered off. Gil's record crate in room 216 is wide open.
+    <<elseif has("possum_waffle")>>
+        Dex: One possum waffle, one hungry sleepwalker. Give it to Boomer.
+    <<elseif has("possum_head")>>
+        Dex: Doreen feeds Pokey the Possum for free. I have Pokey's head. Show it to Doreen, and grunt politely.
+    <<elseif has("pine_freshener")>>
+        Dex: Kyle at the Union says his possum suit stinks. I have a whole pine forest in my pocket. Well, one tree.
+    <<elseif not flagged("a1_boomer_dream") and not flagged("a1_met_kyle")>>
+        Dex: Boomer is blocking the record crate. Gil says he follows food in his sleep. Maybe I should listen to what Boomer mumbles.
+    <<elseif not flagged("a1_met_kyle")>>
+        Dex: Boomer dreams of possum waffles from the Student Union. The signpost on the quad points the way.
+    <<elseif not flagged("a1_took_freshener")>>
+        Dex: Kyle would lend me Pokey's head if the suit smelled better. Gil's room had something piney on the window.
+    <<else>>
+        Dex: I need Pokey's head. Kyle wants the suit to smell nicer.
+    <<endif>>
+<<elseif has("dance_album")>>
+    Dex: Hank Hollister, live. Lacey Rae will want to hear this.
+<<elseif not flagged("lacey_has_drink") and not has("hallway_hooch")>>
+    <<if not has("lemon") and not flagged("a1_took_lemon")>>
+        Dex: The drinks table recipe says lemon plus soda. There's a lemon on that table.
+    <<elseif not has("soda")>>
+        Dex: I still need a soda. Doreen at the Union keeps the last cold cans for staff and for Pokey the Possum.
+    <<else>>
+        Dex: Lemon plus soda equals Hallway Hooch. Mix them together.
+    <<endif>>
+<<elseif has("hallway_hooch")>>
+    Dex: Hallway Hooch, ready to serve. Lacey Rae ordered one.
+<<elseif not flagged("signed_up")>>
+    Dex: Lacey's hat is proof I'm a catch. The sign-up sheet in the lounge wants exactly that.
+<<elseif not flagged("met_ivy")>>
+    Dex: Roxy says I need a partner. The library on the quad is full of quiet people with hidden talents.
+<<elseif not flagged("ivy_note")>>
+    <<if has("note_for_ivy")>>
+        Dex: Ms. Hush says notes are for the desperate. I am desperate. Give the note to Ivy.
+    <<elseif has("flyer") and has("pen")>>
+        Dex: A pen and a flyer with a blank back. Time to write a note.
+    <<elseif not has("flyer")>>
+        Dex: I need something to write on. The info kiosk on the quad is covered in flyers.
+    <<else>>
+        Dex: I need something to write with. That sign-up sheet had a pen on a string.
+    <<endif>>
+<<elseif not flagged("a1_ivy_notebook")>>
+    <<if has("ivy_notebook")>>
+        Dex: Ivy's notebook, rescued. Give it back to her.
+    <<elseif not flagged("a1_hush_distracted")>>
+        <<if has("boomer_alarm")>>
+            Dex: Ms. Hush guards the ladder. If something started ringing across the room, say in the card catalogue, she'd have to go and shush it.
+        <<elseif not flagged("a1_took_alarm")>>
+            Dex: Ms. Hush won't let anyone up the ladder. I need something loud to send her the other way. Boomer had a very loud alarm clock.
+        <<else>>
+            Dex: I need to get Ms. Hush away from that ladder.
+        <<endif>>
+    <<elseif not flagged("a1_met_percival")>>
+        Dex: Ms. Hush is busy. The ladder to the upper stacks is free.
+    <<elseif not flagged("a1_cb_me")>>
+        Dex: Percival brags about his vocabulary. Lacey Rae had something to say about wordy poets.
+    <<elseif not flagged("a1_cb_onion")>>
+        Dex: Percival says his poems make grown men weep. Doreen at the Union knows a thing or two about that.
+    <<elseif not flagged("a1_cb_puddle")>>
+        Dex: Percival says his verse is deep. Ms. Hush has opinions about him. Ask her what goes on upstairs.
+    <<elseif not flagged("a1_cb_crash")>>
+        Dex: Percival says nobody can take their eyes off him. Kyle the mascot knows what that's like.
+    <<else>>
+        Dex: I've got a comeback for every one of Percival's put-downs. Time to challenge him again.
+    <<endif>>
+<<elseif not flagged("a1_ivy_shades")>>
+    <<if has("sunglasses")>>
+        Dex: Ivy can't read with the crowd staring at her. These shades would hide them.
+    <<elseif has("frisbee")>>
+        Dex: The founder statue has sunglasses way up out of reach. A frisbee flies.
+    <<else>>
+        Dex: Ivy needs to not see the crowd. The statue on the quad is wearing sunglasses, and someone left a frisbee on the grass.
+    <<endif>>
+<<elseif not flagged("won_ivy")>>
+    Dex: Talk to Ivy.
+<<elseif current_act() < 2>>
+    Dex: I have a partner and a hat. Roxy is waiting on the stage.
+<<else>>
+    Dex: The Talent Round is done. The campus map on the info kiosk shows where to go next.
+<<endif>>
+===

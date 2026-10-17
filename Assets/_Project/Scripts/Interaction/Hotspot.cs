@@ -37,6 +37,8 @@ namespace BigNightOut.Interaction
         [Header("Visibility")]
         [Tooltip("Hide this hotspot while this flag is set, e.g. once an item is picked up.")]
         [SerializeField] string hideWhenFlag;
+        [Tooltip("Only show this hotspot once this flag is set, e.g. a character who arrives later.")]
+        [SerializeField] string showWhenFlag;
 
         public string DisplayName => displayName;
         public Transform WalkTo => walkTo;
@@ -52,8 +54,9 @@ namespace BigNightOut.Interaction
 
         void Refresh()
         {
-            if (string.IsNullOrEmpty(hideWhenFlag)) return;
-            var hidden = GameState.Current.GetFlag(hideWhenFlag);
+            if (string.IsNullOrEmpty(hideWhenFlag) && string.IsNullOrEmpty(showWhenFlag)) return;
+            var hidden = (!string.IsNullOrEmpty(hideWhenFlag) && GameState.Current.GetFlag(hideWhenFlag))
+                || (!string.IsNullOrEmpty(showWhenFlag) && !GameState.Current.GetFlag(showWhenFlag));
             foreach (var r in GetComponentsInChildren<Renderer>()) r.enabled = !hidden;
             foreach (var c in GetComponents<Collider2D>()) c.enabled = !hidden;
         }

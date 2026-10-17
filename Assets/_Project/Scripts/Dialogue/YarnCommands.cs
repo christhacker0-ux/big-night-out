@@ -1,4 +1,5 @@
 using BigNightOut.Core;
+using UnityEngine;
 using Yarn.Unity;
 
 namespace BigNightOut.YarnBridge
@@ -12,7 +13,12 @@ namespace BigNightOut.YarnBridge
     public static class YarnCommands
     {
         [YarnCommand("give")]
-        public static void Give(string itemId) => GameState.Current.GiveItem(itemId);
+        public static void Give(string itemId)
+        {
+            Debug.Log($"[BNO] give {itemId}");
+            GameState.Current.GiveItem(itemId);
+            Debug.Log($"[BNO] gave {itemId}");
+        }
 
         [YarnCommand("take")]
         public static void Take(string itemId) => GameState.Current.TakeItem(itemId);

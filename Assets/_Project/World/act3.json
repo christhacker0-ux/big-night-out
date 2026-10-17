@@ -1,0 +1,1550 @@
+{
+ "items": [
+  {
+   "id": "cardboard_tube",
+   "name": "Cardboard Tube",
+   "color": [
+    0.75,
+    0.55,
+    0.35
+   ]
+  },
+  {
+   "id": "bird_seed",
+   "name": "Sunflower Seeds",
+   "color": [
+    0.45,
+    0.4,
+    0.35
+   ]
+  },
+  {
+   "id": "hamster_trap",
+   "name": "Nibbles Trap",
+   "color": [
+    0.85,
+    0.65,
+    0.4
+   ]
+  },
+  {
+   "id": "nibbles_in_tube",
+   "name": "Professor Nibbles",
+   "color": [
+    0.95,
+    0.7,
+    0.35
+   ]
+  },
+  {
+   "id": "spare_batteries",
+   "name": "Spare Batteries",
+   "color": [
+    0.2,
+    0.7,
+    0.3
+   ]
+  },
+  {
+   "id": "retirement_plan",
+   "name": "Nibbles' Retirement Plan",
+   "color": [
+    0.95,
+    0.95,
+    0.85
+   ]
+  },
+  {
+   "id": "safety_goggles",
+   "name": "Lucky Safety Goggles",
+   "color": [
+    1.0,
+    0.5,
+    0.15
+   ]
+  },
+  {
+   "id": "protest_button",
+   "name": "Protest Button",
+   "color": [
+    0.9,
+    0.2,
+    0.5
+   ]
+  },
+  {
+   "id": "bones_lab_coat",
+   "name": "Mr. Bones' Lab Coat",
+   "color": [
+    0.97,
+    0.97,
+    0.95
+   ]
+  },
+  {
+   "id": "dot_mop_head",
+   "name": "Spare Mop Head",
+   "color": [
+    0.85,
+    0.85,
+    0.8
+   ]
+  },
+  {
+   "id": "prof_disguise",
+   "name": "Professor Disguise",
+   "color": [
+    0.9,
+    0.9,
+    0.85
+   ]
+  }
+ ],
+ "combinations": [
+  {
+   "a": "bird_seed",
+   "b": "cardboard_tube",
+   "node": "A3_Combine_Seed_Tube"
+  },
+  {
+   "a": "bones_lab_coat",
+   "b": "dot_mop_head",
+   "node": "A3_Combine_Coat_Mop"
+  }
+ ],
+ "rooms": [
+  {
+   "id": "science_hall",
+   "scene": "ScienceHall",
+   "onEnter": "A3_Hall_Enter",
+   "wall": [
+    0.85,
+    0.7,
+    0.4
+   ],
+   "floor": [
+    0.55,
+    0.45,
+    0.6
+   ],
+   "entries": [
+    {
+     "name": "from_campus",
+     "pos": [
+      -7.2,
+      -3.4
+     ]
+    },
+    {
+     "name": "from_lab",
+     "pos": [
+      3.65,
+      -3.0
+     ]
+    },
+    {
+     "name": "from_roof",
+     "pos": [
+      7.2,
+      -3.4
+     ],
+     "faceLeft": true
+    },
+    {
+     "name": "from_basement",
+     "pos": [
+      -3.85,
+      -3.0
+     ]
+    },
+    {
+     "name": "from_lounge",
+     "pos": [
+      5.85,
+      -3.0
+     ],
+     "faceLeft": true
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Campus",
+     "feet": [
+      -8.32,
+      -2.2
+     ],
+     "size": [
+      1.75,
+      3.9
+     ],
+     "color": [
+      0.3,
+      0.4,
+      0.6
+     ],
+     "standAt": [
+      -7.3,
+      -2.8
+     ],
+     "faceLeft": true,
+     "look": "A3_HallExit_Look",
+     "use": "A3_HallExit_Use"
+    },
+    {
+     "name": "Notice board",
+     "feet": [
+      -5.95,
+      0.25
+     ],
+     "size": [
+      2.2,
+      1.7
+     ],
+     "color": [
+      0.7,
+      0.5,
+      0.3
+     ],
+     "standAt": [
+      -5.95,
+      -2.6
+     ],
+     "look": "A3_Board_Look",
+     "use": "A3_Board_Use"
+    },
+    {
+     "name": "Basement stairs",
+     "feet": [
+      -3.82,
+      -1.55
+     ],
+     "size": [
+      1.75,
+      3.55
+     ],
+     "color": [
+      0.45,
+      0.4,
+      0.35
+     ],
+     "standAt": [
+      -3.85,
+      -2.6
+     ],
+     "look": "A3_BasementDoor_Look",
+     "use": "A3_BasementDoor_Use"
+    },
+    {
+     "name": "Air vent",
+     "feet": [
+      -2.3,
+      -1.45
+     ],
+     "size": [
+      1.2,
+      0.85
+     ],
+     "color": [
+      0.6,
+      0.6,
+      0.65
+     ],
+     "standAt": [
+      -2.3,
+      -2.6
+     ],
+     "look": "A3_HallVent_Look",
+     "use": "A3_HallVent_Use",
+     "items": [
+      {
+       "item": "hamster_trap",
+       "node": "A3_HallVent_Trap"
+      },
+      {
+       "item": "bird_seed",
+       "node": "A3_HallVent_Trap"
+      },
+      {
+       "item": "cardboard_tube",
+       "node": "A3_HallVent_Trap"
+      },
+      {
+       "item": "dot_mop_head",
+       "node": "A3_HallVent_Mop"
+      }
+     ]
+    },
+    {
+     "name": "Mr. Bones",
+     "feet": [
+      -0.85,
+      -1.65
+     ],
+     "size": [
+      1.3,
+      3.15
+     ],
+     "color": [
+      0.9,
+      0.9,
+      0.85
+     ],
+     "standAt": [
+      -0.9,
+      -2.6
+     ],
+     "faceLeft": true,
+     "look": "A3_Skeleton_Look",
+     "use": "A3_Skeleton_Use",
+     "items": [
+      {
+       "item": "bones_lab_coat",
+       "node": "A3_Skeleton_GiveCoat"
+      },
+      {
+       "item": "prof_disguise",
+       "node": "A3_Skeleton_GiveCoat"
+      }
+     ]
+    },
+    {
+     "name": "Periodic table",
+     "feet": [
+      1.5,
+      1.0
+     ],
+     "size": [
+      2.5,
+      1.5
+     ],
+     "color": [
+      0.9,
+      0.85,
+      0.7
+     ],
+     "standAt": [
+      1.5,
+      -2.6
+     ],
+     "look": "A3_Periodic_Look",
+     "use": "A3_Periodic_Use"
+    },
+    {
+     "name": "Mr. Bones' coat",
+     "feet": [
+      0.37,
+      -0.4
+     ],
+     "size": [
+      0.97,
+      1.5
+     ],
+     "color": [
+      0.97,
+      0.97,
+      0.95
+     ],
+     "standAt": [
+      0.35,
+      -2.6
+     ],
+     "look": "A3_CoatHook_Look",
+     "use": "A3_CoatHook_Use",
+     "hideWhenFlag": "a3_got_coat"
+    },
+    {
+     "name": "Lab door",
+     "feet": [
+      3.65,
+      -1.55
+     ],
+     "size": [
+      1.7,
+      3.0
+     ],
+     "color": [
+      0.4,
+      0.5,
+      0.6
+     ],
+     "standAt": [
+      3.65,
+      -2.6
+     ],
+     "look": "A3_LabDoor_Look",
+     "use": "A3_LabDoor_Use"
+    },
+    {
+     "name": "Faculty lounge",
+     "feet": [
+      5.85,
+      -1.55
+     ],
+     "size": [
+      1.9,
+      3.0
+     ],
+     "color": [
+      0.5,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      5.85,
+      -2.6
+     ],
+     "look": "A3_LoungeDoor_Look",
+     "use": "A3_LoungeDoor_Use",
+     "items": [
+      {
+       "item": "prof_disguise",
+       "node": "A3_LoungeDoor_Disguise"
+      },
+      {
+       "item": "bones_lab_coat",
+       "node": "A3_LoungeDoor_Half"
+      },
+      {
+       "item": "dot_mop_head",
+       "node": "A3_LoungeDoor_Half"
+      }
+     ]
+    },
+    {
+     "name": "Roof stairs",
+     "feet": [
+      8.35,
+      -2.2
+     ],
+     "size": [
+      1.8,
+      4.6
+     ],
+     "color": [
+      0.5,
+      0.55,
+      0.6
+     ],
+     "standAt": [
+      7.3,
+      -2.8
+     ],
+     "look": "A3_RoofStairs_Look",
+     "use": "A3_RoofStairs_Use"
+    }
+   ],
+   "walkable": [
+    -9.0,
+    -2.22,
+    9.0,
+    -2.22,
+    9.3,
+    -3.4,
+    8.8,
+    -4.35,
+    -8.8,
+    -4.35,
+    -9.3,
+    -3.4
+   ]
+  },
+  {
+   "id": "lab",
+   "scene": "Lab",
+   "onEnter": "A3_Lab_Enter",
+   "wall": [
+    0.5,
+    0.75,
+    0.7
+   ],
+   "floor": [
+    0.4,
+    0.4,
+    0.5
+   ],
+   "entries": [
+    {
+     "name": "from_hall",
+     "pos": [
+      -7.2,
+      -3.4
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Hallway",
+     "feet": [
+      -8.42,
+      -2.75
+     ],
+     "size": [
+      1.95,
+      4.55
+     ],
+     "color": [
+      0.4,
+      0.5,
+      0.6
+     ],
+     "standAt": [
+      -7.3,
+      -2.9
+     ],
+     "faceLeft": true,
+     "look": "A3_LabExit_Look",
+     "use": "A3_LabExit_Use"
+    },
+    {
+     "name": "Recycling bin",
+     "feet": [
+      -6.35,
+      -1.75
+     ],
+     "size": [
+      1.1,
+      1.35
+     ],
+     "color": [
+      0.2,
+      0.5,
+      0.9
+     ],
+     "standAt": [
+      -6.3,
+      -2.6
+     ],
+     "look": "A3_Recycling_Look",
+     "use": "A3_Recycling_Use"
+    },
+    {
+     "name": "Big vent",
+     "feet": [
+      -4.77,
+      -2.0
+     ],
+     "size": [
+      1.55,
+      1.7
+     ],
+     "color": [
+      0.6,
+      0.6,
+      0.65
+     ],
+     "standAt": [
+      -4.8,
+      -2.6
+     ],
+     "look": "A3_LabVent_Look",
+     "use": "A3_LabVent_Use",
+     "items": [
+      {
+       "item": "hamster_trap",
+       "node": "A3_LabVent_Trap"
+      },
+      {
+       "item": "cardboard_tube",
+       "node": "A3_LabVent_Tube"
+      },
+      {
+       "item": "bird_seed",
+       "node": "A3_LabVent_Seed"
+      },
+      {
+       "item": "dot_mop_head",
+       "node": "A3_LabVent_Mop"
+      }
+     ]
+    },
+    {
+     "name": "Dr. Mina Volt",
+     "feet": [
+      -3.1,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.1
+     ],
+     "color": [
+      0.95,
+      0.95,
+      0.95
+     ],
+     "standAt": [
+      -1.2,
+      -3.95
+     ],
+     "faceLeft": true,
+     "look": "A3_Mina_Look",
+     "use": "A3_Mina_Talk",
+     "items": [
+      {
+       "item": "nibbles_in_tube",
+       "node": "A3_Mina_GiveNibbles"
+      },
+      {
+       "item": "hamster_trap",
+       "node": "A3_Mina_GiveTrap"
+      },
+      {
+       "item": "cardboard_tube",
+       "node": "A3_Mina_GiveTube"
+      },
+      {
+       "item": "bird_seed",
+       "node": "A3_Mina_GiveTube"
+      },
+      {
+       "item": "spare_batteries",
+       "node": "A3_Mina_GiveBatteries"
+      },
+      {
+       "item": "retirement_plan",
+       "node": "A3_Mina_GivePlan"
+      },
+      {
+       "item": "bones_lab_coat",
+       "node": "A3_Mina_GiveCoat"
+      },
+      {
+       "item": "prof_disguise",
+       "node": "A3_Mina_GiveCoat"
+      },
+      {
+       "item": "dot_mop_head",
+       "node": "A3_Mina_GiveMop"
+      }
+     ]
+    },
+    {
+     "name": "Beakers",
+     "feet": [
+      -1.0,
+      -0.75
+     ],
+     "size": [
+      1.6,
+      0.95
+     ],
+     "color": [
+      0.3,
+      0.6,
+      1.0
+     ],
+     "standAt": [
+      -1.0,
+      -2.6
+     ],
+     "look": "A3_Beakers_Look",
+     "use": "A3_Beakers_Use"
+    },
+    {
+     "name": "Chalkboard",
+     "feet": [
+      0.3,
+      0.45
+     ],
+     "size": [
+      4.7,
+      1.9
+     ],
+     "color": [
+      0.2,
+      0.35,
+      0.3
+     ],
+     "standAt": [
+      0.3,
+      -2.6
+     ],
+     "look": "A3_Chalkboard_Look",
+     "use": "A3_Chalkboard_Use"
+    },
+    {
+     "name": "Hamster cage",
+     "feet": [
+      0.68,
+      -0.75
+     ],
+     "size": [
+      1.65,
+      1.2
+     ],
+     "color": [
+      0.8,
+      0.8,
+      0.85
+     ],
+     "standAt": [
+      0.7,
+      -2.6
+     ],
+     "look": "A3_Cage_Look",
+     "use": "A3_Cage_Use"
+    },
+    {
+     "name": "Professor Nibbles",
+     "feet": [
+      2.1,
+      -0.72
+     ],
+     "size": [
+      1.13,
+      0.87
+     ],
+     "color": [
+      0.95,
+      0.7,
+      0.35
+     ],
+     "standAt": [
+      2.1,
+      -2.6
+     ],
+     "look": "A3_Nibbles_Look",
+     "use": "A3_Nibbles_Use",
+     "showWhenFlag": "a3_nibbles_home"
+    },
+    {
+     "name": "Roxy Vale",
+     "feet": [
+      3.4,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.07
+     ],
+     "color": [
+      0.9,
+      0.3,
+      0.7
+     ],
+     "standAt": [
+      5.2,
+      -3.95
+     ],
+     "faceLeft": true,
+     "look": "A3_Roxy_Look",
+     "use": "A3_Roxy_Talk",
+     "items": [
+      {
+       "item": "safety_goggles",
+       "node": "A3_Roxy_Token"
+      },
+      {
+       "item": "protest_button",
+       "node": "A3_Roxy_Token"
+      }
+     ]
+    },
+    {
+     "name": "Dare Round banner",
+     "feet": [
+      5.75,
+      1.45
+     ],
+     "size": [
+      3.5,
+      1.45
+     ],
+     "color": [
+      0.9,
+      0.2,
+      0.5
+     ],
+     "standAt": [
+      5.7,
+      -2.6
+     ],
+     "look": "A3_Banner_Look",
+     "use": "A3_Banner_Use"
+    },
+    {
+     "name": "Shower puddle",
+     "feet": [
+      6.95,
+      -3.65
+     ],
+     "size": [
+      3.64,
+      1.25
+     ],
+     "color": [
+      0.4,
+      0.7,
+      0.95
+     ],
+     "standAt": [
+      5.4,
+      -3.6
+     ],
+     "look": "A3_Puddle_Look",
+     "use": "A3_Puddle_Use",
+     "hideWhenFlag": "a3_lab_dry",
+     "showWhenFlag": "a3_lab_flooded"
+    },
+    {
+     "name": "Dot Pruitt",
+     "feet": [
+      6.0,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      3.77
+     ],
+     "color": [
+      0.25,
+      0.3,
+      0.55
+     ],
+     "standAt": [
+      7.9,
+      -3.95
+     ],
+     "look": "A3_Dot_Look",
+     "use": "A3_Dot_Talk",
+     "items": [
+      {
+       "item": "dot_mop_head",
+       "node": "A3_Dot_GiveMop"
+      },
+      {
+       "item": "prof_disguise",
+       "node": "A3_Dot_GiveMop"
+      },
+      {
+       "item": "nibbles_in_tube",
+       "node": "A3_Dot_GiveNibbles"
+      },
+      {
+       "item": "hamster_trap",
+       "node": "A3_Dot_GiveTrap"
+      },
+      {
+       "item": "bones_lab_coat",
+       "node": "A3_Dot_GiveCoat"
+      },
+      {
+       "item": "retirement_plan",
+       "node": "A3_Dot_GivePlan"
+      }
+     ],
+     "showWhenFlag": "a3_dot_mopping"
+    },
+    {
+     "name": "Safety shower",
+     "feet": [
+      6.5,
+      -2.3
+     ],
+     "size": [
+      1.6,
+      3.9
+     ],
+     "color": [
+      0.9,
+      0.8,
+      0.2
+     ],
+     "standAt": [
+      6.9,
+      -2.9
+     ],
+     "look": "A3_Shower_Look",
+     "use": "A3_Shower_Use",
+     "items": [
+      {
+       "item": "dot_mop_head",
+       "node": "A3_Shower_Mop"
+      }
+     ]
+    }
+   ],
+   "walkable": [
+    -7.8,
+    -2.22,
+    7.9,
+    -2.22,
+    8.7,
+    -3.4,
+    8.3,
+    -4.35,
+    -8.3,
+    -4.35,
+    -8.9,
+    -3.4
+   ]
+  },
+  {
+   "id": "rooftop",
+   "scene": "Rooftop",
+   "onEnter": "A3_Roof_Enter",
+   "wall": [
+    0.2,
+    0.15,
+    0.4
+   ],
+   "floor": [
+    0.35,
+    0.3,
+    0.4
+   ],
+   "entries": [
+    {
+     "name": "from_stairs",
+     "pos": [
+      -7.2,
+      -3.4
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Stairwell door",
+     "feet": [
+      -8.4,
+      -1.9
+     ],
+     "size": [
+      1.8,
+      3.0
+     ],
+     "color": [
+      0.5,
+      0.55,
+      0.6
+     ],
+     "standAt": [
+      -7.3,
+      -2.6
+     ],
+     "faceLeft": true,
+     "look": "A3_RoofExit_Look",
+     "use": "A3_RoofExit_Use"
+    },
+    {
+     "name": "Protest signs",
+     "feet": [
+      -4.17,
+      -1.5
+     ],
+     "size": [
+      3.45,
+      2.0
+     ],
+     "color": [
+      0.95,
+      0.9,
+      0.7
+     ],
+     "standAt": [
+      -4.4,
+      -2.6
+     ],
+     "look": "A3_Signs_Look",
+     "use": "A3_Signs_Use"
+    },
+    {
+     "name": "Sky Rivera",
+     "feet": [
+      -1.6,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.36
+     ],
+     "color": [
+      0.4,
+      0.7,
+      0.9
+     ],
+     "standAt": [
+      0.3,
+      -3.95
+     ],
+     "faceLeft": true,
+     "look": "A3_Sky_Look",
+     "use": "A3_Sky_Talk",
+     "items": [
+      {
+       "item": "spare_batteries",
+       "node": "A3_Sky_GiveBatteries"
+      },
+      {
+       "item": "retirement_plan",
+       "node": "A3_Sky_GivePlan"
+      },
+      {
+       "item": "nibbles_in_tube",
+       "node": "A3_Sky_GiveNibbles"
+      },
+      {
+       "item": "safety_goggles",
+       "node": "A3_Sky_ShowGoggles"
+      }
+     ]
+    },
+    {
+     "name": "Bird feeder",
+     "feet": [
+      -0.6,
+      -1.9
+     ],
+     "size": [
+      1.2,
+      2.75
+     ],
+     "color": [
+      0.7,
+      0.45,
+      0.25
+     ],
+     "standAt": [
+      -0.6,
+      -2.6
+     ],
+     "look": "A3_Feeder_Look",
+     "use": "A3_Feeder_Use"
+    },
+    {
+     "name": "Pigeon",
+     "feet": [
+      -0.55,
+      0.72
+     ],
+     "size": [
+      1.38,
+      0.92
+     ],
+     "color": [
+      0.55,
+      0.55,
+      0.65
+     ],
+     "standAt": [
+      -0.6,
+      -2.6
+     ],
+     "look": "A3_Pigeon_Look",
+     "use": "A3_Pigeon_Use",
+     "hideWhenFlag": "a3_pigeon_gone"
+    },
+    {
+     "name": "Campus view",
+     "feet": [
+      2.65,
+      -1.5
+     ],
+     "size": [
+      4.5,
+      3.1
+     ],
+     "color": [
+      0.3,
+      0.25,
+      0.5
+     ],
+     "standAt": [
+      2.4,
+      -2.6
+     ],
+     "look": "A3_View_Look",
+     "use": "A3_View_Use"
+    },
+    {
+     "name": "Water tower",
+     "feet": [
+      7.0,
+      -1.9
+     ],
+     "size": [
+      3.4,
+      5.9
+     ],
+     "color": [
+      0.6,
+      0.5,
+      0.5
+     ],
+     "standAt": [
+      7.0,
+      -2.6
+     ],
+     "look": "A3_Tower_Look",
+     "use": "A3_Tower_Use"
+    }
+   ],
+   "walkable": [
+    -9.0,
+    -2.22,
+    9.0,
+    -2.22,
+    9.2,
+    -3.4,
+    8.8,
+    -4.35,
+    -8.6,
+    -4.35,
+    -8.7,
+    -3.4
+   ]
+  },
+  {
+   "id": "science_basement",
+   "scene": "ScienceBasement",
+   "onEnter": "A3_Base_Enter",
+   "wall": [
+    0.35,
+    0.3,
+    0.3
+   ],
+   "floor": [
+    0.3,
+    0.28,
+    0.3
+   ],
+   "entries": [
+    {
+     "name": "from_hall",
+     "pos": [
+      -7.2,
+      -3.4
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Stairs up",
+     "feet": [
+      -8.42,
+      -2.75
+     ],
+     "size": [
+      1.95,
+      4.85
+     ],
+     "color": [
+      0.5,
+      0.45,
+      0.4
+     ],
+     "standAt": [
+      -7.3,
+      -2.9
+     ],
+     "faceLeft": true,
+     "look": "A3_BaseExit_Look",
+     "use": "A3_BaseExit_Use"
+    },
+    {
+     "name": "Duct map",
+     "feet": [
+      -5.27,
+      0.6
+     ],
+     "size": [
+      2.25,
+      1.6
+     ],
+     "color": [
+      0.3,
+      0.45,
+      0.8
+     ],
+     "standAt": [
+      -5.3,
+      -2.6
+     ],
+     "look": "A3_DuctMap_Look",
+     "use": "A3_DuctMap_Use"
+    },
+    {
+     "name": "Polka radio",
+     "feet": [
+      -6.1,
+      -1.9
+     ],
+     "size": [
+      1.3,
+      1.7
+     ],
+     "color": [
+      0.8,
+      0.3,
+      0.3
+     ],
+     "standAt": [
+      -6.1,
+      -2.6
+     ],
+     "look": "A3_Radio_Look",
+     "use": "A3_Radio_Use",
+     "items": [
+      {
+       "item": "spare_batteries",
+       "node": "A3_Radio_Batteries"
+      }
+     ]
+    },
+    {
+     "name": "Dot Pruitt",
+     "feet": [
+      -3.1,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      3.77
+     ],
+     "color": [
+      0.25,
+      0.3,
+      0.55
+     ],
+     "standAt": [
+      -1.2,
+      -3.95
+     ],
+     "faceLeft": true,
+     "look": "A3_Dot_Look",
+     "use": "A3_Dot_Talk",
+     "items": [
+      {
+       "item": "dot_mop_head",
+       "node": "A3_Dot_GiveMop"
+      },
+      {
+       "item": "prof_disguise",
+       "node": "A3_Dot_GiveMop"
+      },
+      {
+       "item": "nibbles_in_tube",
+       "node": "A3_Dot_GiveNibbles"
+      },
+      {
+       "item": "hamster_trap",
+       "node": "A3_Dot_GiveTrap"
+      },
+      {
+       "item": "bones_lab_coat",
+       "node": "A3_Dot_GiveCoat"
+      },
+      {
+       "item": "retirement_plan",
+       "node": "A3_Dot_GivePlan"
+      }
+     ],
+     "hideWhenFlag": "a3_dot_mopping"
+    },
+    {
+     "name": "Mop cart",
+     "feet": [
+      -0.47,
+      -2.0
+     ],
+     "size": [
+      1.95,
+      2.7
+     ],
+     "color": [
+      0.95,
+      0.8,
+      0.2
+     ],
+     "standAt": [
+      -0.5,
+      -2.6
+     ],
+     "look": "A3_MopCart_Look",
+     "use": "A3_MopCart_Use"
+    },
+    {
+     "name": "Air handler",
+     "feet": [
+      2.6,
+      -1.9
+     ],
+     "size": [
+      3.4,
+      3.6
+     ],
+     "color": [
+      0.55,
+      0.6,
+      0.65
+     ],
+     "standAt": [
+      2.6,
+      -2.6
+     ],
+     "look": "A3_AirHandler_Look",
+     "use": "A3_AirHandler_Use",
+     "items": [
+      {
+       "item": "hamster_trap",
+       "node": "A3_AirHandler_Trap"
+      },
+      {
+       "item": "bird_seed",
+       "node": "A3_AirHandler_Trap"
+      }
+     ]
+    },
+    {
+     "name": "Boiler",
+     "feet": [
+      6.03,
+      -2.2
+     ],
+     "size": [
+      2.55,
+      4.6
+     ],
+     "color": [
+      0.6,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      6.0,
+      -2.8
+     ],
+     "look": "A3_Boiler_Look",
+     "use": "A3_Boiler_Use"
+    }
+   ],
+   "walkable": [
+    -7.8,
+    -2.22,
+    7.9,
+    -2.22,
+    8.7,
+    -3.4,
+    8.3,
+    -4.35,
+    -8.3,
+    -4.35,
+    -8.9,
+    -3.4
+   ]
+  },
+  {
+   "id": "faculty_lounge",
+   "scene": "FacultyLounge",
+   "onEnter": "A3_Lounge_Enter",
+   "wall": [
+    0.45,
+    0.25,
+    0.2
+   ],
+   "floor": [
+    0.4,
+    0.2,
+    0.2
+   ],
+   "entries": [
+    {
+     "name": "from_hall",
+     "pos": [
+      -7.2,
+      -3.4
+     ]
+    }
+   ],
+   "hotspots": [
+    {
+     "name": "Hallway door",
+     "feet": [
+      -8.42,
+      -2.75
+     ],
+     "size": [
+      1.95,
+      4.55
+     ],
+     "color": [
+      0.5,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      -7.3,
+      -2.9
+     ],
+     "faceLeft": true,
+     "look": "A3_LoungeExit_Look",
+     "use": "A3_LoungeExit_Use"
+    },
+    {
+     "name": "Coffee machine",
+     "feet": [
+      -6.0,
+      -1.85
+     ],
+     "size": [
+      1.6,
+      2.25
+     ],
+     "color": [
+      0.3,
+      0.3,
+      0.3
+     ],
+     "standAt": [
+      -6.0,
+      -2.6
+     ],
+     "look": "A3_Coffee_Look",
+     "use": "A3_Coffee_Use"
+    },
+    {
+     "name": "Wall of tenure",
+     "feet": [
+      -3.3,
+      0.3
+     ],
+     "size": [
+      2.8,
+      1.8
+     ],
+     "color": [
+      0.8,
+      0.65,
+      0.3
+     ],
+     "standAt": [
+      -3.3,
+      -2.6
+     ],
+     "look": "A3_Tenure_Look",
+     "use": "A3_Tenure_Use"
+    },
+    {
+     "name": "Armchair",
+     "feet": [
+      -0.95,
+      -2.1
+     ],
+     "size": [
+      2.5,
+      2.8
+     ],
+     "color": [
+      0.6,
+      0.2,
+      0.2
+     ],
+     "standAt": [
+      -0.9,
+      -2.6
+     ],
+     "look": "A3_Armchair_Look",
+     "use": "A3_Armchair_Use"
+    },
+    {
+     "name": "Founder portrait",
+     "feet": [
+      2.1,
+      0.6
+     ],
+     "size": [
+      1.9,
+      2.25
+     ],
+     "color": [
+      0.7,
+      0.55,
+      0.3
+     ],
+     "standAt": [
+      2.1,
+      -2.6
+     ],
+     "look": "A3_Portrait_Look",
+     "use": "A3_Portrait_Use"
+    },
+    {
+     "name": "Professor Crumb",
+     "feet": [
+      5.2,
+      -4.05
+     ],
+     "size": [
+      1.9,
+      4.56
+     ],
+     "color": [
+      0.55,
+      0.4,
+      0.25
+     ],
+     "standAt": [
+      3.3,
+      -3.95
+     ],
+     "look": "A3_Crumb_Look",
+     "use": "A3_Crumb_Talk",
+     "items": [
+      {
+       "item": "retirement_plan",
+       "node": "A3_Crumb_GivePlan"
+      },
+      {
+       "item": "safety_goggles",
+       "node": "A3_Crumb_GiveGoggles"
+      },
+      {
+       "item": "nibbles_in_tube",
+       "node": "A3_Crumb_GiveNibbles"
+      },
+      {
+       "item": "protest_button",
+       "node": "A3_Crumb_GiveButton"
+      }
+     ]
+    },
+    {
+     "name": "Bookshelf",
+     "feet": [
+      7.75,
+      -2.6
+     ],
+     "size": [
+      2.7,
+      5.2
+     ],
+     "color": [
+      0.45,
+      0.3,
+      0.2
+     ],
+     "standAt": [
+      7.2,
+      -2.9
+     ],
+     "look": "A3_Bookshelf_Look",
+     "use": "A3_Bookshelf_Use"
+    }
+   ],
+   "walkable": [
+    -7.8,
+    -2.22,
+    7.9,
+    -2.22,
+    8.7,
+    -3.4,
+    8.3,
+    -4.35,
+    -8.3,
+    -4.35,
+    -8.9,
+    -3.4
+   ]
+  }
+ ]
+}

@@ -17,7 +17,7 @@ Plan: https://claude.ai/code/artifact/310973cf-fb08-4b26-95a7-0b2d8a5cc66a
 | `Assets/_Project/Scripts/Dialogue` | Yarn Spinner bridge: commands and functions for Yarn scripts |
 | `Assets/_Project/Dialogue` | `BigNightOut.yarnproject` (picks up every `.yarn` file in this folder) and `DormHallway.yarn`, the vertical-slice puzzle |
 
-Controls: left click walks or uses, right click looks, click an inventory item to hold it, then click a hotspot to use it there or another item to combine.
+Controls: left click walks or uses, right click looks, click an inventory item to hold it, then click a hotspot to use it there or another item to combine. You can also drag an item from the bar straight onto a person, an object or another item.
 
 ## Quick start (no Unity experience needed)
 
@@ -29,7 +29,7 @@ Controls: left click walks or uses, right click looks, click an inventory item t
 6. Open the project. The first open takes a few minutes. The project then installs its own packages (Input System, Yarn Spinner) and builds the first room by itself. If Unity asks to restart to enable the new Input System, click **Yes**.
 7. When the **Boot** scene opens, press the **Play** button at the top of the window.
 
-Left click to walk and use things, right click to look. Click an item in the bar at the top to hold it, then click a person or another item to use it.
+Left click to walk and use things, right click to look. Click an item in the bar at the top to hold it, then click a person or another item to use it, or just drag the item onto them.
 
 If anything shows red errors in the **Console** window, copy them and send them to Claude. To run the automatic setup again, use **Big Night Out > Run First-Time Setup Again** in the menu bar.
 
@@ -41,27 +41,38 @@ The auto-setup lives in `Assets/_Project/Editor/Setup/AutoSetup.cs`. Doing it by
 2. Install Input System from the Package Manager, and Yarn Spinner from git URL `https://github.com/YarnSpinnerTool/YarnSpinner-Unity.git#current`. Until both are installed, the game assemblies are skipped instead of failing to compile.
 3. **Edit > Project Settings > Editor**: Version Control mode = Visible Meta Files, Asset Serialization = Force Text.
 
-## Building the first room
+## Building the game
 
-The auto-setup runs **Big Night Out > Build Dorm Hallway Slice** for you the first time. You can run it again from the menu bar at any time. It:
+The auto-setup runs **Big Night Out > Build Game** for you the first time (the old name, Build Dorm Hallway Slice, still works). Run it again after any change. It reads `World/*.json` and:
 
-- generates flat-colour placeholder sprites in `Art/Placeholder`,
-- creates the six items, the item database (with `lemon` + `soda`) and the `dorm_hallway` room asset,
-- builds `Scenes/Rooms/DormHallway.unity`: background, floor, entry point and four hotspots (Lacey Rae, Gil, the vending machine, the drinks table) wired to their Yarn nodes,
-- builds `Scenes/Boot.unity`: camera, player, room loader, mouse controls, hover label, inventory bar, Yarn's Dialogue System with our bridge,
-- puts Boot and DormHallway in the build list and opens Boot.
+- creates every item, the item database with its combinations, and one room asset per room,
+- builds one scene per room in `Scenes/Rooms` from the room's painted background (`Art/Painted`) and its hotspots, falling back to flat-colour placeholders where art is missing,
+- builds `Scenes/Boot.unity`: camera, player, room loader, mouse controls, hover label, inventory bar, pause menu, Yarn's Dialogue System with our bridge,
+- puts Boot and every room in the build list and opens Boot.
 
-Press Play in Boot. The slice is solved when Dex has the cowboy hat: earplugs from the vending machine go to Gil for the album, the drinks table gives a lemon and a soda to combine, and both go to Lacey Rae.
+Press Play in Boot. The whole story runs from Dex's dorm room to the live Speed Daters Live finale: five acts and a finale, 31 rooms. [Docs/WALKTHROUGH.md](Docs/WALKTHROUGH.md) has the full solution, [Docs/STORY.md](Docs/STORY.md) the story bible, and [Docs/WORLD_FORMAT.md](Docs/WORLD_FORMAT.md) how to add rooms and puzzles. `python3 tools/check_world.py` checks the JSON and Yarn files without Unity, and `python3 tools/art/paint.py` (plus `act2.py` to `finale.py`) regenerates the art.
 
-Running the tool again overwrites the generated scenes and placeholders, so stop using it once real art goes into those scenes. The first time it adds TextMeshPro text, Unity may ask to import TMP Essentials; accept.
+Press **Esc** for the pause menu: Resume, Save, Load and Quit. Save and Load use one manual slot; the game also autosaves to its own slot on every room change.
+
+Running the tool again overwrites the generated scenes, so make changes in the JSON, Yarn and art files rather than in the scenes. The first time it adds TextMeshPro text, Unity may ask to import TMP Essentials; accept.
 
 ## What each hotspot runs
 
 | Hotspot | Look | Use | Item responses |
 | --- | --- | --- | --- |
+| Bed (Dex's room) | `Bed_Look` | `Bed_Use` | |
+| Mirror (Dex's room) | `Mirror_Look` | `Mirror_Use` | |
+| Desk (Dex's room) | `Desk_Look` | `Desk_Use` | |
+| Door to hallway (Dex's room) | `DexDoor_Look` | `DexDoor_Use` | |
+| Your door (hallway) | `HallDoor_Look` | `HallDoor_Use` | |
+| Lounge (hallway) | `LoungeDoor_Look` | `LoungeDoor_Use` | |
+| Hallway (lounge) | `LoungeExit_Look` | `LoungeExit_Use` | |
+| Couch (lounge) | `Couch_Look` | `Couch_Use` | |
+| TV (lounge) | `TV_Look` | `TV_Use` | |
+| Sign-up sheet (lounge) | `SignUp_Look` | `SignUp_Use` | `cowboy_hat` > `SignUp_GiveHat` |
 | Lacey Rae | `Lacey_Look` | `Lacey_Talk` | `dance_album` > `Lacey_GiveAlbum`, `hallway_hooch` > `Lacey_GiveDrink` |
 | Gil | `Gil_Look` | `Gil_Talk` | `earplugs` > `Gil_GiveEarplugs` |
-| Vending machine | `Vending_Look` | `Vending_Use` | |
+| Vending machine | `Vending_Look` | `Vending_Use` | `dollar` > `Vending_Use` |
 | Drinks table | `DrinksTable_Look` | `DrinksTable_Use` | |
 
 ## Yarn commands and functions
@@ -74,7 +85,7 @@ has("item")  flagged("name")  counter("name")  current_act()
 ## Not done yet
 
 - Pathfinding: the player walks in a straight line, clamped to the floor.
-- Save and load menu (the code exists; there is no UI for it yet).
+- More than one manual save slot.
 - Localisation tables for names.
 - The scripts were written without a Unity editor at hand, so expect a few compile fixes on first open.
 - If Yarn is installed but `YarnCommands` does not compile in, check that the package name in `BigNightOut.Yarn.asmdef` (`versionDefines`) matches the name Package Manager shows for Yarn Spinner.
